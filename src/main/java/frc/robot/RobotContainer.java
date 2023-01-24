@@ -6,8 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Controllers;
-import frc.robot.commands.auto.paths.NewPath;
-import frc.robot.commands.drivetrain.ResetHeadingCmd;
+import frc.robot.commands.drivetrain.ResetPoseCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
 import frc.robot.subsystems.DriveSys;
 
@@ -49,12 +48,12 @@ public class RobotContainer {
 
     public void configureButtonBindings() {
         
-        gamepadMenuBtn.onTrue(new ResetHeadingCmd(driveSys));
+        gamepadMenuBtn.onTrue(new ResetPoseCmd(driveSys)); //FIXME: after debugging, change back to ResetHeadingCmd
 
     }
 
     public Command getAutonomousCommand() {
-        return new NewPath(driveSys);
+        return null;
     }
 
 }

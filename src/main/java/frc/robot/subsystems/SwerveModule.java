@@ -71,7 +71,7 @@ public class SwerveModule extends SubsystemBase {
         driveEncoder.setPositionConversionFactor(DriveConstants.driveMetersPerEncoderRev);
 
         //set the output of the drive encoder to be in radians per second for velocity measurement
-        driveEncoder.setVelocityConversionFactor(1 / DriveConstants.driveEncoderRPMperMPS); //FIXME: m/s per RPM
+        driveEncoder.setVelocityConversionFactor(DriveConstants.driveEncoderRPMperMPS);
 
         //set the output of the rotation encoder to be in radians
         rotationEncoder.setPositionConversionFactor(2 * Math.PI / DriveConstants.rotationWheelGearReduction);
@@ -89,7 +89,7 @@ public class SwerveModule extends SubsystemBase {
     */
     public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
-        driveEncoder.getPosition(), new Rotation2d(Math.toRadians(rotationEncoder.getPosition())));
+        driveEncoder.getPosition(), getCanCoderAngle());
     }
 
     public void resetDistance() {
@@ -175,13 +175,13 @@ public class SwerveModule extends SubsystemBase {
             driveMotor.set(desiredState.speedMetersPerSecond / DriveConstants.kFreeMetersPerSecond);
         }
         else {
-            double speedRadPerSec = desiredState.speedMetersPerSecond / (DriveConstants.wheelDiameterMeters / 2);
+            double speedMetersPerSecond = desiredState.speedMetersPerSecond * DriveConstants.maxDriveSpeedMetersPerSec;
 
             driveController.setReference(
-                desiredState.speedMetersPerSecond, //FIXME: See if this works with new conversion factor
-                ControlType.kVelocity, 
+                speedMetersPerSecond,
+                ControlType.kVelocity,
                 0, 
-                DriveConstants.driveFF.calculate(desiredState.speedMetersPerSecond)
+                DriveConstants.driveFF.calculate(speedMetersPerSecond)
             );
         }
     }

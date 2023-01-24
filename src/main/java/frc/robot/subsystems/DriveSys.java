@@ -64,7 +64,7 @@ public class DriveSys extends SubsystemBase {
             DriveConstants.rearRightOffset
         );
 
-    PowerDistribution pdh; //FIXME: Make its own subsystem?
+    PowerDistribution pdh; //TODO: Make its own subsystem?
 
     // commanded values from the joysticks and field relative value to use in AlignWithTargetVision and AlignWithGyro
     private double commandedForward = 0;
@@ -93,11 +93,19 @@ public class DriveSys extends SubsystemBase {
     //           }
     //     );
 
+    // private final SwerveDriveOdometry odometry = 
+    //     new SwerveDriveOdometry(
+    //         DriveConstants.kinematics,
+    //         getHeading(),
+    //         getModulePositions(),
+    //         new Pose2d()
+    //     );
+
     private final SwerveDrivePoseEstimator odometry = 
         new SwerveDrivePoseEstimator(
-            DriveConstants.kinematics,
-            getHeading(),
-            getModulePositions(),
+            DriveConstants.kinematics, 
+            getHeading(), 
+            getModulePositions(), 
             new Pose2d()
         );
 
@@ -124,9 +132,13 @@ public class DriveSys extends SubsystemBase {
         odometry.update(getHeading(), getModulePositions());
 
         SmartDashboard.putNumber("heading", getHeading().getDegrees());
+        SmartDashboard.putNumber("pitch", getPitch()); //TODO: Make sure pitch and roll values work
+        SmartDashboard.putNumber("roll", getRoll());
+
         SmartDashboard.putNumber("Odometry x", odometry.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Odometry y", odometry.getEstimatedPosition().getY());
-        SmartDashboard.putNumber("speed (m/s)", getAverageDriveVelocityMetersPerSecond()); //FIXME: Make sure this value seems accurate
+
+        SmartDashboard.putNumber("speed", getAverageDriveVelocityMetersPerSecond()); //TODO: Make sure this value seems accurate
 
         SmartDashboard.putNumber("front left rotation encoder", frontLeft.getRotationEncoderAngle().getDegrees());
         SmartDashboard.putNumber("front right rotation encoder", frontRight.getRotationEncoderAngle().getDegrees());
@@ -137,6 +149,12 @@ public class DriveSys extends SubsystemBase {
         SmartDashboard.putNumber("front right CANcoder", frontRight.getCanCoderAngle().getDegrees());
         SmartDashboard.putNumber("rear left CANcoder", rearLeft.getCanCoderAngle().getDegrees());
         SmartDashboard.putNumber("rear right CANcoder", rearRight.getCanCoderAngle().getDegrees());
+
+        SmartDashboard.putNumber("front left distance", frontLeft.getDriveDistanceMeters());
+        SmartDashboard.putNumber("front right distance", frontRight.getDriveDistanceMeters());
+        SmartDashboard.putNumber("rear left distance", rearLeft.getDriveDistanceMeters());
+        SmartDashboard.putNumber("rear right distance", rearRight.getDriveDistanceMeters());
+
 
         SmartDashboard.putNumber("current", pdh.getTotalCurrent());
     }
@@ -183,7 +201,6 @@ public class DriveSys extends SubsystemBase {
         }
 
         // Optimizes speed and angle to minimize change in heading (e.g. module turns 1 degree and reverses drive direction to get from 90 degrees to -89 degrees)
-        //FIXME: make sure this works
         states[0] = SwerveModuleState.optimize(states[0], frontLeft.getRotationEncoderAngle()); // front left
         states[1] = SwerveModuleState.optimize(states[1], frontRight.getRotationEncoderAngle()); // front right
         states[2] = SwerveModuleState.optimize(states[2], rearLeft.getRotationEncoderAngle()); // rear left
@@ -209,7 +226,7 @@ public class DriveSys extends SubsystemBase {
 
     }
 
-    public void setSwerveModuleStatesAuto(SwerveModuleState[] moduleStates) {
+    public void setModuleStatesAuto(SwerveModuleState[] moduleStates) {
         frontLeft.setDesiredState(moduleStates[0], true);
         frontRight.setDesiredState(moduleStates[1], true);
         rearLeft.setDesiredState(moduleStates[2], true);
@@ -223,10 +240,10 @@ public class DriveSys extends SubsystemBase {
     public SwerveModuleState[] getModuleStates() {
 
         return new SwerveModuleState[] {
-            new SwerveModuleState(frontLeft.getCurrentVelocityMetersPerSecond(), frontLeft.getCanCoderAngle()),
-            new SwerveModuleState(frontRight.getCurrentVelocityMetersPerSecond(), frontRight.getCanCoderAngle()),
-            new SwerveModuleState(rearLeft.getCurrentVelocityMetersPerSecond(), rearLeft.getCanCoderAngle()),
-            new SwerveModuleState(rearRight.getCurrentVelocityMetersPerSecond(), rearRight.getCanCoderAngle())
+            new SwerveModuleState(frontLeft.getCurrentVelocityMetersPerSecond(), frontLeft.getRotationEncoderAngle()),
+            new SwerveModuleState(frontRight.getCurrentVelocityMetersPerSecond(), frontRight.getRotationEncoderAngle()),
+            new SwerveModuleState(rearLeft.getCurrentVelocityMetersPerSecond(), rearLeft.getRotationEncoderAngle()),
+            new SwerveModuleState(rearRight.getCurrentVelocityMetersPerSecond(), rearRight.getRotationEncoderAngle())
         };
 
     }
@@ -300,10 +317,10 @@ public class DriveSys extends SubsystemBase {
     public double getAverageDriveVelocityMetersPerSecond() {
 
         return ((
-            frontLeft.getCurrentVelocityMetersPerSecond()
-            + frontRight.getCurrentVelocityMetersPerSecond() 
-            + rearLeft.getCurrentVelocityMetersPerSecond() 
-            + rearRight.getCurrentVelocityMetersPerSecond())
+            Math.abs(frontLeft.getCurrentVelocityMetersPerSecond())
+            + Math.abs(frontRight.getCurrentVelocityMetersPerSecond())
+            + Math.abs(rearLeft.getCurrentVelocityMetersPerSecond() )
+            + Math.abs(rearRight.getCurrentVelocityMetersPerSecond()))
             / 4.0);
 
     }
@@ -311,11 +328,19 @@ public class DriveSys extends SubsystemBase {
     // get the current heading of the robot based on the gyro
     public Rotation2d getHeading() {
 
-        double[] ypr = new double[3];
+        return Rotation2d.fromDegrees(imu.getYaw());
 
-        imu.getYawPitchRoll(ypr);
+    }
 
-        return Rotation2d.fromDegrees(ypr[0]);
+    public double getPitch() {
+
+        return imu.getPitch();
+
+    }
+
+    public double getRoll() {
+
+        return imu.getRoll();
 
     }
 

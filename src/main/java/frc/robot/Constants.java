@@ -1,8 +1,11 @@
 package frc.robot;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
@@ -76,30 +79,46 @@ public class Constants {
         public static final double rotationMotorMaxSpeedRadPerSec = 2.0;
         public static final double rotationMotorMaxAccelRadPerSecSq = 1.0;
 
-        public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.667, 2.44);
+        public static final double maxDriveSpeedMetersPerSec = 3; //3
 
-        public static final double maxDriveSpeedMetersPerSec = 1; //3
         public static final double maxTurnRateRadiansPerSec = 2 * Math.PI; //Rate the robot will spin with full rotation command
+        public static final double maxTurnAccelRadiansPerSec = Math.PI;
 
         public static final double frontLeftOffset = Units.degreesToRadians(105.420);
         public static final double frontRightOffset = Units.degreesToRadians(228.428);
         public static final double rearLeftOffset = Units.degreesToRadians(292.139);
         public static final double rearRightOffset = Units.degreesToRadians(313.183);
 
-        public static final double drivekP = 0.01;
+        public static final double drivekP = 0.01 * 0.5;
 
         public static final double rotationkP = 1.6636 * 0.75; //0.3
         public static final double rotationkD = 1.2083 * 0.75; //0.2
 
-        public static double ksVolts = .055;
-        public static double kvVoltSecondsPerMeter = .2;
-        public static double kaVoltSecondsSquaredPerMeter = .02;
+        public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.667, 2.44, 0); //TODO; Input FF constants below into FF to see if it still functions
+
+        public static final double ksVolts = .055;
+        public static final double kvVoltSecondsPerMeter = .2;
+        public static final double kaVoltSecondsSquaredPerMeter = .02;
     }
 
     public static final class AutoConstants {
 
         public static final double maxVelMetersPerSec = 2;
         public static final double maxAccelMetersPerSecondSq = 1;
+
+        public final static TrajectoryConfig config = 
+            new TrajectoryConfig(
+                AutoConstants.maxVelMetersPerSec, 
+                AutoConstants.maxAccelMetersPerSecondSq
+            )
+            .setKinematics(DriveConstants.kinematics);
+
+        public static final ProfiledPIDController rotationController = 
+            new ProfiledPIDController(3.0, 0, 0, //TODO: Try plugging in turn PID values from DriveConstants class
+                new TrapezoidProfile.Constraints(AutoConstants.maxVelMetersPerSec,
+                    AutoConstants.maxAccelMetersPerSecondSq
+                )
+            );
         
     }    
 }
