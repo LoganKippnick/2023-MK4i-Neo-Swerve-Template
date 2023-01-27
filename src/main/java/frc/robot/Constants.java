@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -58,6 +59,7 @@ public class Constants {
         public static final double trackWidth = Units.inchesToMeters(29.5);
         public static final double wheelBase = Units.inchesToMeters(29.5);
 
+
         public static final SwerveDriveKinematics kinematics = 
             new SwerveDriveKinematics(
                 new Translation2d(trackWidth / 2.0, wheelBase / 2.0), //front left
@@ -80,21 +82,22 @@ public class Constants {
         public static final double rotationMotorMaxAccelRadPerSecSq = 1.0;
 
         public static final double maxDriveSpeedMetersPerSec = 3; //3
+        public static final double maxDriveAccelMetersPerSecSq = 5;
 
         public static final double maxTurnRateRadiansPerSec = 2 * Math.PI; //Rate the robot will spin with full rotation command
-        public static final double maxTurnAccelRadiansPerSec = Math.PI;
+        public static final double maxTurnAccelRadiansPerSecSq = Math.PI;
 
         public static final double frontLeftOffset = Units.degreesToRadians(105.420);
         public static final double frontRightOffset = Units.degreesToRadians(228.428);
         public static final double rearLeftOffset = Units.degreesToRadians(292.139);
         public static final double rearRightOffset = Units.degreesToRadians(313.183);
 
-        public static final double drivekP = 0.01 * 0.5;
+        public static final double drivekP = 0.005;
 
-        public static final double rotationkP = 1.6636 * 0.75; //0.3
-        public static final double rotationkD = 1.2083 * 0.75; //0.2
+        public static final double steerkP = 1.6636 * 0.75; //0.3
+        public static final double steerkD = 1.2083 * 0.75; //0.2
 
-        public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.667, 2.44, 0); //TODO; Input FF constants below into FF to see if it still functions
+        public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.667, 2.44, 0); //TODO: Input FF constants below into FF to see if it still functions
 
         public static final double ksVolts = .055;
         public static final double kvVoltSecondsPerMeter = .2;
@@ -106,19 +109,42 @@ public class Constants {
         public static final double maxVelMetersPerSec = 2;
         public static final double maxAccelMetersPerSecondSq = 1;
 
+        public static final double drivekP = 2.25;
+        public static final double drivekD = 0.0;
+
+        public static final double rotationkP = 1.5;
+        public static final double rotationkD = 0.25;
+
         public final static TrajectoryConfig config = 
             new TrajectoryConfig(
                 AutoConstants.maxVelMetersPerSec, 
                 AutoConstants.maxAccelMetersPerSecondSq
             )
-            .setKinematics(DriveConstants.kinematics);
+            .setKinematics(DriveConstants.kinematics
+        );
 
-        public static final ProfiledPIDController rotationController = 
-            new ProfiledPIDController(3.0, 0, 0, //TODO: Try plugging in turn PID values from DriveConstants class
-                new TrapezoidProfile.Constraints(AutoConstants.maxVelMetersPerSec,
-                    AutoConstants.maxAccelMetersPerSecondSq
+        public static final PIDController driveController = new PIDController(
+            drivekP,
+            0,
+            drivekD
+        );
+
+        public static final ProfiledPIDController rotationController = constructRotationController();
+        private static ProfiledPIDController constructRotationController() {
+            ProfiledPIDController rotationController = new ProfiledPIDController(
+                rotationkP,
+                0,
+                rotationkD,
+                new TrapezoidProfile.Constraints(
+                    DriveConstants.maxTurnRateRadiansPerSec,
+                    DriveConstants.maxTurnRateRadiansPerSec
                 )
             );
-        
+
+            // sets wraparound from 0 to 2 * PI
+            rotationController.enableContinuousInput(0, 2 * Math.PI);
+            
+            return rotationController;
+        }
     }    
 }

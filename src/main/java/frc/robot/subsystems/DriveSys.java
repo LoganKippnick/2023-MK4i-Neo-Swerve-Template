@@ -122,7 +122,6 @@ public class DriveSys extends SubsystemBase {
         resetPose(new Pose2d(0, 0, new Rotation2d(0)));
 
         pdh = new PowerDistribution();
-
     }
 
     @Override
@@ -154,7 +153,6 @@ public class DriveSys extends SubsystemBase {
         SmartDashboard.putNumber("front right distance", frontRight.getDriveDistanceMeters());
         SmartDashboard.putNumber("rear left distance", rearLeft.getDriveDistanceMeters());
         SmartDashboard.putNumber("rear right distance", rearRight.getDriveDistanceMeters());
-
 
         SmartDashboard.putNumber("current", pdh.getTotalCurrent());
     }
@@ -199,12 +197,6 @@ public class DriveSys extends SubsystemBase {
             // Uses kinematics (wheel placements) to convert overall robot state to array of individual module states
             states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
         }
-
-        // Optimizes speed and angle to minimize change in heading (e.g. module turns 1 degree and reverses drive direction to get from 90 degrees to -89 degrees)
-        states[0] = SwerveModuleState.optimize(states[0], frontLeft.getRotationEncoderAngle()); // front left
-        states[1] = SwerveModuleState.optimize(states[1], frontRight.getRotationEncoderAngle()); // front right
-        states[2] = SwerveModuleState.optimize(states[2], rearLeft.getRotationEncoderAngle()); // rear left
-        states[3] = SwerveModuleState.optimize(states[3], rearRight.getRotationEncoderAngle()); // rear right
 
         // Makes sure the wheels don't try to spin faster than the maximum speed possible
         SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxDriveSpeedMetersPerSec);

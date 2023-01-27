@@ -77,9 +77,9 @@ public class SwerveDriveCmd extends CommandBase {
         boolean lock = this.lock.getAsBoolean();
 
         driveSys.drive(
-            drive,
-            strafe,
-            rot,
+            -drive,
+            -strafe,
+            -rot,
             lock,
             isFieldRelative
         );

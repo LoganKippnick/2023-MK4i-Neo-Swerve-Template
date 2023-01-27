@@ -16,14 +16,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
+/**
+ * Class to represent and handle a swerve module
+ * A module's state is measured by a CANCoder for the absolute position, integrated CANEncoder for relative position
+ * for both rotation and linear movement
+ */
 public class SwerveModule extends SubsystemBase {
-
-    /**
-     * Class to represent and handle a swerve module
-     * A module's state is measured by a CANCoder for the absolute position, integrated CANEncoder for relative position
-     * for both rotation and linear movement
-     */
-
 
     private final CANSparkMax driveMotor;
     private final CANSparkMax rotationMotor;
@@ -62,10 +60,16 @@ public class SwerveModule extends SubsystemBase {
         rotationController = rotationMotor.getPIDController();
         driveController = driveMotor.getPIDController();
 
-        rotationController.setP(DriveConstants.rotationkP);
-        rotationController.setD(DriveConstants.rotationkD);
+        rotationController.setP(DriveConstants.steerkP);
+        rotationController.setD(DriveConstants.steerkD);
 
         driveController.setP(DriveConstants.drivekP);
+        //TODO: Try this for acceleration control, probably with a method in DriveSys. Could implement for driving with arm extended.
+        // driveController.setSmartMotionMaxAccel(
+        //     DriveConstants.maxDriveAccelMetersPerSecSq * Math.PI * DriveConstants.wheelDiameterMeters * 60,
+        //     0
+        // );
+  
 
         //set the output of the drive encoder to be in radians for linear measurement
         driveEncoder.setPositionConversionFactor(DriveConstants.driveMetersPerEncoderRev);
@@ -164,6 +168,9 @@ public class SwerveModule extends SubsystemBase {
      */
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
         
+        // Optimizes speed and angle to minimize change in heading (e.g. module turns 1 degree and reverses drive direction to get from 90 degrees to -89 degrees)
+        desiredState = SwerveModuleState.optimize(desiredState, getRotationEncoderAngle());
+
         rotationController.setReference(
             calculateAdjustedAngle(
                 desiredState.angle.getRadians(),

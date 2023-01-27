@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Controllers;
+import frc.robot.commands.auto.paths.SplinePath;
 import frc.robot.commands.drivetrain.ResetPoseCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
 import frc.robot.subsystems.DriveSys;
@@ -53,7 +54,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return null;
+        return new ResetPoseCmd(driveSys).andThen(new SplinePath(driveSys));
     }
 
 }
