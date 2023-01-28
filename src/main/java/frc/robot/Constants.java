@@ -30,6 +30,11 @@ public class Constants {
 
         public static final int imuId = 13;
 
+        public static final int masterMtrId = 14;
+        public static final int slaveMtrId = 15;
+        
+
+
     }
 
     public static final class Controllers {
