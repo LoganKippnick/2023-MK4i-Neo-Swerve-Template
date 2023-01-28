@@ -32,9 +32,6 @@ public class Constants {
 
         public static final int masterMtrId = 14;
         public static final int slaveMtrId = 15;
-        
-
-
     }
 
     public static final class Controllers {
@@ -50,11 +47,11 @@ public class Constants {
 
     public static final class PneumaticChannels {
 
-        public  static final int PCMId = 19;
+        public  static final int PCMId = 16;
 
-        public static final int[] intakeSolenoidChannels = {0, 1};
-        public static final int lockingSolenoidChannel = 2;
+        public static final int[] liftSolsCh = {0, 1};
 
+        public static final int[] clawSolsCh = {2, 3};
 
     }
 
