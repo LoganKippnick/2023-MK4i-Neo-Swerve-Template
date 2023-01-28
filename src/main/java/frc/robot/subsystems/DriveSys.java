@@ -111,15 +111,13 @@ public class DriveSys extends SubsystemBase {
 
     public DriveSys() {
 
-        imu.setYaw(0.0);
-
         // reset the measured distance driven for each module
         frontLeft.resetDistance();
         frontRight.resetDistance();
         rearLeft.resetDistance();
         rearRight.resetDistance();
 
-        resetPose(new Pose2d(0, 0, new Rotation2d(0)));
+        setPose(new Pose2d());
 
         pdh = new PowerDistribution();
     }
@@ -265,9 +263,9 @@ public class DriveSys extends SubsystemBase {
     }
 
     /*
-     * Resets the current pose to a desired pose
+     * Sets the current pose to a desired pose
      */
-    public void resetPose(Pose2d pose) {
+    public void setPose(Pose2d pose) {
 
         imu.setYaw(0);
         odometry.resetPosition(getHeading(),

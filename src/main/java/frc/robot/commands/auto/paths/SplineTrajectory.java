@@ -10,9 +10,9 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSys;
 
-public class SplinePath extends SwerveControllerCommand {
+public class SplineTrajectory extends SwerveControllerCommand {
 
-    public SplinePath(DriveSys driveSys) {
+    public SplineTrajectory(DriveSys driveSys) {
 
         super(
             TrajectoryGenerator.generateTrajectory(

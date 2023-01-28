@@ -23,7 +23,7 @@ public class ResetPoseCmd extends CommandBase {
     @Override
     public void execute() {
 
-        driveSys.resetPose(new Pose2d());
+        driveSys.setPose(new Pose2d());
 
     }
 
