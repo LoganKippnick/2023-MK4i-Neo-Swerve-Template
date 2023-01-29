@@ -9,7 +9,7 @@ import frc.robot.Constants.Controllers;
 import frc.robot.commands.auto.paths.SplineTrajectory;
 import frc.robot.commands.drivetrain.ResetPoseCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
-import frc.robot.subsystems.DriveSys;
+import frc.robot.subsystems.SwerveSys;
 
 public class RobotContainer {
 
@@ -24,7 +24,7 @@ public class RobotContainer {
 
     private final JoystickButton gamepadMenuBtn = new JoystickButton(gamepad, 8);
 
-    private final DriveSys driveSys = new DriveSys();
+    private final SwerveSys driveSys = new SwerveSys();
     
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
@@ -49,7 +49,7 @@ public class RobotContainer {
 
     public void configureButtonBindings() {
         
-        gamepadMenuBtn.onTrue(new ResetPoseCmd(driveSys)); //FIXME: after debugging, change back to ResetHeadingCmd
+        gamepadMenuBtn.onTrue(new ResetPoseCmd(driveSys)); // FIXME: after debugging, change back to ResetHeadingCmd
 
     }
 

@@ -9,7 +9,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.subsystems.DriveSys;
+import frc.robot.subsystems.SwerveSys;
 
 public class FollowTrajectory extends SwerveControllerCommand {
 
@@ -29,7 +29,7 @@ public class FollowTrajectory extends SwerveControllerCommand {
             )
         );
 
-    public FollowTrajectory(DriveSys drive, Trajectory trajectory) {
+    public FollowTrajectory(SwerveSys drive, Trajectory trajectory) {
 
         /**
          * Super constructor for SwerveControllerCommand

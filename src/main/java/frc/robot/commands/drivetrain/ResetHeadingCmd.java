@@ -1,14 +1,14 @@
 package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSys;
+import frc.robot.subsystems.SwerveSys;
 
 public class ResetHeadingCmd extends CommandBase {
 
-    private final DriveSys driveSys;
+    private final SwerveSys driveSys;
 
 
-    public ResetHeadingCmd(DriveSys driveSys) {
+    public ResetHeadingCmd(SwerveSys driveSys) {
 
         this.driveSys = driveSys;
 
@@ -22,7 +22,7 @@ public class ResetHeadingCmd extends CommandBase {
     @Override
     public void execute() {
 
-        driveSys.zeroGyro();
+        driveSys.resetHeading();
 
     }
 

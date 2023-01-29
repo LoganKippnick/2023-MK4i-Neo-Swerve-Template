@@ -3,13 +3,13 @@ package frc.robot.commands.auto.paths;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.subsystems.DriveSys;
+import frc.robot.subsystems.SwerveSys;
 
 public class TestTrajectory extends SwerveControllerCommand {
 
-    private DriveSys driveSys;
+    private SwerveSys driveSys;
 
-    public TestTrajectory(DriveSys driveSys) {
+    public TestTrajectory(SwerveSys driveSys) {
         super(
             PathPlannerTrajectories.testTrajectory,
             driveSys::getPose, 

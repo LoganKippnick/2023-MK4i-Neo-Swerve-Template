@@ -14,20 +14,20 @@ public class Constants {
     public static final class CANDevices {
 
         public static final int frontLeftRotationEncoderId = 1;
-        public static final int frontLeftRotationMotorId = 9;
-        public static final int frontLeftDriveMotorId = 5;
+        public static final int frontLeftRotationMtrId = 9;
+        public static final int frontLeftDriveMtrId = 5;
 
         public static final int frontRightRotationEncoderId = 2;
-        public static final int frontRightRotationMotorId = 10;
-        public static final int frontRightDriveMotorId = 6;
+        public static final int frontRightRotationMtrId = 10;
+        public static final int frontRightDriveMtrId = 6;
 
         public static final int rearLeftRotationEncoderId = 3;
-        public static final int rearLeftRotationMotorId = 11;
-        public static final int rearLeftDriveMotorId = 7;
+        public static final int rearLeftRotationMtrId = 11;
+        public static final int rearLeftDriveMtrId = 7;
 
         public static final int rearRightRotationEncoderId = 4;
-        public static final int rearRightRotationMotorId = 12;
-        public static final int rearRightDriveMotorId = 8;
+        public static final int rearRightRotationMtrId = 12;
+        public static final int rearRightDriveMtrId = 8;
 
         public static final int imuId = 13;
 
@@ -61,7 +61,6 @@ public class Constants {
         public static final double trackWidth = Units.inchesToMeters(29.5);
         public static final double wheelBase = Units.inchesToMeters(29.5);
 
-
         public static final SwerveDriveKinematics kinematics = 
             new SwerveDriveKinematics(
                 new Translation2d(trackWidth / 2.0, wheelBase / 2.0), //front left
@@ -80,8 +79,8 @@ public class Constants {
 
         public static final double kFreeMetersPerSecond = 5600 * driveEncoderRPMperMPS;
 
-        public static final double rotationMotorMaxSpeedRadPerSec = 2.0;
-        public static final double rotationMotorMaxAccelRadPerSecSq = 1.0;
+        public static final double rotationMtrMaxSpeedRadPerSec = 2.0;
+        public static final double rotationMtrMaxAccelRadPerSecSq = 1.0;
 
         public static final double maxDriveSpeedMetersPerSec = 3; //3
         public static final double maxDriveAccelMetersPerSecSq = 5;
@@ -89,17 +88,17 @@ public class Constants {
         public static final double maxTurnRateRadiansPerSec = 2 * Math.PI; //Rate the robot will spin with full rotation command
         public static final double maxTurnAccelRadiansPerSecSq = Math.PI;
 
-        public static final double frontLeftOffset = Units.degreesToRadians(105.420);
-        public static final double frontRightOffset = Units.degreesToRadians(228.428);
-        public static final double rearLeftOffset = Units.degreesToRadians(292.139);
-        public static final double rearRightOffset = Units.degreesToRadians(313.183);
+        public static final double frontLeftModOffset = Units.degreesToRadians(105.420);
+        public static final double frontRightModOffset = Units.degreesToRadians(228.428);
+        public static final double rearLeftModOffset = Units.degreesToRadians(292.139);
+        public static final double rearRightModOffset = Units.degreesToRadians(313.183);
 
         public static final double drivekP = 0.005;
 
         public static final double steerkP = 1.6636 * 0.75; //0.3
         public static final double steerkD = 1.2083 * 0.75; //0.2
 
-        public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.667, 2.44, 0); //TODO: Input FF constants below into FF to see if it still functions
+        public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.667, 2.44, 0); // TODO: Input FF constants below into FF to see if it still functions
 
         public static final double ksVolts = .055;
         public static final double kvVoltSecondsPerMeter = .2;

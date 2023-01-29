@@ -2,18 +2,18 @@ package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSys;
+import frc.robot.subsystems.SwerveSys;
 
 public class DriveTime extends CommandBase {
 
-    private final DriveSys drive;
+    private final SwerveSys drive;
 
     private double driveSeconds;
     private double drivePower;
 
     private Timer timer = new Timer();
 
-    public DriveTime(double seconds, double power, DriveSys subsystem) {
+    public DriveTime(double seconds, double power, SwerveSys subsystem) {
 
         driveSeconds = seconds;
         drivePower = power;

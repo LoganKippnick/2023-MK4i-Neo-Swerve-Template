@@ -13,5 +13,11 @@ public class ClawSys extends SubsystemBase {
         clawSols = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.clawSolsCh[0], PneumaticChannels.clawSolsCh[1]);
     
     }
+
+    // This method will be called once per scheduler run
+    @Override
+    public void periodic() {
+
+    }
     
 }
