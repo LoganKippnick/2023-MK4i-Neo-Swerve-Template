@@ -9,7 +9,7 @@ public class ExampleSys extends SubsystemBase {
     /**
      * Constructs a new ExampleSys.
      * 
-     * <p>ExampleCmd contains the basic framework of a robot subsystem for use in command-based programming.
+     * <p>ExampleSys contains the basic framework of a robot subsystem for use in command-based programming.
      */
     public ExampleSys() {
         // Initialize and configure actuators and sensors here

@@ -5,7 +5,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSys;
+import frc.robot.subsystems.SwerveSys;
 
 public class CharacterizeDrive extends CommandBase {
 
@@ -13,7 +13,7 @@ public class CharacterizeDrive extends CommandBase {
      * Runs along with the FRC Characterziation Tool to generate feedforward gains for the drivetrain
      */
 
-    private final DriveSys drive;
+    private final SwerveSys drive;
 
     private final NetworkTableEntry autoSpeedEntry = NetworkTableInstance.getDefault().getEntry("/robot/autospeed");
     private final NetworkTableEntry telemetryEntry = NetworkTableInstance.getDefault().getEntry("/robot/telemetry");
@@ -22,7 +22,7 @@ public class CharacterizeDrive extends CommandBase {
 
     private double priorAutoSpeed = 0;
 
-    public CharacterizeDrive(DriveSys subsystem) {
+    public CharacterizeDrive(SwerveSys subsystem) {
 
         drive = subsystem;
 

@@ -6,10 +6,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Controllers;
-import frc.robot.commands.auto.paths.SplineTrajectory;
+import frc.robot.commands.auto.SplineTrajectory;
 import frc.robot.commands.drivetrain.ResetPoseCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
-import frc.robot.subsystems.DriveSys;
+import frc.robot.subsystems.SwerveSys;
 
 public class RobotContainer {
 
@@ -20,23 +20,23 @@ public class RobotContainer {
     // private final Joystick leftJoystick = new Joystick(InputDevices.leftJoystickPort);
     // private final Joystick rightJoystick = new Joystick(InputDevices.rightJoystickPort);
 
-    private final XboxController gamepad = new XboxController(Controllers.operatorControllerPort);
+    private final XboxController driverController = new XboxController(Controllers.driverControllerPort);
 
-    private final JoystickButton gamepadMenuBtn = new JoystickButton(gamepad, 8);
+    private final JoystickButton driverMenuBtn = new JoystickButton(driverController, 8);
 
-    private final DriveSys driveSys = new DriveSys();
+    private final SwerveSys swerveSys = new SwerveSys();
     
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
     public RobotContainer() {
 
-        driveSys.setDefaultCommand(
+        swerveSys.setDefaultCommand(
             new SwerveDriveCmd(
-                driveSys,
-                () -> gamepad.getRawAxis(1),
-                () -> gamepad.getRawAxis(0),
-                () -> gamepad.getRawAxis(4),
-                () -> gamepad.getLeftBumper(),
+                swerveSys,
+                () -> driverController.getRawAxis(1),
+                () -> driverController.getRawAxis(0),
+                () -> driverController.getRawAxis(4),
+                () -> driverController.getLeftBumper(),
                 true
             )
         );
@@ -49,12 +49,12 @@ public class RobotContainer {
 
     public void configureButtonBindings() {
         
-        gamepadMenuBtn.onTrue(new ResetPoseCmd(driveSys)); //FIXME: after debugging, change back to ResetHeadingCmd
+        driverMenuBtn.onTrue(new ResetPoseCmd(swerveSys)); // FIXME: after debugging, change back to ResetHeadingCmd
 
     }
 
     public Command getAutonomousCommand() {
-        return new ResetPoseCmd(driveSys).andThen(new SplineTrajectory(driveSys));
+        return new ResetPoseCmd(swerveSys).andThen(new SplineTrajectory(swerveSys));
     }
 
 }
