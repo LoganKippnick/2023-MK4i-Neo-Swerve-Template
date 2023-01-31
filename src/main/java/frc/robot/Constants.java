@@ -70,9 +70,10 @@ public class Constants {
         public static final double driveWheelGearReduction = 1 / ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0));
         public static final double rotWheelGearReduction = 1 / ((14.0 / 50.0) * (10.0 / 60.0));
 
-        public static final double wheelDiameterMeters = 0.050686 * 2;
+        public static final double wheelRadiusMeters = 0.050686;
+        public static final double wheelCircumferenceMeters = 2 * wheelRadiusMeters * Math.PI;
 
-        public static final double driveMetersPerEncRev = (wheelDiameterMeters * Math.PI) / driveWheelGearReduction;
+        public static final double driveMetersPerEncRev = (wheelCircumferenceMeters) / driveWheelGearReduction;
         public static final double driveEncRPMperMPS = driveMetersPerEncRev / 60;
 
         public static final double kFreeMetersPerSecond = 5600 * driveEncRPMperMPS;
@@ -93,14 +94,15 @@ public class Constants {
 
         public static final double drivekP = 0.005;
 
-        public static final double steerkP = 1.6636 * 0.75; //0.3
-        public static final double steerkD = 1.2083 * 0.75; //0.2
-
-        public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.667, 2.44, 0); // TODO: Input FF constants below into FF to see if it works better
+        public static final double steerkP = 1.2477;
+        public static final double steerkD = 0.9062/*25*/;
 
         public static final double ksVolts = .055;
         public static final double kvVoltSecsPerMeter = .2;
         public static final double kaVoltSecsPerMeterSq = .02;
+
+        // TODO: Input FF constants above into FF to see if it works better. If not, change constants to match: ks = 0.667; kv = 2.44; ka = 0
+        public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.667, 2.44, 0);
     }
 
     public static final class AutoConstants {
@@ -108,6 +110,7 @@ public class Constants {
         public static final double maxVelMetersPerSec = 2;
         public static final double maxAccelMetersPerSecondSq = 1;
 
+        // TODO: Tune the PID values below. Rotation should be okay.
         public static final double drivekP = 2.25;
         public static final double drivekD = 0.0;
 

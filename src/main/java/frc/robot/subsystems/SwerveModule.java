@@ -69,11 +69,7 @@ public class SwerveModule extends SubsystemBase {
         rotController.setD(DriveConstants.steerkD);
 
         driveController.setP(DriveConstants.drivekP);
-        // TODO: Try this for acceleration control, if necessary, probably with a method in swerveSys. Could implement for driving with arm extended.
-        // driveController.setSmartMotionMaxAccel(
-        //     DriveConstants.maxDriveAccelMetersPerSecSq * Math.PI * DriveConstants.wheelDiameterMeters * 60,
-        //     0
-        // );
+
   
 
         //set the output of the drive encoder to be in radians for linear measurement

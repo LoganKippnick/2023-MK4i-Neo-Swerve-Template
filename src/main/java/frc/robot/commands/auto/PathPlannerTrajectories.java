@@ -15,10 +15,14 @@ public class PathPlannerTrajectories {
     public static Trajectory testTrajectory;
 
     public static void createTrajectories() {
+        createTrajectory(testTrajectory, testTrajectoryPath);
+    }
+
+    private static void createTrajectory(Trajectory trajectory, Path trajectoryPath) {
         try {
-            testTrajectory = TrajectoryUtil.fromPathweaverJson(testTrajectoryPath);
+            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
         } catch (IOException ex) {
-            DriverStation.reportError("Unable to open trajectory: " + testTrajectory, ex.getStackTrace());
+            DriverStation.reportError("Unable to open trajectory: " + trajectory, ex.getStackTrace());
         }
     }
     
