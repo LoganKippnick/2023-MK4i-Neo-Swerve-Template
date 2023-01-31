@@ -33,15 +33,21 @@ public class LiftSys extends SubsystemBase {
         masterMtr = new CANSparkMax(CANDevices.masterMtrId, MotorType.kBrushless);
         slaveMtr = new CANSparkMax(CANDevices.slaveMtrId, MotorType.kBrushless);
 
+        // FIXME: Once lift functions properly, the below lines are irrelevant
+        masterMtr.restoreFactoryDefaults();
+        slaveMtr.restoreFactoryDefaults();
+
         masterMtr.setInverted(false);
         slaveMtr.setInverted(true);
 
-        masterMtr.setSoftLimit(SoftLimitDirection.kForward, LiftConstants.maxHeightInches);
-        masterMtr.setSoftLimit(SoftLimitDirection.kReverse, 0);
 
-        masterMtr.enableSoftLimit(SoftLimitDirection.kForward, true);
-        masterMtr.enableSoftLimit(SoftLimitDirection.kReverse, true);
+        // masterMtr.setSoftLimit(SoftLimitDirection.kForward, LiftConstants.maxHeightInches);
+        // masterMtr.setSoftLimit(SoftLimitDirection.kReverse, 0);
 
+        // masterMtr.enableSoftLimit(SoftLimitDirection.kForward, true);
+        // masterMtr.enableSoftLimit(SoftLimitDirection.kReverse, true);
+
+        // The slave motor will follow the master motor with the opposite direction.
         slaveMtr.follow(masterMtr, true);
 
         liftEnc = masterMtr.getEncoder();
@@ -53,13 +59,14 @@ public class LiftSys extends SubsystemBase {
 
         liftController = masterMtr.getPIDController();
 
-        liftController.setP(LiftConstants.kP, 0);
-        liftController.setD(LiftConstants.kD, 0);
+        liftController.setP(LiftConstants.kP, LiftConstants.smartMotionPIDSlot);
+        liftController.setD(LiftConstants.kD, LiftConstants.smartMotionPIDSlot);
 
-        liftController.setSmartMotionMaxVelocity(LiftConstants.maxSpeedFeetPerSec, 0);
+        liftController.setSmartMotionMaxVelocity(LiftConstants.maxSpeedFeetPerSec, LiftConstants.smartMotionPIDSlot);
+        
         // TODO: Try acceleration strategy. If still to agressive, try setting a maximum acceleration.
-        // liftController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
-        // liftController.setSmartMotionMaxAccel(LiftConstants.maxAccelFeetPerSecondSq, 0);
+        // liftController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, LiftConstants.smartMotionPIDSlot);
+        // liftController.setSmartMotionMaxAccel(LiftConstants.maxAccelFeetPerSecondSq, LiftConstants.smartMotionPIDSlot);
 
         liftSols = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.liftSolsCh[0], PneumaticChannels.liftSolsCh[1]);
 
@@ -69,13 +76,15 @@ public class LiftSys extends SubsystemBase {
     @Override
     public void periodic() {
 
-        liftController.setReference(targetInches, ControlType.kSmartMotion, 0);
+        liftController.setReference(targetInches, ControlType.kSmartMotion, LiftConstants.smartMotionPIDSlot);
 
         SmartDashboard.putNumber("lift inches", liftEnc.getPosition());
         SmartDashboard.putNumber("lift power", masterMtr.get());
         SmartDashboard.putNumber("lift target", targetInches);
         SmartDashboard.putNumber("lift velocity", liftEnc.getVelocity());
-        
+
+        // TODO: Add solenoid control. If lift is below a certain distance, it will be in the "up" position. Otherwise, be in the "down" position.
+        // TODO: Possibly create methods for actuating the arm out and in.
     }
 
     public void setPower(double power) {

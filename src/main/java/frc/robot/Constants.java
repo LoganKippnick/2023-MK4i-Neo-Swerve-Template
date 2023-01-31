@@ -156,14 +156,16 @@ public class Constants {
     
     public static final class LiftConstants {
 
-        public static final double kP = 0.1;
-
-        public static final double kD = 2.0;
-
         public static final double gearReduction = 1.0 / 5.0;
 
         public static final float maxHeightInches = (float) 74.0;
         public static final double inchesPerEncRev = 11 * gearReduction;
+
+        public static final int smartMotionPIDSlot = 0;
+
+        public static final double kP = 0.1;
+        // TODO: Find out if kI is necessary (used if reading is slightly off from target).
+        public static final double kD = 2.0;
 
         public static final double feetPerSecondPerRPM = (inchesPerEncRev / 12) / 60;
         public static final double maxSpeedFeetPerSec = 1;
