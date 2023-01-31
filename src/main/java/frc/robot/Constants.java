@@ -31,8 +31,10 @@ public class Constants {
 
         public static final int imuId = 13;
 
-        public static final int masterMtrId = 14;
-        public static final int slaveMtrId = 15;
+        public static final int pneumaticHubId = 14;
+
+        public static final int masterMtrId = 15;
+        public static final int slaveMtrId = 16;
     }
 
     public static final class Controllers {
@@ -148,5 +150,20 @@ public class Constants {
             
             return rotController;
         }
-    }    
+    }
+    
+    public static final class LiftConstants {
+
+        public static final double kP = 0.1;
+
+        public static final double kD = 2.0;
+
+        public static final double gearReduction = 1.0 / 5.0;
+
+        public static final float maxHeightInches = (float) 74.0;
+        public static final double inchesPerEncRev = 11 * gearReduction;
+
+        public static final double RPMPerFeetPerSecond = (inchesPerEncRev / 12) / 60;
+        public static final double maxSpeedFeetPerSec = 1;
+    }
 }

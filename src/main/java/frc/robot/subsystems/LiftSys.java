@@ -2,12 +2,19 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.PneumaticChannels;
 
 public class LiftSys extends SubsystemBase {
@@ -19,16 +26,40 @@ public class LiftSys extends SubsystemBase {
 
     private DoubleSolenoid liftSols;
 
+    private SparkMaxPIDController liftController;
+
+    private double targetInches = 24;
+
     public LiftSys() {
+        
         masterMtr = new CANSparkMax(CANDevices.masterMtrId, MotorType.kBrushless);
         slaveMtr = new CANSparkMax(CANDevices.slaveMtrId, MotorType.kBrushless);
 
         masterMtr.setInverted(false);
         slaveMtr.setInverted(true);
 
-        slaveMtr.follow(masterMtr);
+        masterMtr.setSoftLimit(SoftLimitDirection.kForward, LiftConstants.maxHeightInches);
+        masterMtr.setSoftLimit(SoftLimitDirection.kReverse, 0);
+
+        masterMtr.enableSoftLimit(SoftLimitDirection.kForward, true);
+        masterMtr.enableSoftLimit(SoftLimitDirection.kReverse, true);
+
+        slaveMtr.follow(masterMtr, true);
 
         liftEnc = masterMtr.getEncoder();
+
+        liftEnc.setPosition(0);
+
+        liftEnc.setPositionConversionFactor(LiftConstants.inchesPerEncRev);
+        liftEnc.setVelocityConversionFactor(LiftConstants.RPMPerFeetPerSecond);
+
+        liftController = masterMtr.getPIDController();
+
+        liftController.setP(LiftConstants.kP, 0);
+        liftController.setD(LiftConstants.kD, 0);
+
+        liftController.setSmartMotionMaxVelocity(LiftConstants.maxSpeedFeetPerSec, 0);
+        // liftController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
 
         liftSols = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.liftSolsCh[0], PneumaticChannels.liftSolsCh[1]);
 
@@ -38,9 +69,21 @@ public class LiftSys extends SubsystemBase {
     @Override
     public void periodic() {
 
+        liftController.setReference(targetInches, ControlType.kSmartMotion, 0);
+
+        SmartDashboard.putNumber("liftEncoder", liftEnc.getPosition());
+        SmartDashboard.putNumber("liftPower", masterMtr.get());
+        SmartDashboard.putNumber("liftTarget", targetInches);
+        SmartDashboard.putNumber("liftVelocity", liftEnc.getVelocity());
+        
     }
 
     public void setPower(double power) {
         masterMtr.set(power);
     }
+
+    public void setTarget(double inches) {
+        targetInches = inches;
+    }
+    
 }
