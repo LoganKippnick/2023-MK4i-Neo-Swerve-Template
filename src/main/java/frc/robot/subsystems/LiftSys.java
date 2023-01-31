@@ -51,7 +51,7 @@ public class LiftSys extends SubsystemBase {
         liftEnc.setPosition(0);
 
         liftEnc.setPositionConversionFactor(LiftConstants.inchesPerEncRev);
-        liftEnc.setVelocityConversionFactor(LiftConstants.RPMPerFeetPerSecond);
+        liftEnc.setVelocityConversionFactor(LiftConstants.feetPerSecondPerRPM);
 
         liftController = masterMtr.getPIDController();
 
@@ -59,7 +59,9 @@ public class LiftSys extends SubsystemBase {
         liftController.setD(LiftConstants.kD, 0);
 
         liftController.setSmartMotionMaxVelocity(LiftConstants.maxSpeedFeetPerSec, 0);
+        // TODO: Try acceleration strategy. If still to agressive, try setting a maximum acceleration.
         // liftController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
+        // liftController.setSmartMotionMaxAccel(LiftConstants.maxAccelFeetPerSecondSq, 0);
 
         liftSols = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.liftSolsCh[0], PneumaticChannels.liftSolsCh[1]);
 
@@ -71,10 +73,10 @@ public class LiftSys extends SubsystemBase {
 
         liftController.setReference(targetInches, ControlType.kSmartMotion, 0);
 
-        SmartDashboard.putNumber("liftEncoder", liftEnc.getPosition());
-        SmartDashboard.putNumber("liftPower", masterMtr.get());
-        SmartDashboard.putNumber("liftTarget", targetInches);
-        SmartDashboard.putNumber("liftVelocity", liftEnc.getVelocity());
+        SmartDashboard.putNumber("lift inches", liftEnc.getPosition());
+        SmartDashboard.putNumber("lift power", masterMtr.get());
+        SmartDashboard.putNumber("lift target", targetInches);
+        SmartDashboard.putNumber("lift velocity", liftEnc.getVelocity());
         
     }
 

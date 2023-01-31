@@ -69,25 +69,23 @@ public class Constants {
                 new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0) //rear right
             );
 
-        public static final double driveWheelGearReduction = 1 / ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0));
-        public static final double rotWheelGearReduction = 1 / ((14.0 / 50.0) * (10.0 / 60.0));
+        public static final double driveMtrGearReduction = 1 / ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0));
+        public static final double rotMtrGearReduction = 1 / ((14.0 / 50.0) * (10.0 / 60.0));
 
         public static final double wheelRadiusMeters = 0.050686;
         public static final double wheelCircumferenceMeters = 2 * wheelRadiusMeters * Math.PI;
 
-        public static final double driveMetersPerEncRev = (wheelCircumferenceMeters) / driveWheelGearReduction;
-        public static final double driveEncRPMperMPS = driveMetersPerEncRev / 60;
+        public static final double driveMetersPerEncRev = (wheelCircumferenceMeters) / driveMtrGearReduction;
+        public static final double driveMetersPerSecPerRPM = driveMetersPerEncRev / 60;
 
-        public static final double kFreeMetersPerSecond = 5600 * driveEncRPMperMPS;
+        public static final double kFreeMetersPerSecond = 5600 * driveMetersPerSecPerRPM;
 
         public static final double rotMtrMaxSpeedRadPerSec = 2.0;
         public static final double rotMtrMaxAccelRadPerSecSq = 1.0;
 
         public static final double maxDriveSpeedMetersPerSec = 3; //3
-        public static final double maxDriveAccelMetersPerSecSq = 5;
 
         public static final double maxTurnRateRadiansPerSec = 2 * Math.PI; //Rate the robot will spin with full Rot command
-        public static final double maxTurnAccelRadiansPerSecSq = Math.PI;
 
         public static final double frontLeftModOffset = Units.degreesToRadians(105.420);
         public static final double frontRightModOffset = Units.degreesToRadians(228.428);
@@ -163,7 +161,8 @@ public class Constants {
         public static final float maxHeightInches = (float) 74.0;
         public static final double inchesPerEncRev = 11 * gearReduction;
 
-        public static final double RPMPerFeetPerSecond = (inchesPerEncRev / 12) / 60;
+        public static final double feetPerSecondPerRPM = (inchesPerEncRev / 12) / 60;
         public static final double maxSpeedFeetPerSec = 1;
+        public static final double maxAccelFeetPerSecondSq = 1;
     }
 }

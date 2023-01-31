@@ -50,7 +50,7 @@ public class SwerveSys extends SubsystemBase {
             DriveConstants.rearRightModOffset
         );
 
-    PowerDistribution pdh; // TODO: Make its own subsystem?
+    PowerDistribution pdh; // TODO: Make its own subsystem? For use with compressor.
 
     // Commanded values from the joysticks and field relative value for use in driving assistance commands
     private double commandedDriveX = 0;
@@ -100,8 +100,8 @@ public class SwerveSys extends SubsystemBase {
         odometry.update(getHeading(), getModulePositions());
 
         SmartDashboard.putNumber("heading", getHeading().getDegrees());
-        SmartDashboard.putNumber("pitch", getPitch()); // TODO: Make sure pitch and roll values work
-        SmartDashboard.putNumber("roll", getRoll());
+        SmartDashboard.putNumber("pitch", getPitch()); // TODO: Make sure pitch and roll values work (and figure out which one we need)
+        SmartDashboard.putNumber("roll", getRoll()); // TODO: Make methods for resetting pitch and/or roll
 
         SmartDashboard.putNumber("Odometry x", odometry.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Odometry y", odometry.getEstimatedPosition().getY());
