@@ -79,7 +79,7 @@ public class SwerveModule extends SubsystemBase {
         driveEnc.setVelocityConversionFactor(DriveConstants.driveMetersPerSecPerRPM);
 
         //set the output of the rotation encoder to be in radians
-        rotEnc.setPositionConversionFactor(2 * Math.PI / DriveConstants.rotMtrGearReduction);
+        rotEnc.setPositionConversionFactor(DriveConstants.turnRadiansPerEncRev);
 
         //configure the CANCoder to output in unsigned (wrap around from 360 to 0 degrees)
         canCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);

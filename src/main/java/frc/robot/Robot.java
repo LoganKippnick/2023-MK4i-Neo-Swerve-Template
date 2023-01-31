@@ -3,7 +3,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.auto.PathPlannerTrajectories;
 
 public class Robot extends TimedRobot {
     
@@ -16,8 +15,6 @@ public class Robot extends TimedRobot {
 
         robotContainer = new RobotContainer();
 
-        // Creates PathWeaver trajectories from files in deploy directory
-        PathPlannerTrajectories.createTrajectories();
     }
 
     @Override

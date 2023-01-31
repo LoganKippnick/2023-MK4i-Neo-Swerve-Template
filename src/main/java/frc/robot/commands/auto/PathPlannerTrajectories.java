@@ -7,22 +7,30 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import frc.robot.Constants.AutoConstants;
 
 public class PathPlannerTrajectories {
 
-    private static final Path testTrajectoryPath =
-        Filesystem.getDeployDirectory().toPath().resolve("pathplanner/generatedJSON/TestTrajecteory.wpilib.json");
-    public static Trajectory testTrajectory;
+    public static final Trajectory testTrajectory = createTrajectory("TestTrajectory");
 
-    public static void createTrajectories() {
-        createTrajectory(testTrajectory, testTrajectoryPath);
-    }
+    /**
+     * Creates trajectories from a JSON file in deploy directory.
+     * 
+     * @param fileName The name of the JSON file to create a trajectory for (excluding the file extension).
+     * 
+     * @return The trajectory created from the JSON file.
+     */
+    public static Trajectory createTrajectory(String fileName) {
+        Trajectory trajectory;
+        Path trajectoryPath =
+            Filesystem.getDeployDirectory().toPath().resolve(AutoConstants.trajectoryFileLocation + fileName + ".wpilib.json");
 
-    private static void createTrajectory(Trajectory trajectory, Path trajectoryPath) {
         try {
             trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+            return trajectory;
         } catch (IOException ex) {
-            DriverStation.reportError("Unable to open trajectory: " + trajectory, ex.getStackTrace());
+            DriverStation.reportError("Unable to open trajectory: " + fileName, ex.getStackTrace());
+            return new Trajectory();
         }
     }
     

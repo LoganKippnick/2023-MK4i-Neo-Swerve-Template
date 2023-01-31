@@ -69,14 +69,16 @@ public class Constants {
                 new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0) //rear right
             );
 
-        public static final double driveMtrGearReduction = 1 / ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0));
-        public static final double rotMtrGearReduction = 1 / ((14.0 / 50.0) * (10.0 / 60.0));
+        public static final double driveMtrGearReduction = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
+        public static final double rotMtrGearReduction = (14.0 / 50.0) * (10.0 / 60.0);
 
         public static final double wheelRadiusMeters = 0.050686;
         public static final double wheelCircumferenceMeters = 2 * wheelRadiusMeters * Math.PI;
 
-        public static final double driveMetersPerEncRev = (wheelCircumferenceMeters) / driveMtrGearReduction;
+        public static final double driveMetersPerEncRev = wheelCircumferenceMeters * driveMtrGearReduction;
         public static final double driveMetersPerSecPerRPM = driveMetersPerEncRev / 60;
+
+        public static final double turnRadiansPerEncRev = 2 * Math.PI * DriveConstants.rotMtrGearReduction;
 
         public static final double kFreeMetersPerSecond = 5600 * driveMetersPerSecPerRPM;
 
@@ -148,6 +150,8 @@ public class Constants {
             
             return rotController;
         }
+
+        public static final String trajectoryFileLocation = "pathplanner/generatedJSON/";
     }
     
     public static final class LiftConstants {
