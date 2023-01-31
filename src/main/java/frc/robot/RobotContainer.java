@@ -9,7 +9,7 @@ import frc.robot.Constants.Controllers;
 import frc.robot.commands.auto.SplineTrajectory;
 import frc.robot.commands.drivetrain.ResetPoseCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
-import frc.robot.subsystems.DriveSys;
+import frc.robot.subsystems.SwerveSys;
 
 public class RobotContainer {
 
@@ -24,7 +24,7 @@ public class RobotContainer {
 
     private final JoystickButton driverMenuBtn = new JoystickButton(driverController, 8);
 
-    private final DriveSys driveSys = new DriveSys();
+    private final SwerveSys swerveSys = new SwerveSys();
     
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
