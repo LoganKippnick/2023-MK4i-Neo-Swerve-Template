@@ -1,17 +1,16 @@
 package frc.robot.commands.drivetrain;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSys;
+import frc.robot.subsystems.SwerveSys;
 
 public class ResetPoseCmd extends CommandBase {
 
-    private final DriveSys driveSys;
+    private final SwerveSys swerveSys;
 
 
-    public ResetPoseCmd(DriveSys driveSys) {
+    public ResetPoseCmd(SwerveSys swerveSys) {
 
-        this.driveSys = driveSys;
+        this.swerveSys = swerveSys;
 
     }
 
@@ -23,7 +22,7 @@ public class ResetPoseCmd extends CommandBase {
     @Override
     public void execute() {
 
-        driveSys.setPose(new Pose2d());
+        swerveSys.resetPose();
 
     }
 

@@ -5,7 +5,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.DriveSys;
+import frc.robot.subsystems.SwerveSys;
 
 public class SwerveDriveCmd extends CommandBase {
 
@@ -14,7 +14,7 @@ public class SwerveDriveCmd extends CommandBase {
      * Can't be inlined efficiently if we want to edit the inputs in any way (deadband, square, etc.)
      */
 
-    private final DriveSys driveSys;
+    private final SwerveSys swerveSys;
 
     /**
      * Joysticks return DoubleSuppliers when the get methods are called
@@ -31,7 +31,7 @@ public class SwerveDriveCmd extends CommandBase {
 
 
     public SwerveDriveCmd(
-        DriveSys driveSys, 
+        SwerveSys swerveSys, 
         DoubleSupplier drive, 
         DoubleSupplier strafe, 
         DoubleSupplier rot,
@@ -39,7 +39,7 @@ public class SwerveDriveCmd extends CommandBase {
         boolean isFieldRelative
     ) {
 
-        this.driveSys = driveSys;
+        this.swerveSys = swerveSys;
 
         this.drive = drive;
         this.strafe = strafe;
@@ -49,7 +49,7 @@ public class SwerveDriveCmd extends CommandBase {
 
         this.isFieldRelative = isFieldRelative;
 
-        addRequirements(driveSys);
+        addRequirements(swerveSys);
 
     }
     
@@ -76,7 +76,7 @@ public class SwerveDriveCmd extends CommandBase {
 
         boolean lock = this.lock.getAsBoolean();
 
-        driveSys.drive(
+        swerveSys.drive(
             -drive,
             -strafe,
             -rot,

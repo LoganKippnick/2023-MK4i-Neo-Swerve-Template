@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSys;
+import frc.robot.subsystems.SwerveSys;
 
 public class QuickTurn extends CommandBase {
 
@@ -12,7 +12,7 @@ public class QuickTurn extends CommandBase {
      * A command to align the robot automatically to a certain heading, used for a "quick turn" for shooting
      */
 
-    private final DriveSys drive;
+    private final SwerveSys drive;
 
     private final double desiredAngle;
     private double rotationOut = 0;
@@ -23,7 +23,7 @@ public class QuickTurn extends CommandBase {
 
     private final Timer timer = new Timer();
 
-    public QuickTurn(double desiredAngleRad, DriveSys subsystem) {
+    public QuickTurn(double desiredAngleRad, SwerveSys subsystem) {
 
         drive = subsystem;
 
@@ -60,7 +60,7 @@ public class QuickTurn extends CommandBase {
             drive.getCommandedDriveValues()[1], 
             rotationOut,
             false,
-            drive.getIsFieldRelative()
+            drive.getIsFieldOriented()
         );
 
 
