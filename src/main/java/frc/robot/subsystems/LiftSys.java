@@ -63,6 +63,7 @@ public class LiftSys extends SubsystemBase {
         liftController.setD(LiftConstants.kD, LiftConstants.smartMotionPIDSlot);
 
         liftController.setSmartMotionMaxVelocity(LiftConstants.maxSpeedFeetPerSec, LiftConstants.smartMotionPIDSlot);
+        liftController.setSmartMotionMinOutputVelocity(-LiftConstants.maxSpeedFeetPerSec, LiftConstants.smartMotionPIDSlot);
         
         // TODO: Try acceleration strategy. If still to agressive, try setting a maximum acceleration.
         // liftController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, LiftConstants.smartMotionPIDSlot);
