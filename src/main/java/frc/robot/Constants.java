@@ -165,10 +165,14 @@ public class Constants {
 
         public static final double kP = 0.1;
         // TODO: Find out if kI is necessary (used if reading is slightly off from target).
+        public static final double kI = 0.0001;
         public static final double kD = 2.0;
+        public static final double kFF = 0.0001;
+        
+        public static final double kIZone = 0.25;
 
         public static final double feetPerSecondPerRPM = (inchesPerEncRev / 12) / 60;
-        public static final double maxSpeedFeetPerSec = 1;
-        public static final double maxAccelFeetPerSecondSq = 1;
+
+        public static final double maxPower = 0.5;
     }
 }

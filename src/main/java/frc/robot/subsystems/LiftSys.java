@@ -22,32 +22,22 @@ public class LiftSys extends SubsystemBase {
 
     private RelativeEncoder liftEnc;
 
+    private SparkMaxPIDController controller;
+
     private DoubleSolenoid liftSols;
 
-    private SparkMaxPIDController liftController;
-
-    private double targetInches = 24;
+    private double targetInches = 0;
 
     public LiftSys() {
-        
         masterMtr = new CANSparkMax(CANDevices.masterMtrId, MotorType.kBrushless);
         slaveMtr = new CANSparkMax(CANDevices.slaveMtrId, MotorType.kBrushless);
-
-        // FIXME: Once lift functions properly, the below lines are irrelevant
-        masterMtr.restoreFactoryDefaults();
-        slaveMtr.restoreFactoryDefaults();
 
         masterMtr.setInverted(false);
         slaveMtr.setInverted(true);
 
+        masterMtr.setSoftLimit(SoftLimitDirection.kReverse, 0);
+        masterMtr.setSoftLimit(SoftLimitDirection.kForward, LiftConstants.maxHeightInches);
 
-        // masterMtr.setSoftLimit(SoftLimitDirection.kForward, LiftConstants.maxHeightInches);
-        // masterMtr.setSoftLimit(SoftLimitDirection.kReverse, 0);
-
-        // masterMtr.enableSoftLimit(SoftLimitDirection.kForward, true);
-        // masterMtr.enableSoftLimit(SoftLimitDirection.kReverse, true);
-
-        // The slave motor will follow the master motor with the opposite direction.
         slaveMtr.follow(masterMtr, true);
 
         liftEnc = masterMtr.getEncoder();
@@ -57,35 +47,30 @@ public class LiftSys extends SubsystemBase {
         liftEnc.setPositionConversionFactor(LiftConstants.inchesPerEncRev);
         liftEnc.setVelocityConversionFactor(LiftConstants.feetPerSecondPerRPM);
 
-        liftController = masterMtr.getPIDController();
+        controller = masterMtr.getPIDController();
 
-        liftController.setP(LiftConstants.kP, LiftConstants.smartMotionPIDSlot);
-        liftController.setD(LiftConstants.kD, LiftConstants.smartMotionPIDSlot);
+        controller.setP(LiftConstants.kP);
+        controller.setI(LiftConstants.kI);
+        controller.setD(LiftConstants.kD);
 
-        liftController.setSmartMotionMaxVelocity(LiftConstants.maxSpeedFeetPerSec, LiftConstants.smartMotionPIDSlot);
-        liftController.setSmartMotionMinOutputVelocity(-LiftConstants.maxSpeedFeetPerSec, LiftConstants.smartMotionPIDSlot);
+        controller.setOutputRange(-LiftConstants.maxPower, LiftConstants.maxPower);
         
-        // TODO: Try acceleration strategy. If still to agressive, try setting a maximum acceleration.
-        // liftController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, LiftConstants.smartMotionPIDSlot);
-        // liftController.setSmartMotionMaxAccel(LiftConstants.maxAccelFeetPerSecondSq, LiftConstants.smartMotionPIDSlot);
-
+        controller.setIZone(LiftConstants.kIZone);
+        
         liftSols = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.liftSolsCh[0], PneumaticChannels.liftSolsCh[1]);
 
     }
 
-    // This method will be called once per scheduler run
     @Override
     public void periodic() {
 
-        liftController.setReference(targetInches, ControlType.kSmartMotion, LiftConstants.smartMotionPIDSlot);
+        controller.setReference(targetInches, ControlType.kPosition);
 
         SmartDashboard.putNumber("lift inches", liftEnc.getPosition());
-        SmartDashboard.putNumber("lift power", masterMtr.get());
-        SmartDashboard.putNumber("lift target", targetInches);
         SmartDashboard.putNumber("lift velocity", liftEnc.getVelocity());
+        SmartDashboard.putNumber("lift target", targetInches);
+        SmartDashboard.putNumber("lift power", masterMtr.get());
 
-        // TODO: Add solenoid control. If lift is below a certain distance, it will be in the "up" position. Otherwise, be in the "down" position.
-        // TODO: Possibly create methods for actuating the arm out and in.
     }
 
     public void setPower(double power) {
@@ -93,7 +78,8 @@ public class LiftSys extends SubsystemBase {
     }
 
     public void setTarget(double inches) {
+        if(inches > LiftConstants.maxHeightInches) inches = LiftConstants.maxHeightInches;
+
         targetInches = inches;
     }
-    
 }

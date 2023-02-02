@@ -4,11 +4,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Controllers;
 import frc.robot.commands.auto.SplineTrajectory;
 import frc.robot.commands.drivetrain.ResetPoseCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
+import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.SwerveSys;
 
 public class RobotContainer {
@@ -21,10 +23,13 @@ public class RobotContainer {
     // private final Joystick rightJoystick = new Joystick(InputDevices.rightJoystickPort);
 
     private final XboxController driverController = new XboxController(Controllers.driverControllerPort);
+    private final XboxController operatorController = new XboxController(Controllers.operatorControllerPort);
+
 
     private final JoystickButton driverMenuBtn = new JoystickButton(driverController, 8);
 
     private final SwerveSys swerveSys = new SwerveSys();
+    private final LiftSys liftSys = new LiftSys();
     
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
@@ -38,6 +43,16 @@ public class RobotContainer {
                 () -> driverController.getRawAxis(4),
                 () -> driverController.getLeftBumper(),
                 true
+            )
+        );
+
+        liftSys.setDefaultCommand(
+            new RunCommand(
+                () -> {
+                    if(operatorController.getAButton()) liftSys.setTarget(69);
+                    else if(operatorController.getBButton()) liftSys.setTarget(0);
+                },
+                liftSys
             )
         );
 
