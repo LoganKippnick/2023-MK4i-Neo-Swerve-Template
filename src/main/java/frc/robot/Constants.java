@@ -13,20 +13,20 @@ public class Constants {
 
     public static final class CANDevices {
 
-        public static final int frontLeftRotEncId = 1;
-        public static final int frontLeftRotMtrId = 9;
+        public static final int frontLeftSteerEncId = 1;
+        public static final int frontLeftSteerMtrId = 9;
         public static final int frontLeftDriveMtrId = 5;
 
-        public static final int frontRightRotEncId = 2;
-        public static final int frontRightRotMtrId = 10;
+        public static final int frontRightSteerEncId = 2;
+        public static final int frontRightSteerMtrId = 10;
         public static final int frontRightDriveMtrId = 6;
 
-        public static final int rearLeftRotEncId = 3;
-        public static final int rearLeftRotMtrId = 11;
+        public static final int rearLeftSteerEncId = 3;
+        public static final int rearLeftSteerMtrId = 11;
         public static final int rearLeftDriveMtrId = 7;
 
-        public static final int rearRightRotEncId = 4;
-        public static final int rearRightRotMtrId = 12;
+        public static final int rearRightSteerEncId = 4;
+        public static final int rearRightSteerMtrId = 12;
         public static final int rearRightDriveMtrId = 8;
 
         public static final int imuId = 13;
@@ -58,9 +58,19 @@ public class Constants {
 
     public static final class DriveConstants {
 
+        /**
+         * The track width from wheel center to wheel center.
+         */
         public static final double trackWidth = Units.inchesToMeters(29.5);
+
+        /**
+         * The track length from wheel center to wheel center.
+         */
         public static final double wheelBase = Units.inchesToMeters(29.5);
 
+        /**
+         * The SwerveDriveKinematics used for control and odometry.
+         */
         public static final SwerveDriveKinematics kinematics = 
             new SwerveDriveKinematics(
                 new Translation2d(trackWidth / 2.0, wheelBase / 2.0), //front left
@@ -69,8 +79,14 @@ public class Constants {
                 new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0) //rear right
             );
 
+        /**
+         * The gear reduction from the drive motor to the wheel.
+         */
         public static final double driveMtrGearReduction = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
-        public static final double rotMtrGearReduction = (14.0 / 50.0) * (10.0 / 60.0);
+        /**
+         * The gear reduction from the steer motor to the wheel.
+         */
+        public static final double steerMtrGearReduction = (14.0 / 50.0) * (10.0 / 60.0);
 
         public static final double wheelRadiusMeters = 0.050686;
         public static final double wheelCircumferenceMeters = 2 * wheelRadiusMeters * Math.PI;
@@ -78,12 +94,12 @@ public class Constants {
         public static final double driveMetersPerEncRev = wheelCircumferenceMeters * driveMtrGearReduction;
         public static final double driveMetersPerSecPerRPM = driveMetersPerEncRev / 60;
 
-        public static final double turnRadiansPerEncRev = 2 * Math.PI * DriveConstants.rotMtrGearReduction;
+        public static final double steerRadiansPerEncRev = 2 * Math.PI * DriveConstants.steerMtrGearReduction;
 
         public static final double kFreeMetersPerSecond = 5600 * driveMetersPerSecPerRPM;
 
-        public static final double rotMtrMaxSpeedRadPerSec = 2.0;
-        public static final double rotMtrMaxAccelRadPerSecSq = 1.0;
+        public static final double steerMtrMaxSpeedRadPerSec = 2.0;
+        public static final double steerMtrMaxAccelRadPerSecSq = 1.0;
 
         public static final double maxDriveSpeedMetersPerSec = 3; //3
 

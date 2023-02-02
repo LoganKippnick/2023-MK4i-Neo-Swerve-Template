@@ -21,32 +21,32 @@ public class SwerveSys extends SubsystemBase {
     private final SwerveModule frontLeftMod = 
         new SwerveModule(
             CANDevices.frontLeftDriveMtrId,
-            CANDevices.frontLeftRotMtrId,
-            CANDevices.frontLeftRotEncId,
+            CANDevices.frontLeftSteerMtrId,
+            CANDevices.frontLeftSteerEncId,
             DriveConstants.frontLeftModOffset
         );
 
     private final SwerveModule frontRightMod = 
         new SwerveModule(
             CANDevices.frontRightDriveMtrId,
-            CANDevices.frontRightRotMtrId,
-            CANDevices.frontRightRotEncId,
+            CANDevices.frontRightSteerMtrId,
+            CANDevices.frontRightSteerEncId,
             DriveConstants.frontRightModOffset
         );
 
     private final SwerveModule rearLeftMod = 
         new SwerveModule(
             CANDevices.rearLeftDriveMtrId,
-            CANDevices.rearLeftRotMtrId,
-            CANDevices.rearLeftRotEncId,
+            CANDevices.rearLeftSteerMtrId,
+            CANDevices.rearLeftSteerEncId,
             DriveConstants.rearLeftModOffset
         );
 
     private final SwerveModule rearRightMod = 
         new SwerveModule(
             CANDevices.rearRightDriveMtrId,
-            CANDevices.rearRightRotMtrId,
-            CANDevices.rearRightRotEncId,
+            CANDevices.rearRightSteerMtrId,
+            CANDevices.rearRightSteerEncId,
             DriveConstants.rearRightModOffset
         );
 
@@ -108,10 +108,10 @@ public class SwerveSys extends SubsystemBase {
 
         SmartDashboard.putNumber("speed", getAverageDriveVelocityMetersPerSecond());
 
-        SmartDashboard.putNumber("front left rotation encoder", frontLeftMod.getRotEncAngle().getDegrees());
-        SmartDashboard.putNumber("front right rotation encoder", frontRightMod.getRotEncAngle().getDegrees());
-        SmartDashboard.putNumber("rear left rotation encoder", rearLeftMod.getRotEncAngle().getDegrees());
-        SmartDashboard.putNumber("rear right rotation encoder", rearRightMod.getRotEncAngle().getDegrees());
+        SmartDashboard.putNumber("front left rotation encoder", frontLeftMod.getSteerEncAngle().getDegrees());
+        SmartDashboard.putNumber("front right rotation encoder", frontRightMod.getSteerEncAngle().getDegrees());
+        SmartDashboard.putNumber("rear left rotation encoder", rearLeftMod.getSteerEncAngle().getDegrees());
+        SmartDashboard.putNumber("rear right rotation encoder", rearRightMod.getSteerEncAngle().getDegrees());
 
         SmartDashboard.putNumber("front left CANcoder", frontLeftMod.getCanCoderAngle().getDegrees());
         SmartDashboard.putNumber("front right CANcoder", frontRightMod.getCanCoderAngle().getDegrees());
@@ -213,10 +213,10 @@ public class SwerveSys extends SubsystemBase {
     public SwerveModuleState[] getModuleStates() {
 
         return new SwerveModuleState[] {
-            new SwerveModuleState(frontLeftMod.getCurrentVelocityMetersPerSecond(), frontLeftMod.getRotEncAngle()),
-            new SwerveModuleState(frontRightMod.getCurrentVelocityMetersPerSecond(), frontRightMod.getRotEncAngle()),
-            new SwerveModuleState(rearLeftMod.getCurrentVelocityMetersPerSecond(), rearLeftMod.getRotEncAngle()),
-            new SwerveModuleState(rearRightMod.getCurrentVelocityMetersPerSecond(), rearRightMod.getRotEncAngle())
+            new SwerveModuleState(frontLeftMod.getCurrentVelocityMetersPerSecond(), frontLeftMod.getSteerEncAngle()),
+            new SwerveModuleState(frontRightMod.getCurrentVelocityMetersPerSecond(), frontRightMod.getSteerEncAngle()),
+            new SwerveModuleState(rearLeftMod.getCurrentVelocityMetersPerSecond(), rearLeftMod.getSteerEncAngle()),
+            new SwerveModuleState(rearRightMod.getCurrentVelocityMetersPerSecond(), rearRightMod.getSteerEncAngle())
         };
 
     }
