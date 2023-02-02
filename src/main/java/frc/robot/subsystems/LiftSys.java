@@ -53,7 +53,7 @@ public class LiftSys extends SubsystemBase {
         controller.setI(LiftConstants.kI);
         controller.setD(LiftConstants.kD);
 
-        controller.setOutputRange(-LiftConstants.maxPower, LiftConstants.maxPower);
+        controller.setOutputRange(LiftConstants.minPower, LiftConstants.maxPower);
         
         controller.setIZone(LiftConstants.kIZone);
         

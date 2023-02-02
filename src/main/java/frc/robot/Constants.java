@@ -173,6 +173,7 @@ public class Constants {
 
         public static final double feetPerSecondPerRPM = (inchesPerEncRev / 12) / 60;
 
+        public static final double minPower = -0.5;
         public static final double maxPower = 0.5;
     }
 }
