@@ -6,7 +6,7 @@ import frc.robot.subsystems.LiftSys;
 
 public class Row3Cmd extends CommandBase {
 
-    private LiftSys liftSys;
+    private final LiftSys liftSys;
 
     /**
      * Constructs a new ExampleCmd.
@@ -21,8 +21,6 @@ public class Row3Cmd extends CommandBase {
         this.liftSys = liftSys;
 
         addRequirements(liftSys);
-        
-
     }
 
     // Called when the command is initially scheduled.
@@ -37,13 +35,11 @@ public class Row3Cmd extends CommandBase {
         liftSys.setTarget(LiftConstants.row3Inches);
     }
 
-    
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         
     }
-
     
     // Returns true when the command should end.
     @Override

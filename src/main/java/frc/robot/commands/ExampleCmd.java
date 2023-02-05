@@ -5,6 +5,9 @@ import frc.robot.subsystems.ExampleSys;
 
 public class ExampleCmd extends CommandBase {
 
+    @SuppressWarnings("unused")
+    private final ExampleSys exampleSys;
+
     /**
      * Constructs a new ExampleCmd.
      * 
@@ -16,8 +19,9 @@ public class ExampleCmd extends CommandBase {
      */
     public ExampleCmd(ExampleSys exampleSys) {
 
-        addRequirements(exampleSys);
+        this.exampleSys = exampleSys;
 
+        addRequirements(exampleSys);
     }
 
     // Called when the command is initially scheduled.
@@ -31,14 +35,12 @@ public class ExampleCmd extends CommandBase {
     public void execute() {
 
     }
-
     
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         
     }
-
     
     // Returns true when the command should end.
     @Override

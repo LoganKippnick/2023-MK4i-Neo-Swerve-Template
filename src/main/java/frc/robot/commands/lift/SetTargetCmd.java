@@ -5,9 +5,9 @@ import frc.robot.subsystems.LiftSys;
 
 public class SetTargetCmd extends CommandBase {
 
-    private LiftSys liftSys;
+    private final LiftSys liftSys;
 
-    private double inches;
+    private final double inches;
 
     /**
      * Constructs a new ExampleCmd.
@@ -37,14 +37,12 @@ public class SetTargetCmd extends CommandBase {
     public void execute() {
         liftSys.setTarget(inches);
     }
-
     
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         
     }
-
     
     // Returns true when the command should end.
     @Override

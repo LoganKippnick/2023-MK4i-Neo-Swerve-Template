@@ -16,15 +16,15 @@ import frc.robot.Constants.PneumaticChannels;
 
 public class LiftSys extends SubsystemBase {
 
-    private CANSparkMax masterMtr;
-    private CANSparkMax slaveMtr;
-
-    private RelativeEncoder liftEnc;
-
-    private SparkMaxPIDController controller;
-
-    private DoubleSolenoid liftSols;
-
+    private final CANSparkMax masterMtr;
+    private final CANSparkMax slaveMtr;
+ 
+    private final RelativeEncoder liftEnc;
+ 
+    private final SparkMaxPIDController controller;
+ 
+    private final DoubleSolenoid liftSols;
+ 
     private double targetInches = 0;
 
     public LiftSys() {

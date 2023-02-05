@@ -7,7 +7,7 @@ import frc.robot.Constants.PneumaticChannels;
 
 public class ClawSys extends SubsystemBase {
 
-    private DoubleSolenoid clawSols;
+    private final DoubleSolenoid clawSols;
 
     public ClawSys() {
         clawSols = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.clawSolsCh[0], PneumaticChannels.clawSolsCh[1]);

@@ -6,7 +6,7 @@ import frc.robot.subsystems.LiftSys;
 
 public class DownCmd extends CommandBase {
 
-    private LiftSys liftSys;
+    private final LiftSys liftSys;
 
     /**
      * Constructs a new ExampleCmd.

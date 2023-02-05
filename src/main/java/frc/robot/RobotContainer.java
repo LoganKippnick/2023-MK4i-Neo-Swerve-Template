@@ -1,11 +1,9 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Controllers;
 import frc.robot.commands.auto.SplineTrajectory;
@@ -19,17 +17,16 @@ import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.SwerveSys;
 
 public class RobotContainer {
+    
+    // Initialize subsystems.
+    private final SwerveSys swerveSys = new SwerveSys();
+    private final LiftSys liftSys = new LiftSys();
 
-    /**
-     * Establishes the controls and subsystems of the robot
-     */
-
-    // private final Joystick leftJoystick = new Joystick(InputDevices.leftJoystickPort);
-    // private final Joystick rightJoystick = new Joystick(InputDevices.rightJoystickPort);
-
+    // Initialize joysticks.
     private final XboxController driverController = new XboxController(Controllers.driverControllerPort);
     private final XboxController operatorController = new XboxController(Controllers.operatorControllerPort);
 
+    // Initialize controller buttons.
     private final JoystickButton driverMenuBtn = new JoystickButton(driverController, 8);
 
     private final JoystickButton operatorABtn = new JoystickButton(operatorController, 1);
@@ -37,13 +34,12 @@ public class RobotContainer {
     private final JoystickButton operatorXBtn = new JoystickButton(operatorController, 3);
     private final JoystickButton operatorYBtn = new JoystickButton(operatorController, 4);
 
-    private final SwerveSys swerveSys = new SwerveSys();
-    private final LiftSys liftSys = new LiftSys();
-    
+    // Initialize auto selector.
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
     public RobotContainer() {
 
+        // Set subsystem default commands, which run when no other command is scheduled.
         swerveSys.setDefaultCommand(
             new SwerveDriveCmd(
                 swerveSys,
