@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -10,6 +11,10 @@ import frc.robot.Constants.Controllers;
 import frc.robot.commands.auto.SplineTrajectory;
 import frc.robot.commands.drivetrain.ResetPoseCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
+import frc.robot.commands.lift.DownCmd;
+import frc.robot.commands.lift.Row1Cmd;
+import frc.robot.commands.lift.Row2Cmd;
+import frc.robot.commands.lift.Row3Cmd;
 import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.SwerveSys;
 
@@ -25,8 +30,12 @@ public class RobotContainer {
     private final XboxController driverController = new XboxController(Controllers.driverControllerPort);
     private final XboxController operatorController = new XboxController(Controllers.operatorControllerPort);
 
-
     private final JoystickButton driverMenuBtn = new JoystickButton(driverController, 8);
+
+    private final JoystickButton operatorABtn = new JoystickButton(operatorController, 1);
+    private final JoystickButton operatorBBtn = new JoystickButton(operatorController, 2);
+    private final JoystickButton operatorXBtn = new JoystickButton(operatorController, 3);
+    private final JoystickButton operatorYBtn = new JoystickButton(operatorController, 4);
 
     private final SwerveSys swerveSys = new SwerveSys();
     private final LiftSys liftSys = new LiftSys();
@@ -46,16 +55,6 @@ public class RobotContainer {
             )
         );
 
-        liftSys.setDefaultCommand(
-            new RunCommand(
-                () -> {
-                    if(operatorController.getAButton()) liftSys.setTarget(69);
-                    else if(operatorController.getBButton()) liftSys.setTarget(0);
-                },
-                liftSys
-            )
-        );
-
         configureButtonBindings();
 
         SmartDashboard.putData(autoSelector);
@@ -65,6 +64,12 @@ public class RobotContainer {
     public void configureButtonBindings() {
         
         driverMenuBtn.onTrue(new ResetPoseCmd(swerveSys)); // FIXME: after debugging, change back to ResetHeadingCmd
+
+        operatorABtn.onTrue(new Row1Cmd(liftSys));
+        operatorBBtn.onTrue(new Row2Cmd(liftSys));
+        operatorXBtn.onTrue(new DownCmd(liftSys));
+        operatorYBtn.onTrue(new Row3Cmd(liftSys));
+        
 
     }
 

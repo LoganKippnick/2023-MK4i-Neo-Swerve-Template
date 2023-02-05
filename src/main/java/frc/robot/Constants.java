@@ -112,8 +112,8 @@ public class Constants {
 
         public static final double drivekP = 0.005;
 
-        public static final double steerkP = 1.2477;
-        public static final double steerkD = 0.9062/*25*/;
+        public static final double steerkP = 1.2477 * 0.8;
+        public static final double steerkD = 0.9062 * 0.8;
 
         public static final double ksVolts = .055;
         public static final double kvVoltSecsPerMeter = .2;
@@ -174,22 +174,22 @@ public class Constants {
 
         public static final double gearReduction = 1.0 / 5.0;
 
-        public static final float maxHeightInches = (float) 74.0;
+        public static final double maxHeightInches = 74.0;
         public static final double inchesPerEncRev = 11 * gearReduction;
 
-        public static final int smartMotionPIDSlot = 0;
-
         public static final double kP = 0.1;
-        // TODO: Find out if kI is necessary (used if reading is slightly off from target).
-        public static final double kI = 0.0001;
         public static final double kD = 2.0;
-        public static final double kFF = 0.0001;
-        
-        public static final double kIZone = 0.25;
+
+        public static final int maxCurrentAmps = 25;
 
         public static final double feetPerSecondPerRPM = (inchesPerEncRev / 12) / 60;
 
         public static final double minPower = -0.5;
-        public static final double maxPower = 0.5;
+        public static final double maxPower = 0.35;
+
+        public static final double downInches = 0.0;
+        public static final double row1Inches = 18.0;
+        public static final double row2Inches = 48.0;
+        public static final double row3Inches = 72.0;
     }
 }

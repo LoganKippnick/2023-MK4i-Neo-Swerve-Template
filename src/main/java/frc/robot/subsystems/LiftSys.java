@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -35,8 +34,7 @@ public class LiftSys extends SubsystemBase {
         masterMtr.setInverted(false);
         slaveMtr.setInverted(true);
 
-        masterMtr.setSoftLimit(SoftLimitDirection.kReverse, 0);
-        masterMtr.setSoftLimit(SoftLimitDirection.kForward, LiftConstants.maxHeightInches);
+        masterMtr.setSmartCurrentLimit(LiftConstants.maxCurrentAmps);
 
         slaveMtr.follow(masterMtr, true);
 
@@ -50,12 +48,11 @@ public class LiftSys extends SubsystemBase {
         controller = masterMtr.getPIDController();
 
         controller.setP(LiftConstants.kP);
-        controller.setI(LiftConstants.kI);
         controller.setD(LiftConstants.kD);
 
         controller.setOutputRange(LiftConstants.minPower, LiftConstants.maxPower);
         
-        controller.setIZone(LiftConstants.kIZone);
+        controller.setIZone(0);
         
         liftSols = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.liftSolsCh[0], PneumaticChannels.liftSolsCh[1]);
 
