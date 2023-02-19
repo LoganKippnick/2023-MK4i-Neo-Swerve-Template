@@ -52,14 +52,26 @@ public class SwerveSys extends SubsystemBase {
 
     PowerDistribution pdh; // TODO: Make its own subsystem? For use with compressor.
 
-    // Commanded values from the joysticks and field relative value for use in driving assistance commands
-    private double commandedDriveX = 0;
-    private double commandedDriveY = 0;
-    private double commandedRotation = 0;
+    private boolean isLocked = false;
+    public boolean isLocked() {
+        return isLocked;
+    }
+    public void setLocked(boolean isLocked) {
+        this.isLocked = isLocked;
+    }
 
-    private boolean isCommandedLocked = false;
+    private boolean isFieldOriented = true;
+    public boolean isFieldOriented() {
+        return isFieldOriented;
+    }
 
-    private boolean isCommandedFieldOriented = false;
+    private double speedFactor = 1.0;
+    public double getSpeedFactor() {
+        return speedFactor;
+    }
+    public void setSpeedFactor(double speedFactor) {
+        this.speedFactor = speedFactor;
+    }
 
     private final PigeonIMU imu = new PigeonIMU(CANDevices.imuId);
 
@@ -135,21 +147,12 @@ public class SwerveSys extends SubsystemBase {
      * @param isLocked overrides driving and turns all modules in at a 45-degree angle to lock modules.
      * @param isFieldOriented whether driving is field- or robot-oriented.
      */
-    public void drive(double driveX, double driveY, double rotation, boolean isLocked, boolean isFieldOriented) {
-
-        // Updates the drive inputs for use in AlignWithGyro and AlignWithTargetVision control
-        commandedDriveX = driveX;
-        commandedDriveY = driveY;
-        commandedRotation = rotation;
-
-        isCommandedLocked = isLocked;
-
-        isCommandedFieldOriented = isFieldOriented;
+    public void drive(double driveX, double driveY, double rotation, boolean isFieldOriented) {
 
         SwerveModuleState[] states;
 
         if(isLocked) {
-            // All wheels turn in 45 degrees to lock the drive base
+            // All wheels turn in 45 degrees to lock the drive base.
             states = new SwerveModuleState[] {
                 new SwerveModuleState(0.0, new Rotation2d(0.25 * Math.PI)),
                 new SwerveModuleState(0.0, new Rotation2d(-0.25 * Math.PI)),
@@ -158,6 +161,11 @@ public class SwerveSys extends SubsystemBase {
             };
         }
         else {
+            // Reduces the speed of the drive base for "turtle" or "sprint" modes.
+            driveX *= speedFactor;
+            driveY *= speedFactor;
+            rotation *= speedFactor;
+
             // Represents the overall state of the drive base.
             ChassisSpeeds speeds =
             isFieldOriented
@@ -165,7 +173,7 @@ public class SwerveSys extends SubsystemBase {
                     driveX, driveY, rotation, getHeading())
                 : new ChassisSpeeds(driveX, driveY, rotation);
 
-            // Uses kinematics (wheel placements) to convert overall robot state to array of individual module states
+            // Uses kinematics (wheel placements) to convert overall robot state to array of individual module states.
             states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
         }
 
@@ -364,36 +372,5 @@ public class SwerveSys extends SubsystemBase {
 
     }
 
-    /**
-     * Returns an array of the commanded drive values.
-     * 
-     * @return An array of the commanded drive values.
-     */
-    public double[] getCommandedDriveValues() {
 
-        return new double[] {commandedDriveX, commandedDriveY, commandedRotation};
-
-    }
-
-    /**
-     * Returns whether the wheels are "locked" in at a 45 degree angles
-     * 
-     * @return True if the wheels are locked
-     */
-    public boolean getIsLocked() {
-
-        return isCommandedLocked;
-
-    }
-
-    /**
-     * Returns whether the driver controls are field-oriented. If false, the controls are robot-oriented.
-     * 
-     * @return True if the driver controls are field-oriented.
-     */
-    public boolean getIsFieldOriented() {
-
-        return isCommandedFieldOriented;
-
-    }
 }
