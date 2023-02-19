@@ -53,7 +53,7 @@ public class Constants {
         public static final int operatorGamepadPort = 2;
 
         public static final double joystickDeadband = 0.075;
-        public static final double gamepadDeadband = 0.1;
+        public static final double gamepadDeadband = 0.15;
         public static final double triggerDeadband = 0.25;
     }
 
@@ -110,7 +110,7 @@ public class Constants {
         public static final double steerMtrMaxSpeedRadPerSec = 2.0;
         public static final double steerMtrMaxAccelRadPerSecSq = 1.0;
 
-        public static final double maxDriveSpeedMetersPerSec = 3; //3
+        public static final double maxDriveSpeedMetersPerSec = 5; //3
 
         public static final double maxTurnRateRadiansPerSec = 2 * Math.PI; //Rate the robot will spin with full Rot command
 
@@ -125,8 +125,8 @@ public class Constants {
 
         public static final double drivekP = 0.005;
 
-        public static final double steerkP = 1.2477 * 0.8;
-        public static final double steerkD = 0.9062 * 0.8;
+        public static final double steerkP = 1.2477 * 0.7;
+        public static final double steerkD = 0.9062 * 0.7;
 
         public static final double ksVolts = .055;
         public static final double kvVoltSecsPerMeter = .2;
@@ -193,16 +193,21 @@ public class Constants {
         public static final double kP = 0.1;
         public static final double kD = 2.0;
 
+        public static final double acceptableRangeInches = 0.25;
+
         public static final int maxCurrentAmps = 25;
 
         public static final double feetPerSecondPerRPM = (inchesPerEncRev / 12) / 60;
 
         public static final double minPower = -0.5;
         public static final double maxPower = 0.35;
+        public static final double manualPower = 0.15;
 
         public static final double downInches = 0.0;
         public static final double row1Inches = 18.0;
         public static final double row2Inches = 48.0;
         public static final double row3Inches = 72.0;
+
+        public static final double manualControlPadding = 2.0;
     }
 }

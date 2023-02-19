@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -27,6 +28,8 @@ public class LiftSys extends SubsystemBase {
  
     private double targetInches = 0;
 
+    private boolean isManual = false;
+
     public LiftSys() {
         masterMtr = new CANSparkMax(CANDevices.masterMtrId, MotorType.kBrushless);
         slaveMtr = new CANSparkMax(CANDevices.slaveMtrId, MotorType.kBrushless);
@@ -35,6 +38,8 @@ public class LiftSys extends SubsystemBase {
         slaveMtr.setInverted(true);
 
         masterMtr.setSmartCurrentLimit(LiftConstants.maxCurrentAmps);
+
+        masterMtr.setIdleMode(IdleMode.kBrake);
 
         slaveMtr.follow(masterMtr, true);
 
@@ -60,23 +65,54 @@ public class LiftSys extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if(isManual) {
+            controller.setOutputRange(-LiftConstants.manualPower, LiftConstants.manualPower);
+        }
+        else {
+            controller.setOutputRange(LiftConstants.minPower, LiftConstants.maxPower);
+            controller.setReference(targetInches, ControlType.kPosition);
+        }
 
-        controller.setReference(targetInches, ControlType.kPosition);
+        if(targetInches < 0.0) targetInches = 0.0;
+        else if (targetInches > LiftConstants.maxHeightInches) targetInches = LiftConstants.maxHeightInches;
+
 
         SmartDashboard.putNumber("lift inches", liftEnc.getPosition());
         SmartDashboard.putNumber("lift velocity", liftEnc.getVelocity());
         SmartDashboard.putNumber("lift target", targetInches);
         SmartDashboard.putNumber("lift power", masterMtr.get());
-
     }
 
     public void setPower(double power) {
-        masterMtr.set(power);
+        if(
+            (liftEnc.getPosition() <= LiftConstants.manualControlPadding && power < 0.0) ||
+            (liftEnc.getPosition() >= LiftConstants.maxHeightInches - LiftConstants.manualControlPadding && power > 0.0)
+        ) {
+            masterMtr.set(0.0);
+        }
+        else {
+            masterMtr.set(power);
+        }
     }
 
     public void setTarget(double inches) {
+        isManual = false;
         if(inches > LiftConstants.maxHeightInches) inches = LiftConstants.maxHeightInches;
 
         targetInches = inches;
+    }
+
+    public void manualControl(double manual) {
+        if(manual != 0) {
+            isManual = true;
+            // targetInches = liftEnc.getPosition() + (manual * LiftConstants.manualControlSensitivity);
+            setPower(manual * LiftConstants.manualPower);
+        }
+        else {
+            if(isManual)
+                targetInches = liftEnc.getPosition();
+
+            isManual = false;
+        }
     }
 }

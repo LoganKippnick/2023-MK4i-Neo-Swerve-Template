@@ -8,15 +8,19 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerType;
 import frc.robot.Constants.Controllers;
 import frc.robot.commands.auto.SplineTrajectory;
+import frc.robot.commands.claw.CloseCmd;
+import frc.robot.commands.claw.OpenCmd;
 import frc.robot.commands.drivetrain.DefaultSpeedCmd;
 import frc.robot.commands.drivetrain.ResetPoseCmd;
 import frc.robot.commands.drivetrain.SetLockedCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
 import frc.robot.commands.drivetrain.TurtleSpeedCmd;
 import frc.robot.commands.lift.DownCmd;
+import frc.robot.commands.lift.ManualControlCmd;
 import frc.robot.commands.lift.Row1Cmd;
 import frc.robot.commands.lift.Row2Cmd;
 import frc.robot.commands.lift.Row3Cmd;
+import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.SwerveSys;
 
@@ -25,6 +29,7 @@ public class RobotContainer {
     // Initialize subsystems.
     private final SwerveSys swerveSys = new SwerveSys();
     private final LiftSys liftSys = new LiftSys();
+    private final ClawSys clawSys = new ClawSys();
 
     // Initialize joysticks.
     private final XboxController driverController = new XboxController(Controllers.driverGamepadPort);
@@ -41,6 +46,8 @@ public class RobotContainer {
     private final JoystickButton operatorBBtn = new JoystickButton(operatorController, 2);
     private final JoystickButton operatorXBtn = new JoystickButton(operatorController, 3);
     private final JoystickButton operatorYBtn = new JoystickButton(operatorController, 4);
+    private final JoystickButton operatorLeftBumper = new JoystickButton(driverController, 5);
+    private final JoystickButton operatorRightBumper = new JoystickButton(driverController, 6);
 
     // Initialize auto selector.
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
@@ -55,6 +62,13 @@ public class RobotContainer {
                 () -> deadband(driverController.getRawAxis(4), driverControllerType),
                 true,
                 swerveSys
+            )
+        );
+
+        liftSys.setDefaultCommand(
+            new ManualControlCmd(
+                () -> deadband(operatorController.getRightY(), ControllerType.kGamepad),
+                liftSys
             )
         );
 
@@ -76,6 +90,9 @@ public class RobotContainer {
         operatorBBtn.onTrue(new Row2Cmd(liftSys));
         operatorXBtn.onTrue(new DownCmd(liftSys));
         operatorYBtn.onTrue(new Row3Cmd(liftSys));
+        
+        operatorLeftBumper.onTrue(new OpenCmd(clawSys));
+        operatorRightBumper.onTrue(new CloseCmd(clawSys));
 
     }
 
