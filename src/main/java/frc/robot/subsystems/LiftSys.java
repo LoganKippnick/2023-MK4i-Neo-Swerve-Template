@@ -59,7 +59,7 @@ public class LiftSys extends SubsystemBase {
         
         controller.setIZone(0);
         
-        liftSol = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.liftSolCh[0], PneumaticChannels.liftSolCh[1]);
+        liftSol = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.liftSolChs[0], PneumaticChannels.liftSolChs[1]);
 
     }
 

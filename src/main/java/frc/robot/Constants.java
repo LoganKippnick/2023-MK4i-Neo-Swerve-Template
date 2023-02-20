@@ -43,22 +43,33 @@ public class Constants {
         public static final int lowerMtrId = 19; 
     }
 
+    public static enum ControllerType {
+        kJoystick,
+        kGamepad,
+        kTrigger
+    }
+
     public static final class Controllers {
 
-        public static final int driverControllerPort = 0;
-        public static final int operatorControllerPort = 1;
+        public static final int driverGamepadPort = 0;
 
-        public static final double operatorControllerDeadband = 0.15;
+        public static final int driverRightJoystickPort = 0;
+        public static final int driverLeftJoystickPort = 1;
 
+        public static final int operatorGamepadPort = 2;
+
+        public static final double joystickDeadband = 0.075;
+        public static final double gamepadDeadband = 0.15;
+        public static final double triggerDeadband = 0.25;
     }
 
     public static final class PneumaticChannels {
 
         public  static final int PCMId = 16;
 
-        public static final int[] liftSolCh = {0, 1};
+        public static final int[] liftSolChs = {0, 1};
 
-        public static final int[] clawSolCh = {2, 3};
+        public static final int[] clawSolChs = {2, 3};
 
     }
 
@@ -110,6 +121,10 @@ public class Constants {
         public static final double maxDriveSpeedMetersPerSec = 5; //3
 
         public static final double maxTurnRateRadiansPerSec = 2 * Math.PI; //Rate the robot will spin with full Rot command
+
+        public static final double turtleModeSpeedFactor = 0.5;
+        public static final double defaultSpeedFactor = 1.0;
+        // TODO: Sprint mode?
 
         public static final double frontLeftModOffset = Units.degreesToRadians(105.420);
         public static final double frontRightModOffset = Units.degreesToRadians(228.428);

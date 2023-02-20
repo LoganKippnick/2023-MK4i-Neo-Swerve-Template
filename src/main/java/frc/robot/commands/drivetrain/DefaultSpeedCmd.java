@@ -1,31 +1,26 @@
-package frc.robot.commands.lift;
-
-import java.util.function.DoubleSupplier;
+package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.LiftSys;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.SwerveSys;
 
-public class ManualControlCmd extends CommandBase {
+public class DefaultSpeedCmd extends CommandBase {
 
-    private final LiftSys liftSys;
-
-    private final DoubleSupplier joystick;
+    private final SwerveSys swerveSys;
 
     /**
-     * Constructs a new ExampleCmd.
+     * Constructs a new DefaultSpeedCmd.
      * 
-     * <p>ExampleCmd contains the basic framework of a robot command for use in command-based programming.
+     * <p>DefaultSpeedCmd is used to reduce the speed factor of the drive base for better precision when driving.
      * 
-     * <p>The command finishes once the isFinished method returns true.
+     * <p>The command finishes instantly.
      * 
-     * @param exampleSys The required ExampleSys.
+     * @param swerveSys The SwerveSys to modify.
      */
-    public ManualControlCmd(DoubleSupplier joystick, LiftSys liftSys) {
+    public DefaultSpeedCmd(SwerveSys swerveSys) {
 
-        this.liftSys = liftSys;
-        this.joystick = joystick;
+        this.swerveSys = swerveSys;
 
-        addRequirements(liftSys);
     }
 
     // Called when the command is initially scheduled.
@@ -37,7 +32,7 @@ public class ManualControlCmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        liftSys.manualControl(-joystick.getAsDouble());
+        swerveSys.setSpeedFactor(DriveConstants.defaultSpeedFactor);
     }
     
     // Called once the command ends or is interrupted.

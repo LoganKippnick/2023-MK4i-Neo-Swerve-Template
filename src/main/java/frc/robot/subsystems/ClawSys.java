@@ -11,7 +11,7 @@ public class ClawSys extends SubsystemBase {
     private final DoubleSolenoid clawSol;
 
     public ClawSys() {
-        clawSol = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.clawSolCh[0], PneumaticChannels.clawSolCh[1]);
+        clawSol = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.clawSolChs[0], PneumaticChannels.clawSolChs[1]);
     
     }
 

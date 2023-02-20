@@ -1,10 +1,8 @@
 package frc.robot.commands.drivetrain;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSys;
 
 public class SwerveDriveCmd extends CommandBase {
@@ -24,19 +22,26 @@ public class SwerveDriveCmd extends CommandBase {
     private final DoubleSupplier drive;
     private final DoubleSupplier strafe;
     private final DoubleSupplier rot;
-
-    private final BooleanSupplier lock;
     
     private final boolean isFieldRelative;
 
-
+    /**
+     * Constructs a new SwerveDriveCmd.
+     * 
+     * <p>SwerveDriveCmd is used to control the swerve drive base with arcade drive.
+     * 
+     * @param drive The commanded forward/backward lateral motion.
+     * @param strafe The commanded left/right lateral motion.
+     * @param rot The commanded rotational motion.
+     * @param isFieldRelative Whether the commanded inputs are field- or robot-oriented.
+     * @param swerveSys The required SwerveSys.
+     */
     public SwerveDriveCmd(
-        SwerveSys swerveSys, 
         DoubleSupplier drive, 
         DoubleSupplier strafe, 
         DoubleSupplier rot,
-        BooleanSupplier lock,
-        boolean isFieldRelative
+        boolean isFieldRelative,
+        SwerveSys swerveSys
     ) {
 
         this.swerveSys = swerveSys;
@@ -44,8 +49,6 @@ public class SwerveDriveCmd extends CommandBase {
         this.drive = drive;
         this.strafe = strafe;
         this.rot = rot;
-
-        this.lock = lock;
 
         this.isFieldRelative = isFieldRelative;
 
@@ -63,36 +66,20 @@ public class SwerveDriveCmd extends CommandBase {
          */
 
         double drive = this.drive.getAsDouble();
-        drive = deadbandInputs(drive);
         drive *= Math.abs(drive);
 
         double strafe = this.strafe.getAsDouble();
-        strafe = deadbandInputs(strafe);
         strafe *= Math.abs(strafe);
 
         double rot = this.rot.getAsDouble();
-        rot = deadbandInputs(rot);
         rot *= Math.abs(rot);
-
-        boolean lock = this.lock.getAsBoolean();
 
         swerveSys.drive(
             -drive,
             -strafe,
             -rot,
-            lock,
             isFieldRelative
         );
-
-    }
-
-    // method to deadband inputs to eliminate tiny unwanted values from the joysticks
-    public double deadbandInputs(double input) {
-
-        if (Math.abs(input) < Constants.Controllers.operatorControllerDeadband)
-            return 0.0;
-        
-        return input;
 
     }
 
