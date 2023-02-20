@@ -50,8 +50,6 @@ public class SwerveSys extends SubsystemBase {
             DriveConstants.rearRightModOffset
         );
 
-    PowerDistribution pdh; // TODO: Make its own subsystem? For use with compressor.
-
     // Commanded values from the joysticks and field relative value for use in driving assistance commands
     private double commandedDriveX = 0;
     private double commandedDriveY = 0;
@@ -88,8 +86,6 @@ public class SwerveSys extends SubsystemBase {
         rearRightMod.resetDistance();
 
         resetPose();
-
-        pdh = new PowerDistribution();
     }
 
     // This method will be called once per scheduler run
@@ -107,6 +103,7 @@ public class SwerveSys extends SubsystemBase {
         SmartDashboard.putNumber("Odometry y", odometry.getEstimatedPosition().getY());
 
         SmartDashboard.putNumber("speed", getAverageDriveVelocityMetersPerSecond());
+        SmartDashboard.putNumber("forward speed", getForwardVelocityMetersPerSecond());
 
         SmartDashboard.putNumber("front left rotation encoder", frontLeftMod.getSteerEncAngle().getDegrees());
         SmartDashboard.putNumber("front right rotation encoder", frontRightMod.getSteerEncAngle().getDegrees());
@@ -122,8 +119,6 @@ public class SwerveSys extends SubsystemBase {
         SmartDashboard.putNumber("front right distance", frontRightMod.getDriveDistanceMeters());
         SmartDashboard.putNumber("rear left distance", rearLeftMod.getDriveDistanceMeters());
         SmartDashboard.putNumber("rear right distance", rearRightMod.getDriveDistanceMeters());
-
-        SmartDashboard.putNumber("current", pdh.getTotalCurrent());
     }
     
     /**
@@ -173,7 +168,21 @@ public class SwerveSys extends SubsystemBase {
         SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxDriveSpeedMetersPerSec);
 
         setModuleStates(states);
+    }
 
+    /**
+     * Stops the driving of the robot.
+     * <p>Sets the drive power of each module to zero while maintaining module headings.
+     */
+    public void stop() {
+        SwerveModuleState[] states = new SwerveModuleState[] {
+            new SwerveModuleState(0.0, frontLeftMod.getSteerEncAngle()),
+            new SwerveModuleState(0.0, frontRightMod.getSteerEncAngle()),
+            new SwerveModuleState(0.0, rearLeftMod.getSteerEncAngle()),
+            new SwerveModuleState(0.0, rearRightMod.getSteerEncAngle())
+        };
+
+        setModuleStates(states);
     }
 
     /**
@@ -320,6 +329,13 @@ public class SwerveSys extends SubsystemBase {
             + Math.abs(rearRightMod.getCurrentVelocityMetersPerSecond()))
             / 4.0);
 
+    }
+
+    public double getForwardVelocityMetersPerSecond() {
+        double rel = getHeading().getDegrees() % 90.0;
+        if(rel > 90.0 && rel < 270.0) rel *= -1.0;
+        
+        return getAverageDriveVelocityMetersPerSecond() * (rel / 90.0);
     }
 
     /**

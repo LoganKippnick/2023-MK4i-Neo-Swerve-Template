@@ -84,7 +84,7 @@ public class SwerveModule extends SubsystemBase {
         //configure the CANCoder to output in unsigned (wrap around from 360 to 0 degrees)
         canCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
 
-        initsteerOffset();
+        initSteerOffset();
     }
 
     /**
@@ -152,6 +152,13 @@ public class SwerveModule extends SubsystemBase {
         
     }
 
+    public double getRelativeVelocityMetersPerSecond(double thetaRad) {
+        double rel = getCanCoderAngle().getDegrees() % 90.0;
+        if(rel > 90.0 && rel < 270.0) rel *= -1.0;
+        
+        return getCurrentVelocityMetersPerSecond() * (rel / 90.0);
+    }
+
     /**
      * Calculates the angle motor setpoint based on the desired angle and the current angle measurement.
      */
@@ -174,7 +181,7 @@ public class SwerveModule extends SubsystemBase {
     /**
      * Initializes the steeration motor encoder to the value of the CANCoder, accounting for the offset.
      */
-    public void initsteerOffset() {
+    public void initSteerOffset() {
 
         steerEnc.setPosition(getCanCoderAngle().getRadians());
 
