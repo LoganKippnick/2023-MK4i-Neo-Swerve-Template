@@ -13,6 +13,8 @@ public class Constants {
 
     public static final class CANDevices {
 
+        public static final int powerDistributionHubId = 0;
+
         public static final int frontLeftSteerEncId = 1;
         public static final int frontLeftSteerMtrId = 9;
         public static final int frontLeftDriveMtrId = 5;
@@ -35,6 +37,10 @@ public class Constants {
 
         public static final int masterMtrId = 15;
         public static final int slaveMtrId = 16;
+
+        public static final int actuationMtrId = 17;
+        public static final int upperMtrId = 18;
+        public static final int lowerMtrId = 19; 
     }
 
     public static final class Controllers {
@@ -50,9 +56,9 @@ public class Constants {
 
         public  static final int PCMId = 16;
 
-        public static final int[] liftSolsCh = {0, 1};
+        public static final int[] liftSolCh = {0, 1};
 
-        public static final int[] clawSolsCh = {2, 3};
+        public static final int[] clawSolCh = {2, 3};
 
     }
 
@@ -169,6 +175,11 @@ public class Constants {
 
         public static final String trajectoryFileLocation = "pathplanner/generatedJSON/";
     }
+
+    public static final class CompressorConstants {
+        public static final double maxPressurePSI = 120.0; // 120 PSI is the legal maximum air tank pressure.
+        public static final double minPressurePSI = 80.0;
+    }
     
     public static final class LiftConstants {
 
@@ -178,7 +189,7 @@ public class Constants {
         public static final double inchesPerEncRev = 11 * gearReduction;
 
         public static final double kP = 0.1;
-        public static final double kD = 2.0;
+        public static final double kD = 2.1;
 
         public static final double acceptableRangeInches = 0.25;
 
@@ -196,5 +207,11 @@ public class Constants {
         public static final double row3Inches = 72.0;
 
         public static final double manualControlPadding = 2.0;
+    }
+
+    public class IntakeConstants {
+
+        public static final double gearReduction = 1.0 / 12.0;
+        public static final double freeRPM = 11000 * gearReduction;
     }
 }

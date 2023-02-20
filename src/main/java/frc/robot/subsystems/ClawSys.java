@@ -8,10 +8,10 @@ import frc.robot.Constants.PneumaticChannels;
 
 public class ClawSys extends SubsystemBase {
 
-    private final DoubleSolenoid clawSols;
+    private final DoubleSolenoid clawSol;
 
     public ClawSys() {
-        clawSols = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.clawSolsCh[0], PneumaticChannels.clawSolsCh[1]);
+        clawSol = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.clawSolCh[0], PneumaticChannels.clawSolCh[1]);
     
     }
 
@@ -22,10 +22,10 @@ public class ClawSys extends SubsystemBase {
     }
     
     public void open() {
-        clawSols.set(Value.kForward);
+        clawSol.set(Value.kForward);
     }
 
     public void close() {
-        clawSols.set(Value.kReverse);
+        clawSol.set(Value.kReverse);
     }
 }

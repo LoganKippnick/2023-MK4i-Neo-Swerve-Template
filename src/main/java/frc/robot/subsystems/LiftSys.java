@@ -24,7 +24,7 @@ public class LiftSys extends SubsystemBase {
  
     private final SparkMaxPIDController controller;
  
-    private final DoubleSolenoid liftSols;
+    private final DoubleSolenoid liftSol;
  
     private double targetInches = 0;
 
@@ -59,7 +59,7 @@ public class LiftSys extends SubsystemBase {
         
         controller.setIZone(0);
         
-        liftSols = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.liftSolsCh[0], PneumaticChannels.liftSolsCh[1]);
+        liftSol = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.liftSolCh[0], PneumaticChannels.liftSolCh[1]);
 
     }
 
