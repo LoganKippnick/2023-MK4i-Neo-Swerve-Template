@@ -1,11 +1,15 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.Controllers;
 import frc.robot.commands.auto.SplineTrajectory;
 import frc.robot.commands.claw.CloseCmd;
@@ -18,6 +22,7 @@ import frc.robot.commands.lift.Row1Cmd;
 import frc.robot.commands.lift.Row2Cmd;
 import frc.robot.commands.lift.Row3Cmd;
 import frc.robot.subsystems.ClawSys;
+import frc.robot.subsystems.CompressorSys;
 import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.SwerveSys;
 
@@ -27,7 +32,6 @@ public class RobotContainer {
     private final SwerveSys swerveSys = new SwerveSys();
     private final LiftSys liftSys = new LiftSys();
     private final ClawSys clawSys = new ClawSys();
-
 
     // Initialize joysticks.
     private final XboxController driverController = new XboxController(Controllers.driverControllerPort);
@@ -47,6 +51,8 @@ public class RobotContainer {
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
     public RobotContainer() {
+
+        new CompressorSys();
 
         // Set subsystem default commands, which run when no other command is scheduled.
         swerveSys.setDefaultCommand(
@@ -89,5 +95,5 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return new ResetPoseCmd(swerveSys).andThen(new SplineTrajectory(swerveSys));
     }
-
+    
 }
