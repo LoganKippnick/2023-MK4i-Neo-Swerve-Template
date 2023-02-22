@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
@@ -30,6 +31,11 @@ public class LiftSys extends SubsystemBase {
 
     private boolean isManual = false;
 
+    /**
+     * Constructs a new LiftSys.
+     * 
+     * <p>LiftSys contains methods for actuation and articulation of the lift.
+     */
     public LiftSys() {
         masterMtr = new CANSparkMax(CANDevices.masterMtrId, MotorType.kBrushless);
         slaveMtr = new CANSparkMax(CANDevices.slaveMtrId, MotorType.kBrushless);
@@ -59,8 +65,7 @@ public class LiftSys extends SubsystemBase {
         
         controller.setIZone(0);
         
-        liftSol = new DoubleSolenoid(PneumaticsModuleType.REVPH, PneumaticChannels.liftSolChs[0], PneumaticChannels.liftSolChs[1]);
-
+        liftSol = new DoubleSolenoid(CANDevices.pneumaticHubId, PneumaticsModuleType.REVPH, PneumaticChannels.liftSolChs[0], PneumaticChannels.liftSolChs[1]);
     }
 
     @Override
@@ -72,6 +77,9 @@ public class LiftSys extends SubsystemBase {
             controller.setOutputRange(LiftConstants.minPower, LiftConstants.maxPower);
             controller.setReference(targetInches, ControlType.kPosition);
         }
+
+        if(liftEnc.getPosition() < LiftConstants.upActuationHeightInches && (masterMtr.get() < -0.005 || targetInches < LiftConstants.upActuationHeightInches)) actuateUp();
+        else if(liftEnc.getPosition() > LiftConstants.downActuationHeightInches && (masterMtr.get() > 0.005 || targetInches > LiftConstants.downActuationHeightInches)) actuateDown();
 
         if(targetInches < 0.0) targetInches = 0.0;
         else if (targetInches > LiftConstants.maxHeightInches) targetInches = LiftConstants.maxHeightInches;
@@ -114,5 +122,13 @@ public class LiftSys extends SubsystemBase {
 
             isManual = false;
         }
+    }
+
+    public void actuateUp() {
+        liftSol.set(Value.kReverse);
+    }
+
+    public void actuateDown() {
+        liftSol.set(Value.kForward);
     }
 }
