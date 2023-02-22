@@ -19,7 +19,8 @@ import frc.robot.commands.lift.DownCmd;
 import frc.robot.commands.lift.ManualControlCmd;
 import frc.robot.commands.lift.Row1Cmd;
 import frc.robot.commands.lift.Row2Cmd;
-import frc.robot.commands.lift.Row3Cmd;
+import frc.robot.commands.lift.Row3PoleCmd;
+import frc.robot.commands.lift.Row3ShelfCmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.CompressorSys;
 import frc.robot.subsystems.LiftSys;
@@ -47,8 +48,9 @@ public class RobotContainer {
     private final JoystickButton operatorBBtn = new JoystickButton(operatorController, 2);
     private final JoystickButton operatorXBtn = new JoystickButton(operatorController, 3);
     private final JoystickButton operatorYBtn = new JoystickButton(operatorController, 4);
-    private final JoystickButton operatorLeftBumper = new JoystickButton(driverController, 5);
-    private final JoystickButton operatorRightBumper = new JoystickButton(driverController, 6);
+    private final JoystickButton operatorLeftBumper = new JoystickButton(operatorController, 5);
+    private final JoystickButton operatorRightBumper = new JoystickButton(operatorController, 6);
+    private final JoystickButton operatorWindowBtn = new JoystickButton(operatorController, 7);
 
     // Initialize auto selector.
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
@@ -85,14 +87,16 @@ public class RobotContainer {
 
         driverControllerType = ControllerType.kGamepad;
         
-        driverLeftBumper.whileTrue(new SetLockedCmd(true, swerveSys)).onFalse(new SetLockedCmd(false, swerveSys));
-        driverRightBumper.whileTrue(new TurtleSpeedCmd(swerveSys)).onFalse(new DefaultSpeedCmd(swerveSys));
+        driverLeftBumper.onTrue(new SetLockedCmd(true, swerveSys)).onFalse(new SetLockedCmd(false, swerveSys));
+        driverRightBumper.onTrue(new TurtleSpeedCmd(swerveSys)).onFalse(new DefaultSpeedCmd(swerveSys));
         driverMenuBtn.onTrue(new ResetPoseCmd(swerveSys)); // FIXME: after debugging, change back to ResetHeadingCmd
 
         operatorABtn.onTrue(new Row1Cmd(liftSys));
         operatorBBtn.onTrue(new Row2Cmd(liftSys));
         operatorXBtn.onTrue(new DownCmd(liftSys));
-        operatorYBtn.onTrue(new Row3Cmd(liftSys));
+        operatorYBtn.onTrue(new Row3PoleCmd(liftSys));
+
+        operatorWindowBtn.and(operatorYBtn).onTrue(new Row3ShelfCmd(liftSys));
         
         operatorLeftBumper.onTrue(new OpenCmd(clawSys));
         operatorRightBumper.onTrue(new CloseCmd(clawSys));
@@ -103,7 +107,6 @@ public class RobotContainer {
         return new ResetPoseCmd(swerveSys).andThen(new SplineTrajectory(swerveSys));
     }
 
-    // FIXME: Deadband all controller values.
     /**
      * Deadbands inputs to eliminate tiny unwanted values from the joysticks or gamepad sticks.
      * <p>If the distance between the input and zero is less than the deadband amount, the output will be zero.

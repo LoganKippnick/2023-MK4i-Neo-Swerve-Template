@@ -67,9 +67,9 @@ public class Constants {
 
         public  static final int PCMId = 16;
 
-        public static final int[] liftSolChs = {0, 1};
-
-        public static final int[] clawSolChs = {2, 3};
+        public static final int[] clawSolChs = {0, 14};
+        
+        public static final int[] liftSolChs = {15, 1};
 
     }
 
@@ -133,8 +133,8 @@ public class Constants {
 
         public static final double drivekP = 0.005;
 
-        public static final double steerkP = 1.2477 * 0.7;
-        public static final double steerkD = 0.9062 * 0.7;
+        public static final double steerkP = 1.2477 * 0.6;
+        public static final double steerkD = 0.9062 * 0.6;
 
         public static final double ksVolts = .055;
         public static final double kvVoltSecsPerMeter = .2;
@@ -142,6 +142,11 @@ public class Constants {
 
         // TODO: Input FF constants above into FF to see if it works better. If not, change constants to match: ks = 0.667; kv = 2.44; ka = 0
         public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.667, 2.44, 0);
+    }
+
+    public static enum DockDirection {
+        kFromCommunity,
+        kFromCenter
     }
 
     public static final class AutoConstants {
@@ -189,6 +194,18 @@ public class Constants {
         }
 
         public static final String trajectoryFileLocation = "pathplanner/generatedJSON/";
+
+        public static final double driveOntoChargeStationVelMetersPerSecond = 0.5;
+
+        public static final double onChargeStationDeg = 15.0;
+        public static final double chargeStationControllerToleranceDeg = 5.0;
+        public static final double chargeStationBalancedToleranceDeg = 1.0;
+
+        public static final double dockMaxVelMetersPerSecond = 0.5;
+        
+        public static final double dockkP = 0.01;
+        public static final double dockkI = 0.0;
+        public static final double dockkD = 0.0;
     }
 
     public static final class CompressorConstants {
@@ -200,33 +217,44 @@ public class Constants {
 
         public static final double gearReduction = 1.0 / 5.0;
 
-        public static final double maxHeightInches = 74.0;
+        public static final double maxHeightInches = 77.0;
         public static final double inchesPerEncRev = 11 * gearReduction;
 
         public static final double kP = 0.1;
         public static final double kD = 2.1;
 
-        public static final double acceptableRangeInches = 0.25;
-
         public static final int maxCurrentAmps = 25;
 
         public static final double feetPerSecondPerRPM = (inchesPerEncRev / 12) / 60;
 
-        public static final double minPower = -0.5;
-        public static final double maxPower = 0.35;
+        public static final double minPower = -0.25;
+        public static final double maxPower = 0.25;
         public static final double manualPower = 0.15;
 
         public static final double downInches = 0.0;
-        public static final double row1Inches = 18.0;
-        public static final double row2Inches = 48.0;
-        public static final double row3Inches = 72.0;
+        public static final double row1Inches = 35.0;
+        public static final double row2Inches = 54.5;
+        public static final double row3ShelfInches = 71.0;
+        public static final double row3PoleInches = 77.0;
 
         public static final double manualControlPadding = 2.0;
+
+        public static final double downActuationHeightInches = 18.0;
+        public static final double upActuationHeightInches = 24.0;
     }
 
     public class IntakeConstants {
 
-        public static final double gearReduction = 1.0 / 12.0;
+        public static final double gearReduction = 16.0 / 22.0;
+
+        public static final double pulleyDiameterInches = 1.0;
+        public static final double pulleyCircumferenceInches = pulleyDiameterInches * Math.PI;
+
+        public static final double encRevToInches = pulleyDiameterInches * gearReduction;
+
+        public static final double kP = 0.01;
+        public static final double kD = 0.0;
+
         public static final double freeRPM = 11000 * gearReduction;
     }
 }

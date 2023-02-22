@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.LiftSys;
 
-public class Row3Cmd extends CommandBase {
+public class Row3PoleCmd extends CommandBase {
 
     private final LiftSys liftSys;
 
@@ -17,7 +17,7 @@ public class Row3Cmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public Row3Cmd(LiftSys liftSys) {
+    public Row3PoleCmd(LiftSys liftSys) {
         this.liftSys = liftSys;
 
         addRequirements(liftSys);
@@ -32,7 +32,7 @@ public class Row3Cmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        liftSys.setTarget(LiftConstants.row3Inches);
+        liftSys.setTarget(LiftConstants.row3PoleInches);
     }
 
     // Called once the command ends or is interrupted.
