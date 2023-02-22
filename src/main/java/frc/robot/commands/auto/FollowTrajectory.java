@@ -1,7 +1,6 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.AutoConstants;
@@ -15,13 +14,13 @@ public class FollowTrajectory extends SwerveControllerCommand {
     public FollowTrajectory(SwerveSys swerveSys, Trajectory trajectory) {
 
         super(
-            trajectory, 
-            swerveSys::getPose, 
-            DriveConstants.kinematics, 
-            new PIDController(2.45, 0, 1.0),
-            new PIDController(2.45, 0, 1.0), 
+            trajectory,
+            swerveSys::getPose,
+            DriveConstants.kinematics,
+            AutoConstants.driveController,
+            AutoConstants.driveController,
             AutoConstants.rotController,
-            swerveSys::setModuleStates, 
+            swerveSys::setModuleStates,
             swerveSys
         );
 
