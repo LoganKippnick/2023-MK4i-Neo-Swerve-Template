@@ -35,6 +35,8 @@ public class LiftSys extends SubsystemBase {
      * Constructs a new LiftSys.
      * 
      * <p>LiftSys contains methods for actuation and articulation of the lift.
+     * <p>There are no methods for articulating the lift, since it would be possible to extend taller than the max height.
+     * Instead, the lift is articulated soley based on its height.
      */
     public LiftSys() {
         masterMtr = new CANSparkMax(CANDevices.masterMtrId, MotorType.kBrushless);
@@ -78,12 +80,19 @@ public class LiftSys extends SubsystemBase {
             controller.setReference(targetInches, ControlType.kPosition);
         }
 
-        if(liftEnc.getPosition() < LiftConstants.upActuationHeightInches && (masterMtr.get() < -0.005 || targetInches < LiftConstants.upActuationHeightInches)) actuateUp();
-        else if(liftEnc.getPosition() > LiftConstants.downActuationHeightInches && (masterMtr.get() > 0.005 || targetInches > LiftConstants.downActuationHeightInches)) actuateDown();
+        if(
+            liftEnc.getPosition() < LiftConstants.upActuationHeightInches &&
+            (masterMtr.get() < -0.005 || targetInches < LiftConstants.upActuationHeightInches)
+        )
+            actuateUp();
+        else if(
+            liftEnc.getPosition() > LiftConstants.downActuationHeightInches &&
+            (masterMtr.get() > 0.005 || targetInches > LiftConstants.downActuationHeightInches)
+        )
+            actuateDown();
 
         if(targetInches < 0.0) targetInches = 0.0;
         else if (targetInches > LiftConstants.maxHeightInches) targetInches = LiftConstants.maxHeightInches;
-
 
         SmartDashboard.putNumber("lift inches", liftEnc.getPosition());
         SmartDashboard.putNumber("lift velocity", liftEnc.getVelocity());
@@ -113,7 +122,6 @@ public class LiftSys extends SubsystemBase {
     public void manualControl(double manual) {
         if(manual != 0) {
             isManual = true;
-            // targetInches = liftEnc.getPosition() + (manual * LiftConstants.manualControlSensitivity);
             setPower(manual * LiftConstants.manualPower);
         }
         else {
