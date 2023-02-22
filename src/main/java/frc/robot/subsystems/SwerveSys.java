@@ -80,9 +80,9 @@ public class SwerveSys extends SubsystemBase {
 
     private SwerveDrivePoseEstimator odometry = 
         new SwerveDrivePoseEstimator(
-            DriveConstants.kinematics, 
-            getHeading(), 
-            getModulePositions(), 
+            DriveConstants.kinematics,
+            getHeading(),
+            getModulePositions(),
             new Pose2d()
         );
 
@@ -136,12 +136,11 @@ public class SwerveSys extends SubsystemBase {
     }
     
     /**
-     * Inputs drive values into subsystem.
+     * Inputs drive values into the swerve drive base.
      * 
-     * @param driveX forward/backward lateral motion.
-     * @param driveY left/right lateral motion.
-     * @param rotation rotational motion.
-     * @param isLocked overrides driving and turns all modules in at a 45-degree angle to lock modules.
+     * @param driveX The desired forward/backward lateral motion, in meters per second.
+     * @param driveY The desired left/right lateral motion, in meters per second.
+     * @param rotation The desired rotational motion, in radians per second.
      * @param isFieldOriented whether driving is field- or robot-oriented.
      */
     public void drive(double driveX, double driveY, double rotation, boolean isFieldOriented) {
@@ -324,7 +323,6 @@ public class SwerveSys extends SubsystemBase {
 
     }
 
-    // 
     /**
      * Returns the average velocity for each module to get an overall velocity for the robot.
      * 
@@ -341,6 +339,11 @@ public class SwerveSys extends SubsystemBase {
 
     }
 
+    /**
+     * Returns the average velocity in the forward direction to get an overall velocity for the robot.
+     * 
+     * @return The velocity in the forward direction of the robot in meters per second.
+     */
     public double getForwardVelocityMetersPerSecond() {
         double rel = getHeading().getDegrees() % 90.0;
         if(rel > 90.0 && rel < 270.0) rel *= -1.0;
