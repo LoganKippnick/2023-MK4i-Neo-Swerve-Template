@@ -70,7 +70,7 @@ public class DriveToPointCmd extends CommandBase {
         if(xVel < maxVelMetersPerSec) xVel = maxVelMetersPerSec;
         if(yVel < maxVelMetersPerSec) yVel = maxVelMetersPerSec;
 
-        swerveSys.drive(xVel, yVel, rotVel, false, true);
+        swerveSys.drive(xVel, yVel, rotVel, true);
     }
     
     // Called once the command ends or is interrupted.
