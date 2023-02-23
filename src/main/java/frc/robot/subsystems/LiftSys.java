@@ -81,13 +81,13 @@ public class LiftSys extends SubsystemBase {
         }
 
         if(
-            liftEnc.getPosition() < LiftConstants.upActuationHeightInches &&
-            (masterMtr.get() < -0.005 || targetInches < LiftConstants.upActuationHeightInches)
+            (isManual && liftEnc.getPosition() < LiftConstants.upActuationHeightInches && masterMtr.get() < 0) ||
+            (!isManual && targetInches < LiftConstants.upActuationHeightInches)
         )
             actuateUp();
         else if(
-            liftEnc.getPosition() > LiftConstants.downActuationHeightInches &&
-            (masterMtr.get() > 0.005 || targetInches > LiftConstants.downActuationHeightInches)
+            (isManual && liftEnc.getPosition() > LiftConstants.downActuationHeightInches && masterMtr.get() > 0) ||
+            (!isManual && targetInches > LiftConstants.downActuationHeightInches)
         )
             actuateDown();
 
