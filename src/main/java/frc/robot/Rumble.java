@@ -3,7 +3,7 @@ package frc.robot;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class Rumble {
 
-    private final Joystick controller;
+    private final GenericHID controller;
     private final RumbleType rumbleType;
     private final double power;
     private final Timer pulseTimer;
@@ -79,11 +79,11 @@ public class Rumble {
     /**
      * Constructs a new Rumble.
      * <p>The Rumble class facilitates controller rumble and allows the user to schedule its actions.
-     * @param controller The Joystick to rumble.
+     * @param controller The controller to rumble.
      * @param rumbleType The RumbleType of the Rumble. On Xbox controllers, kLeft is strong and kRight is light.
      * @param power The intensity of the Rumble out of 1.0.
      */
-    public Rumble(Joystick controller, RumbleType rumbleType, double power) {
+    public Rumble(GenericHID controller, RumbleType rumbleType, double power) {
         this.controller = controller;
         this.rumbleType = rumbleType;
         this.power = power;
