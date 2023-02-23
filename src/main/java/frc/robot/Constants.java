@@ -45,18 +45,19 @@ public class Constants {
 
     public static enum ControllerType {
         kJoystick,
-        kGamepad,
-        kTrigger
+        kGamepad
     }
 
     public static final class Controllers {
 
         public static final int driverGamepadPort = 0;
 
-        public static final int driverRightJoystickPort = 0;
-        public static final int driverLeftJoystickPort = 1;
+        public static final int driverLeftJoystickPort = 0;
+        public static final int driverRightJoystickPort = 1;
 
         public static final int operatorGamepadPort = 2;
+
+        public static final int combinedControllerPort = 3;
 
         public static final double joystickDeadband = 0.075;
         public static final double gamepadDeadband = 0.15;
