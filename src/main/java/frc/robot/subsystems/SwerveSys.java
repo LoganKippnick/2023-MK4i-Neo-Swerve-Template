@@ -162,6 +162,8 @@ public class SwerveSys extends SubsystemBase {
             driveY *= speedFactor;
             rotation *= speedFactor;
 
+            SmartDashboard.putNumber("rot", rotation);
+
             // Represents the overall state of the drive base.
             ChassisSpeeds speeds =
             isFieldOriented
@@ -201,12 +203,10 @@ public class SwerveSys extends SubsystemBase {
      * @param moduleStates the module states to set.
      */
     public void setModuleStates(SwerveModuleState[] moduleStates) {
-
         frontLeftMod.setDesiredState(moduleStates[0], false);
         frontRightMod.setDesiredState(moduleStates[1], false);
         rearLeftMod.setDesiredState(moduleStates[2], false);
         rearRightMod.setDesiredState(moduleStates[3], false);
-
     }
 
     /**
@@ -229,14 +229,12 @@ public class SwerveSys extends SubsystemBase {
      * @return An array of SwerveModuleState.
      */
     public SwerveModuleState[] getModuleStates() {
-
         return new SwerveModuleState[] {
             new SwerveModuleState(frontLeftMod.getCurrentVelocityMetersPerSecond(), frontLeftMod.getSteerEncAngle()),
             new SwerveModuleState(frontRightMod.getCurrentVelocityMetersPerSecond(), frontRightMod.getSteerEncAngle()),
             new SwerveModuleState(rearLeftMod.getCurrentVelocityMetersPerSecond(), rearLeftMod.getSteerEncAngle()),
             new SwerveModuleState(rearRightMod.getCurrentVelocityMetersPerSecond(), rearRightMod.getSteerEncAngle())
         };
-
     }
 
     /**
@@ -245,14 +243,12 @@ public class SwerveSys extends SubsystemBase {
      * @return An array of SwerveModulePosition.
      */
     public SwerveModulePosition[] getModulePositions() {
-
         return new SwerveModulePosition[] {
             frontLeftMod.getPosition(),
             frontRightMod.getPosition(),
             rearLeftMod.getPosition(),
             rearRightMod.getPosition()
         };
-
     }
 
     /**
@@ -260,9 +256,7 @@ public class SwerveSys extends SubsystemBase {
      * based on drive encoder and gyro readings.
      */
     public Pose2d getPose() {
-
         return odometry.getEstimatedPosition();
-
     }
 
     /**
@@ -283,7 +277,6 @@ public class SwerveSys extends SubsystemBase {
      */
     // TODO: Make sure this works.
     public void setPose(Pose2d pose) {
-
         imu.setYaw(pose.getRotation().getDegrees());
 
         odometry = new SwerveDrivePoseEstimator(
@@ -292,19 +285,16 @@ public class SwerveSys extends SubsystemBase {
             getModulePositions(),
             pose
         );
-
     }
 
     /**
      * Resets the measured distance driven for each module.
      */
     public void resetDriveDistances() {
-
         frontLeftMod.resetDistance();
         frontRightMod.resetDistance();
         rearLeftMod.resetDistance();
         rearRightMod.resetDistance();
-
     }
 
     /**
@@ -313,14 +303,13 @@ public class SwerveSys extends SubsystemBase {
      * @return The overall distance driven by the robot in meters.
      */
     public double getAverageDriveDistanceMeters() {
-
-        return ((
-            frontLeftMod.getDriveDistanceMeters()
+        return (
+            (frontLeftMod.getDriveDistanceMeters()
             + frontRightMod.getDriveDistanceMeters()
             + rearLeftMod.getDriveDistanceMeters()
             + rearRightMod.getDriveDistanceMeters())
-            / 4.0);
-
+            / 4.0
+        );
     }
 
     /**
@@ -329,14 +318,13 @@ public class SwerveSys extends SubsystemBase {
      * @return The overall velocity of the robot in meters per second.
      */
     public double getAverageDriveVelocityMetersPerSecond() {
-
-        return ((
-            Math.abs(frontLeftMod.getCurrentVelocityMetersPerSecond())
+        return (
+            (Math.abs(frontLeftMod.getCurrentVelocityMetersPerSecond())
             + Math.abs(frontRightMod.getCurrentVelocityMetersPerSecond())
             + Math.abs(rearLeftMod.getCurrentVelocityMetersPerSecond() )
             + Math.abs(rearRightMod.getCurrentVelocityMetersPerSecond()))
-            / 4.0);
-
+            / 4.0
+        );
     }
 
     /**
@@ -357,9 +345,7 @@ public class SwerveSys extends SubsystemBase {
      * @return The current heading of the robot.
      */
     public Rotation2d getHeading() {
-
         return Rotation2d.fromDegrees(imu.getYaw());
-
     }
 
     /**
@@ -368,9 +354,7 @@ public class SwerveSys extends SubsystemBase {
      * @return The current pitch of the robot.
      */
     public double getPitch() {
-
         return imu.getPitch();
-
     }
 
     /**
@@ -379,19 +363,13 @@ public class SwerveSys extends SubsystemBase {
      * @return The current roll of the robot.
      */
     public double getRoll() {
-
         return imu.getRoll();
-
     }
 
     /**
      * Sets the gyro heading to zero.
      */
     public void resetHeading() {
-
         imu.setYaw(0.0);
-
     }
-
-
 }
