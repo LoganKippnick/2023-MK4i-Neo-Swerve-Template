@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAlternateEncoder.Type;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,11 +34,11 @@ public class IntakeSys extends SubsystemBase {
     public IntakeSys() {
         // Initialize and configure actuators and sensors here
         actuationMtr = new CANSparkMax(CANDevices.actuationMtrId, MotorType.kBrushed);
-        upperMtr = new CANSparkMax(CANDevices.upperMtrId, MotorType.kBrushless);
-        lowerMtr = new CANSparkMax(CANDevices.lowerMtrId, MotorType.kBrushless);
+        upperMtr = null; // new CANSparkMax(CANDevices.upperMtrId, MotorType.kBrushless);
+        lowerMtr = null; // new CANSparkMax(CANDevices.lowerMtrId, MotorType.kBrushless);
 
-        intakeEnc = actuationMtr.getEncoder();
-        intakeEnc.setPositionConversionFactor(IntakeConstants.encRevToInches);
+        intakeEnc = actuationMtr.getAlternateEncoder(Type.kQuadrature, 4096);
+        intakeEnc.setPositionConversionFactor(1);//(IntakeConstants.encRevToInches);
 
         controller = actuationMtr.getPIDController();
         controller.setP(IntakeConstants.kP);
