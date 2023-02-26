@@ -1,15 +1,21 @@
 package frc.robot;
 
+import org.photonvision.PhotonCamera;
+import org.photonvision.common.hardware.VisionLEDMode;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerType;
-import frc.robot.Constants.Controllers;
-import frc.robot.commands.auto.SplineTrajectory;
+import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.claw.CloseCmd;
 import frc.robot.commands.claw.OpenCmd;
 import frc.robot.commands.drivetrain.DefaultSpeedCmd;
@@ -17,8 +23,11 @@ import frc.robot.commands.drivetrain.ResetPoseCmd;
 import frc.robot.commands.drivetrain.SetLockedCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
 import frc.robot.commands.drivetrain.TurtleSpeedCmd;
+import frc.robot.commands.intake.InCmd;
+import frc.robot.commands.intake.OutCmd;
+import frc.robot.commands.intake.IntakeManualControlCmd;
 import frc.robot.commands.lift.DownCmd;
-import frc.robot.commands.lift.ManualControlCmd;
+import frc.robot.commands.lift.LiftManualControlCmd;
 import frc.robot.commands.lift.Row1Cmd;
 import frc.robot.commands.lift.Row2Cmd;
 import frc.robot.commands.lift.Row3PoleCmd;
@@ -36,21 +45,24 @@ public class RobotContainer {
     private final LiftSys liftSys = new LiftSys();
     private final ClawSys clawSys = new ClawSys();
     private final IntakeSys intakeSys = new IntakeSys();
+    
+    private final PhotonCamera limelight = new PhotonCamera("Limelight");
 
     // Initialize joysticks.
-    private final XboxController driverController = new XboxController(Controllers.driverGamepadPort);
+    private final XboxController driverController = new XboxController(ControllerConstants.driverGamepadPort);
 
-    private final Joystick driverLeftJoystick = new Joystick(Controllers.driverLeftJoystickPort);
-    private final Joystick driverRightJoystick = new Joystick(Controllers.driverRightJoystickPort);
+    private final Joystick driverLeftJoystick = new Joystick(ControllerConstants.driverLeftJoystickPort);
+    private final Joystick driverRightJoystick = new Joystick(ControllerConstants.driverRightJoystickPort);
 
-    private final XboxController operatorController = new XboxController(Controllers.operatorGamepadPort);
+    private final XboxController operatorController = new XboxController(ControllerConstants.operatorGamepadPort);
 
-    private final XboxController combinedController = new XboxController(Controllers.combinedControllerPort);
+    private final XboxController hybridController = new XboxController(ControllerConstants.hybridControllerPort);
 
     // Initialize controller buttons.
     private final JoystickButton driverLeftBumper = new JoystickButton(driverController, 5);
     private final JoystickButton driverRightBumper = new JoystickButton(driverController, 6);
     private final JoystickButton driverMenuBtn = new JoystickButton(driverController, 8);
+    private final Trigger driverRightTriggerBtn = new Trigger(() -> driverController.getRightTriggerAxis() > ControllerConstants.triggerDeadband);
 
     private final JoystickButton operatorABtn = new JoystickButton(operatorController, 1);
     private final JoystickButton operatorBBtn = new JoystickButton(operatorController, 2);
@@ -59,14 +71,25 @@ public class RobotContainer {
     private final JoystickButton operatorLeftBumper = new JoystickButton(operatorController, 5);
     private final JoystickButton operatorRightBumper = new JoystickButton(operatorController, 6);
     private final JoystickButton operatorWindowBtn = new JoystickButton(operatorController, 7);
+    private final POVButton operatorUpBtn = new POVButton(operatorController, 0);
+    private final POVButton operatorRightBtn = new POVButton(operatorController, 90);
+    private final POVButton operatorDownBtn = new POVButton(operatorController, 180);
+    private final POVButton operatorLeftBtn = new POVButton(operatorController, 270);
 
-    private final JoystickButton combinedABtn = new JoystickButton(combinedController, 1);
-    private final JoystickButton combinedBBtn = new JoystickButton(combinedController, 2);
-    private final JoystickButton combinedXBtn = new JoystickButton(combinedController, 3);
-    private final JoystickButton combinedYBtn = new JoystickButton(combinedController, 4);
-    private final JoystickButton combinedLeftBumper = new JoystickButton(combinedController, 5);
-    private final JoystickButton combinedRightBumper = new JoystickButton(combinedController, 6);
-    private final JoystickButton combinedWindowBtn = new JoystickButton(combinedController, 7);
+    private final JoystickButton hybridABtn = new JoystickButton(hybridController, 1);
+    private final JoystickButton hybridBBtn = new JoystickButton(hybridController, 2);
+    private final JoystickButton hybridXBtn = new JoystickButton(hybridController, 3);
+    private final JoystickButton hybridYBtn = new JoystickButton(hybridController, 4);
+    private final JoystickButton hybridLeftBumper = new JoystickButton(hybridController, 5);
+    private final JoystickButton hybridRightBumper = new JoystickButton(hybridController, 6);
+    private final JoystickButton hybridWindowBtn = new JoystickButton(hybridController, 7);
+    private final JoystickButton hybridMenuBtn = new JoystickButton(driverController, 8);
+
+    // Instantiate controller rumble.
+    private Rumble matchTimeRumble;
+    private Rumble brownOutRumble;
+    private Rumble countdown10Rumble;
+    private Rumble countdown5Rumble;
 
     // Initialize auto selector.
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
@@ -77,31 +100,47 @@ public class RobotContainer {
 
         SmartDashboard.putData(autoSelector);
 
+        RobotController.setBrownoutVoltage(7.5);
     }
 
     public void configBindings() {
         
         // Set subsystem default commands, which run when no other command is scheduled.
-        if(
-            DriverStation.isJoystickConnected(Controllers.combinedControllerPort) &&
-            DriverStation.getJoystickIsXbox(Controllers.combinedControllerPort)
-        ) {
-            configCombinedBindings();
-            SmartDashboard.putString("control type", "combined");
+        if(DriverStation.getJoystickIsXbox(ControllerConstants.hybridControllerPort)) {
+            configHybridBindings();
+            SmartDashboard.putString("control type", "hybrid");
         }
         else {
-            if(DriverStation.getJoystickIsXbox(Controllers.driverLeftJoystickPort)) {
+            if(DriverStation.getJoystickIsXbox(ControllerConstants.driverGamepadPort)) {
                 configDriverBindings(ControllerType.kGamepad);
                 SmartDashboard.putString("control type", "gamepad");
             }
-            else {
+            else if(DriverStation.isJoystickConnected(ControllerConstants.driverRightJoystickPort)) {
                 configDriverBindings(ControllerType.kJoystick);
                 SmartDashboard.putString("control type", "joysticks");
+            }
+            else {
+                SmartDashboard.putString("control type", "only operator");
             }
 
             configOperatorBindings();
         }
+
+        brownOutRumble.rumbleWhen(() -> RobotController.isBrownedOut(), 2.0);
         
+        matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 60.0 && DriverStation.isTeleop(), 3);
+        matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 30.0 && DriverStation.isTeleop(), 2);
+        matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 15.0 && DriverStation.isTeleop(), 1);
+
+        matchTimeRumble.pulseWhen(() -> operatorController.getRightTriggerAxis() > 0.25, 3);
+        matchTimeRumble.debug();
+
+        countdown10Rumble.setPulseTime(1.0);
+        countdown10Rumble.pulseWhen(() -> DriverStation.getMatchTime() <= 10.0 && DriverStation.isTeleop(), 5);
+
+        countdown5Rumble.setPulseTime(1.0);
+        countdown5Rumble.setPulseLength(0.25);
+        countdown5Rumble.pulseWhen(() -> DriverStation.getMatchTime() <= 5.0 && DriverStation.isTeleop(), 5);
     }
 
     public void configDriverBindings(ControllerType driverControllerType) {
@@ -116,6 +155,15 @@ public class RobotContainer {
                     swerveSys
                 )
             );
+            
+            driverLeftBumper.onTrue(new SetLockedCmd(true, swerveSys)).onFalse(new SetLockedCmd(false, swerveSys));
+            driverRightBumper.onTrue(new TurtleSpeedCmd(swerveSys)).onFalse(new DefaultSpeedCmd(swerveSys));
+            driverMenuBtn.onTrue(new ResetPoseCmd(swerveSys)); // FIXME: after debugging, change back to ResetHeadingCmd
+
+            brownOutRumble = new Rumble(RumbleType.kLeftRumble, 1.0, driverController);
+            matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, driverController);
+            countdown10Rumble = new Rumble(RumbleType.kRightRumble, 1.0, driverController);
+            countdown5Rumble = new Rumble(RumbleType.kRightRumble, 1.0, driverController);
         }
         else {
             swerveSys.setDefaultCommand(
@@ -127,59 +175,97 @@ public class RobotContainer {
                     swerveSys
                 )
             );
+
+            brownOutRumble = new Rumble(RumbleType.kLeftRumble, 1.0);
+            matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0);
+            countdown10Rumble = new Rumble(RumbleType.kRightRumble, 1.0);
+            countdown5Rumble = new Rumble(RumbleType.kRightRumble, 1.0);
         }
     }
 
     public void configOperatorBindings() {
         
         liftSys.setDefaultCommand(
-            new ManualControlCmd(
+            new LiftManualControlCmd(
                 () -> deadband(operatorController.getRightY(), ControllerType.kGamepad),
                 liftSys
             )
         );
 
-        driverLeftBumper.onTrue(new SetLockedCmd(true, swerveSys)).onFalse(new SetLockedCmd(false, swerveSys));
-        driverRightBumper.onTrue(new TurtleSpeedCmd(swerveSys)).onFalse(new DefaultSpeedCmd(swerveSys));
-        driverMenuBtn.onTrue(new ResetPoseCmd(swerveSys)); // FIXME: after debugging, change back to ResetHeadingCmd
+        intakeSys.setDefaultCommand(
+            new IntakeManualControlCmd(
+                () -> deadband(operatorController.getLeftY(), ControllerType.kGamepad),
+                () -> deadband(operatorController.getRightTriggerAxis(), ControllerType.kGamepad),
+                () -> deadband(operatorController.getLeftTriggerAxis(), ControllerType.kGamepad),
+                intakeSys
+            )
+        );
 
-        operatorABtn.onTrue(new Row1Cmd(liftSys));
-        operatorBBtn.onTrue(new Row2Cmd(liftSys));
-        operatorXBtn.onTrue(new DownCmd(liftSys));
-        operatorYBtn.onTrue(new Row3PoleCmd(liftSys));
+        operatorABtn.onTrue(new Row1Cmd(true, liftSys));
+        operatorBBtn.onTrue(new Row2Cmd(true, liftSys));
+        operatorXBtn.onTrue(new DownCmd(true, liftSys));
+        operatorYBtn.onTrue(new Row3PoleCmd(true, liftSys));
 
-        operatorWindowBtn.and(operatorYBtn).onTrue(new Row3ShelfCmd(liftSys));
+        operatorWindowBtn.and(operatorYBtn).onTrue(new Row3ShelfCmd(true, liftSys));
         
         operatorLeftBumper.onTrue(new OpenCmd(clawSys));
         operatorRightBumper.onTrue(new CloseCmd(clawSys));
 
+        operatorUpBtn.onTrue(new OutCmd(intakeSys, clawSys));
+        operatorDownBtn.onTrue(new InCmd(intakeSys, clawSys));
+
+        matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, operatorController);
+        // matchTimeRumble.debug();
+        // matchTimeRumble.pulseWhen(() -> operatorController.getRightTriggerAxis() > 0.25);
+
+        countdown10Rumble = new Rumble(RumbleType.kRightRumble, 1.0, operatorController);
+        countdown5Rumble = new Rumble(RumbleType.kRightRumble, 1.0, operatorController);
     }
 
-    public void configCombinedBindings() {
+    public void configHybridBindings() {
 
         swerveSys.setDefaultCommand(
             new SwerveDriveCmd(
-                () -> deadband(combinedController.getLeftY(), ControllerType.kGamepad),
-                () -> deadband(combinedController.getLeftX(), ControllerType.kGamepad),
-                () -> deadband(combinedController.getRightX(), ControllerType.kGamepad),
+                () -> deadband(hybridController.getLeftY(), ControllerType.kGamepad),
+                () -> deadband(hybridController.getLeftX(), ControllerType.kGamepad),
+                () -> deadband(hybridController.getRightX(), ControllerType.kGamepad),
                 true,
                 swerveSys
             )
         );
 
-        combinedABtn.onTrue(new Row1Cmd(liftSys));
-        combinedBBtn.onTrue(new Row2Cmd(liftSys));
-        combinedXBtn.onTrue(new DownCmd(liftSys));
-        combinedYBtn.onTrue(new Row3PoleCmd(liftSys));
+        hybridABtn.onTrue(new Row1Cmd(true, liftSys));
+        hybridBBtn.onTrue(new Row2Cmd(true, liftSys));
+        hybridXBtn.onTrue(new DownCmd(true, liftSys));
+        hybridYBtn.onTrue(new Row3PoleCmd(true, liftSys));
 
-        combinedWindowBtn.and(operatorYBtn).onTrue(new Row3ShelfCmd(liftSys));
+        hybridWindowBtn.and(operatorYBtn).onTrue(new Row3ShelfCmd(false, liftSys));
+        hybridMenuBtn.onTrue(new ResetPoseCmd(swerveSys)); // FIXME: after debugging, change back to ResetHeadingCmd
         
-        combinedLeftBumper.onTrue(new OpenCmd(clawSys));
-        combinedRightBumper.onTrue(new CloseCmd(clawSys));
+        hybridLeftBumper.onTrue(new OpenCmd(clawSys));
+        hybridRightBumper.onTrue(new CloseCmd(clawSys));
+
+        brownOutRumble = new Rumble(RumbleType.kLeftRumble, 1.0, hybridController);
+        matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, hybridController);
+        countdown10Rumble = new Rumble(RumbleType.kRightRumble, 1.0, hybridController);
+        countdown5Rumble = new Rumble(RumbleType.kRightRumble, 1.0, hybridController);
     }
 
     public Command getAutonomousCommand() {
-        return new ResetPoseCmd(swerveSys).andThen(new SplineTrajectory(swerveSys));
+        return null;
+        // return new DockCmd(DockDirection.kFromCenter, swerveSys);
+        // return new ResetPoseCmd(swerveSys).andThen(new TestTrajectory(swerveSys));
+    }
+
+    public void periodic() {
+        limelight.setLED(VisionLEDMode.kOff);
+        limelight.setDriverMode(false);
+        
+        limelight.setPipelineIndex(1);
+
+        SmartDashboard.putString("LED mode", limelight.getLEDMode().toString());
+        SmartDashboard.putBoolean("is limelight connected", limelight.isConnected());
+        SmartDashboard.putNumber("pipeline index", limelight.getPipelineIndex());
     }
 
     /**
@@ -195,8 +281,8 @@ public class RobotContainer {
     public double deadband(double value, ControllerType controllerType) {
 
         if (Math.abs(value) < (controllerType.equals(ControllerType.kGamepad) ?
-                Controllers.gamepadDeadband :
-                Controllers.joystickDeadband
+                ControllerConstants.gamepadDeadband :
+                ControllerConstants.joystickDeadband
             )
         )
             return 0.0;
