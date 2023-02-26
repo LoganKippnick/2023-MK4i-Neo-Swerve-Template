@@ -8,6 +8,8 @@ public class Row1Cmd extends CommandBase {
 
     private final LiftSys liftSys;
 
+    private final boolean finishInstantly;
+
     /**
      * Constructs a new ExampleCmd.
      * 
@@ -17,8 +19,9 @@ public class Row1Cmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public Row1Cmd(LiftSys liftSys) {
+    public Row1Cmd(boolean finishInstantly, LiftSys liftSys) {
         this.liftSys = liftSys;
+        this.finishInstantly = finishInstantly;
 
         addRequirements(liftSys);
     }
@@ -44,7 +47,10 @@ public class Row1Cmd extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return true;
+        return finishInstantly || (
+            liftSys.getCurrentPosition() >= LiftConstants.row1Inches - LiftConstants.targetTolerance &&
+            liftSys.getCurrentPosition() <= LiftConstants.row1Inches + LiftConstants.targetTolerance
+        );
     }
 
     // Whether the command should run when robot is disabled.

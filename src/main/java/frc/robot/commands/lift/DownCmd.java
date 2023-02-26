@@ -8,6 +8,8 @@ public class DownCmd extends CommandBase {
 
     private final LiftSys liftSys;
 
+    private final boolean finishInstantly;
+
     /**
      * Constructs a new ExampleCmd.
      * 
@@ -17,12 +19,11 @@ public class DownCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public DownCmd(LiftSys liftSys) {
+    public DownCmd(boolean finishInstantly, LiftSys liftSys) {
         this.liftSys = liftSys;
+        this.finishInstantly = finishInstantly;
 
         addRequirements(liftSys);
-        
-
     }
 
     // Called when the command is initially scheduled.
@@ -48,7 +49,10 @@ public class DownCmd extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return true;
+        return finishInstantly || (
+            liftSys.getCurrentPosition() >= LiftConstants.downInches - LiftConstants.targetTolerance &&
+            liftSys.getCurrentPosition() <= LiftConstants.downInches + LiftConstants.targetTolerance
+        );
     }
 
     // Whether the command should run when robot is disabled.

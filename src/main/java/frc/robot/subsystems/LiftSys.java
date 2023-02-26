@@ -98,6 +98,11 @@ public class LiftSys extends SubsystemBase {
         SmartDashboard.putNumber("lift velocity", liftEnc.getVelocity());
         SmartDashboard.putNumber("lift target", targetInches);
         SmartDashboard.putNumber("lift power", masterMtr.get());
+        SmartDashboard.putBoolean("lift isManual", isManual);
+    }
+
+    public double getCurrentPosition() {
+        return liftEnc.getPosition();
     }
 
     public void setPower(double power) {
@@ -120,7 +125,7 @@ public class LiftSys extends SubsystemBase {
     }
 
     public void manualControl(double manual) {
-        if(manual != 0) {
+        if(manual != 0.0) {
             isManual = true;
             setPower(manual * LiftConstants.manualPower);
         }
