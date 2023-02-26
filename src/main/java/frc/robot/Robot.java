@@ -29,6 +29,8 @@ public class Robot extends TimedRobot {
             robotContainer.configBindings();
             controlsAreBinded = true;
         }
+
+        robotContainer.periodic();
         
     }
 
