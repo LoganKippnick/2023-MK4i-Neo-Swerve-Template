@@ -13,18 +13,20 @@ public class ClawSys extends SubsystemBase {
     private final DoubleSolenoid clawSol;
 
     public ClawSys() {
-        // pcm = new PneumaticsControlModule(CANDevices.pneumaticHubId);
         clawSol = new DoubleSolenoid(CANDevices.pneumaticHubId, PneumaticsModuleType.REVPH, PneumaticChannels.clawSolChs[0], PneumaticChannels.clawSolChs[1]);
+        open();
     }
 
     // This method will be called once per scheduler run
     @Override
     public void periodic() {
 
-        if(clawSol.get().equals(Value.kForward)) SmartDashboard.putString("claw status", "open");
-        else SmartDashboard.putString("claw status", "close");
-
+        SmartDashboard.putBoolean("isOpen", isOpen());
         
+    }
+
+    public boolean isOpen() {
+        return clawSol.get().equals(Value.kForward);
     }
     
     public void open() {
