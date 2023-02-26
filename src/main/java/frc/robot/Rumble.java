@@ -1,242 +1,411 @@
 package frc.robot;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Rumble {
 
-    private final GenericHID controller;
+    private final GenericHID[] controllers;
     private final RumbleType rumbleType;
     private final double power;
-    private final Timer pulseTimer;
 
+    private final CommandBase debug;
+
+    private double pulseLength = 0.25;
+    private double pulseTime = 0.5;
+
+    public double getPulseLength() {
+        return pulseLength;
+    }
+    public void setPulseLength(double pulseLength) {
+        this.pulseLength = pulseLength;
+    }
+    public double getPulseTime() {
+        return pulseTime;
+    }
+    public void setPulseTime(double pulseTime) {
+        if(pulseTime < pulseLength) pulseTime = pulseLength;
+        else this.pulseTime = pulseTime;
+    }
+
+    private boolean isEnabled;
     private boolean isRumbling;
-    /**
-     * Returns whether the controller is rumbling.
-     * @return True if the controller is rumbling.
-     */
+    private boolean isPulsing;
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+    public void setEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
+    }
     public boolean isRumbling() {
         return isRumbling;
     }
-
-    private boolean isPulsing;
-    /**
-     * Returns whether the controller is pulsing.
-     * @return True if the controller is pulsing.
-     */
     public boolean isPulsing() {
         return isPulsing;
     }
 
-    private boolean isEnabled;
-    /**
-     * Returns if the Rumble is enabled.
-     * @return True if the Rumble is enabled.
-     */
-    public boolean isEnabled() {
-        return isEnabled;
-    }
-    /**
-     * Sets whether the Rumble is enabled. If false, stops the rumbling and pulsing instantly.
-     * @param isEnabled True if the Rumble should be enabled, false if it should be disabled.
-     */
-    public void setEnabled(boolean isEnabled) {
-        this.isEnabled = isEnabled;
-
-        if(!isEnabled) stop();
-    }
-
-    private double pulseTime;
-    /**
-     * Returns the length of a pulse.
-     * @return The length of a pulse, in seconds.
-     */
-    public double getPulseTime() {
-        return pulseTime;
-    }
-    /**
-     * Sets the length of a pulse.
-     * @param pulseTime The desired length of a pulse, in seconds.
-     */
-    public void setPulseTime(double pulseTime) {
-        this.pulseTime = pulseTime;
-    }
-
-    private double pulseGapTime = 0.33; // TODO: Javadoc
-    public double getPulseGapTime() {
-        return pulseGapTime;
-    }
-    public void setPulseGapTime(double pulseGapTime) {
-        this.pulseGapTime = pulseGapTime;
-    }
-    
-    /**
-     * Constructs a new Rumble.
-     * <p>The Rumble class facilitates controller rumble and allows the user to schedule its actions.
-     * @param controller The controller to rumble.
-     * @param rumbleType The RumbleType of the Rumble. On Xbox controllers, kLeft is strong and kRight is light.
-     * @param power The intensity of the Rumble out of 1.0.
-     */
-    public Rumble(GenericHID controller, RumbleType rumbleType, double power) {
-        this.controller = controller;
+    public Rumble(RumbleType rumbleType, double power, GenericHID... controllers) {
         this.rumbleType = rumbleType;
         this.power = power;
-        
-        pulseTimer = new Timer();
+        this.controllers = controllers;
 
-        isRumbling = false;
-        isPulsing = false;
         isEnabled = true;
-        pulseTime = 0.25;
-    }
-
-    /**
-     * Starts the Rumble, if enabled.
-     */
-    public void start() {
-        isRumbling = true;
-        if(isEnabled) controller.setRumble(rumbleType, power);
-    }
-
-    /**
-     * Stops the Rumble.
-     */
-    public void stop() {
         isRumbling = false;
-        controller.setRumble(rumbleType, 0.0);
-    }
-
-    /**
-     * Controller rumbles for a short period of time once.
-     * <p>To change the length of a pulse, use setPulseTime.
-     */
-    public void pulse() {
-        isPulsing = true;
-        pulseTimer.start();
-        start();
-        Trigger stopper = new Trigger(() -> pulseTimer.hasElapsed(pulseTime));
-        stopper.onTrue(new RunCommand(() -> {
-            stop();
-            stopPulse();
-        }));
-    }
-
-    public void startPulse() { // TODO: Javadoc
-        isPulsing = true;
-        pulseTimer.start();
-        Trigger stopper = new Trigger(() -> pulseTimer.hasElapsed(pulseTime));
-        stopper.onTrue(new RunCommand(() -> stop()));
-        Trigger waiter = new Trigger(() -> pulseTimer.hasElapsed(pulseTime + pulseGapTime));
-        waiter.onTrue(new RunCommand(() -> {
-            if(isPulsing) start();
-            pulseTimer.reset();
-        }));
-    }
-
-    public void stopPulse() { // TODO: Javadoc
         isPulsing = false;
-        pulseTimer.stop();
-        pulseTimer.reset();
-    }
 
-    /**
-     * Controller rumbles for a short period of time a specified number of times.
-     * <p>To change the length of a pulse, use setPulseTime. To change the time between pusles, use setPulseGapTime.
-     * @param times The desired number of pulses.
-     */
-    public void pulse(int times) {
-        isPulsing = true;
-        pulseTimer.start();
-        start();
-        for(AtomicInteger i = new AtomicInteger(0); i.get() < times; i.incrementAndGet()) {
-            Trigger stopper = new Trigger(() -> pulseTimer.hasElapsed(((pulseTime + pulseGapTime) * i.get()) + pulseTime));
-            stopper.onTrue(new RunCommand(() -> stop()));
-            if(i.get() < times - 1) {
-                Trigger waiter = new Trigger(() -> pulseTimer.hasElapsed((pulseTime + pulseGapTime) * (i.get() + 1)));
-                waiter.onTrue(new RunCommand(() -> start()));
+        debug = new CommandBase() {
+            @Override
+            public void execute() {
+                SmartDashboard.putBoolean("isRumbling", isRumbling);
+                SmartDashboard.putBoolean("isPulsing", isPulsing);
             }
-            else {
-                stopper.onTrue(new RunCommand(() -> stopPulse()));
+
+            @Override
+            public boolean isFinished() {
+                return false;
             }
-        }
+        };
     }
 
-    /**
-     * Schedules the Rumble to start based on the boolean condition.
-     * @param condition The condition that should be true to start the Rumble.
-     */
-    public void startWhen(BooleanSupplier condition) {
-        Trigger scheduler = new Trigger(condition);
-        scheduler.onTrue(new RunCommand(() -> start()));
+    public void debug() {
+        CommandScheduler.getInstance().schedule(debug);
     }
 
-    /**
-     * Schedules the Rumble to stop based on the boolean condition.
-     * @param condition The condition that should be true to stop the Rumble.
-     */
-    public void stopWhen(BooleanSupplier condition) {
-        Trigger scheduler = new Trigger(condition);
-        scheduler.onTrue(new RunCommand(() -> stop()));
+    public void startRumble() {
+        CommandBase startRumble = new CommandBase() {
+            @Override
+            public void initialize() {
+                isRumbling = true;
+            }
+
+            @Override
+            public void execute() {
+                if(isEnabled) {
+                    for(GenericHID controller : controllers) controller.setRumble(rumbleType, power);
+                }
+                else {
+                    for(GenericHID controller : controllers) controller.setRumble(rumbleType, 0.0);
+                }
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                for(GenericHID controller : controllers) controller.setRumble(rumbleType, 0.0);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return !isRumbling;
+            }
+        };
+        CommandScheduler.getInstance().schedule(startRumble);
     }
 
-    /**
-     * Schedules the Rumble to start when the condition is true and stop when it is false.
-     * @param condition The condition that should be true to start the Rumble.
-     */
+    public void startRumbleWhen(BooleanSupplier condition) {
+        CommandBase rumbleStarter = new CommandBase() {
+            @Override
+            public void execute() {
+                if(condition.getAsBoolean() && !isRumbling) startRumble();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        CommandScheduler.getInstance().schedule(rumbleStarter);
+    }
+
+    public void stopRumble() {
+        isRumbling = false;
+    }
+
+    public void stopRumbleWhen(BooleanSupplier condition) {
+        CommandBase rumbleStopper = new CommandBase() {
+            @Override
+            public void execute() {
+                if(condition.getAsBoolean() && isRumbling) stopRumble();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        CommandScheduler.getInstance().schedule(rumbleStopper);
+    }
+
+    public void rumble(double seconds) {
+        CommandBase pulse = new CommandBase() {
+            Timer timer;
+
+            @Override
+            public void initialize() {
+                timer = new Timer();
+                startRumble();
+                timer.start();
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                stopRumble();
+                timer.stop();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return timer.hasElapsed(seconds);
+            }
+        };
+        CommandScheduler.getInstance().schedule(pulse);
+    }
+
+    public void rumbleWhen(BooleanSupplier condition, double seconds) {
+        CommandBase rumbleScheduler = new CommandBase() {
+            @Override
+            public void execute() {
+                if(condition.getAsBoolean() && !isRumbling) rumble(seconds);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        CommandScheduler.getInstance().schedule(rumbleScheduler);
+    }
+
     public void rumbleWhile(BooleanSupplier condition) {
-        Trigger scheduler = new Trigger(condition);
-        scheduler.onTrue(new RunCommand(() -> start())).onFalse(new RunCommand(() -> stop()));
+        CommandBase rumbleScheduler = new CommandBase() {
+            @Override
+            public void execute() {
+                if(!isRumbling && condition.getAsBoolean()) {
+                    startRumble();
+                }
+                else if(isRumbling && !condition.getAsBoolean()) {
+                    stopRumble();
+                }
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        CommandScheduler.getInstance().schedule(rumbleScheduler);
     }
 
-    /**
-     * Schedules the Rumble to start pulsing based on the boolean condition.
-     * @param condition The condition that should be true to start pulsing.
-     */
+    public void startPulse() {
+        CommandBase startPulse = new CommandBase() {
+            Timer timer;
+
+            @Override
+            public void initialize() {
+                isPulsing = true;
+                timer = new Timer();
+                startRumble();
+                timer.start();
+            }
+
+            @Override
+            public void execute() {
+                if(isRumbling && timer.hasElapsed(pulseLength)) {
+                    stopRumble();
+                }
+                else if(!isRumbling && timer.hasElapsed(pulseTime)) {
+                    startRumble();
+                    timer.reset();
+                }
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                stopRumble();
+                timer.stop();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return !isPulsing;
+            }
+        };
+        CommandScheduler.getInstance().schedule(startPulse);
+    }
+
     public void startPulseWhen(BooleanSupplier condition) {
-        Trigger scheduler = new Trigger(condition);
-        scheduler.onTrue(new RunCommand(() -> startPulse()));
+        CommandBase pulseStarter = new CommandBase() {
+            @Override
+            public void execute() {
+                if(condition.getAsBoolean() && !isPulsing) startPulse();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        CommandScheduler.getInstance().schedule(pulseStarter);
     }
 
-    /**
-     * Schedules the Rumble to stop pulsing based on the boolean condition.
-     * @param condition The condition that should be true to stop pulsing.
-     */
+    public void stopPulse() {
+        isPulsing = false;
+    }
+
     public void stopPulseWhen(BooleanSupplier condition) {
-        Trigger scheduler = new Trigger(condition);
-        scheduler.onTrue(new RunCommand(() -> stopPulse()));
+        CommandBase pulseStopper = new CommandBase() {
+            @Override
+            public void execute() {
+                if(condition.getAsBoolean() && isPulsing) stopPulse();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        CommandScheduler.getInstance().schedule(pulseStopper);
     }
 
-    /**
-     * Schedules the Rumble to pulse once based on the boolean condition.
-     * @param condition The condition that should be true to pulse once.
-     */
+    public void pulse() {
+        CommandBase pulseOnce = new CommandBase() {
+            Timer timer;
+
+            @Override
+            public void initialize() {
+                timer = new Timer();
+                isPulsing = true;
+                startRumble();
+                timer.start();
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                isPulsing = false;
+                stopRumble();
+                timer.stop();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return timer.hasElapsed(pulseLength);
+            }
+        };
+        CommandScheduler.getInstance().schedule(pulseOnce);
+    }
+    
+    public void pulse(double times) {
+        CommandBase pulseTimes = new CommandBase() {
+            Timer timer;
+            double pulseCount = 0;
+
+            @Override
+            public void initialize() {
+                timer = new Timer();
+                startRumble();
+                isPulsing = true;
+                timer.start();
+            }
+
+            @Override
+            public void execute() {
+                if(isRumbling && timer.hasElapsed(pulseLength)) {
+                    stopRumble();
+                }
+                else if(!isRumbling && timer.hasElapsed(pulseTime)) {
+                    startRumble();
+                    pulseCount++;
+                    timer.reset();
+                }
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                stopRumble();
+                isPulsing = false;
+                timer.stop();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return pulseCount >= times || !isEnabled;
+            }
+        };
+        CommandScheduler.getInstance().schedule(pulseTimes);
+    }
+
     public void pulseWhen(BooleanSupplier condition) {
-        Trigger scheduler = new Trigger(condition);
-        scheduler.onTrue(new RunCommand(() -> pulse()));
+        CommandBase rumbleStarter = new CommandBase() {
+            boolean hasPulsed = false;
+
+            @Override
+            public void execute() {
+                if(condition.getAsBoolean() && !isPulsing  && !hasPulsed) {
+                    pulse();
+                    hasPulsed = true;
+                }
+                
+                if(!condition.getAsBoolean() && !isPulsing) {
+                    hasPulsed = false;
+                }
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        CommandScheduler.getInstance().schedule(rumbleStarter);
     }
 
-    /**
-     * Schedules the Rumble to pulse a specified number of times based on the boolean condition.
-     * @param condition The condition that should be true to pulse a specified number of times.
-     * @param times The desired number of pulses.
-     */
     public void pulseWhen(BooleanSupplier condition, int times) {
-        Trigger scheduler = new Trigger(condition);
-        scheduler.onTrue(new RunCommand(() -> pulse(times)));
+        CommandBase rumbleStarter = new CommandBase() {
+            boolean hasPulsed = false;
+
+            @Override
+            public void execute() {
+                if(condition.getAsBoolean() && !isPulsing  && !hasPulsed) {
+                    pulse(times);
+                    hasPulsed = true;
+                }
+                
+                if(!condition.getAsBoolean() && !isPulsing) {
+                    hasPulsed = false;
+                }
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        CommandScheduler.getInstance().schedule(rumbleStarter);
     }
 
-    /**
-     * Schedules the Rumble to pulse when the condition is true and stop when it is false.
-     * @param condition The condition that should be true to start pulsing.
-     */
     public void pulseWhile(BooleanSupplier condition) {
-        Trigger scheduler = new Trigger(condition);
-        scheduler.onTrue(new RunCommand(() -> start())).onFalse(new RunCommand(() -> stop()));
+        CommandBase pulseScheduler = new CommandBase() {
+            @Override
+            public void execute() {
+                if(!isPulsing && condition.getAsBoolean()) {
+                    startPulse();
+                }
+                else if(isPulsing && !condition.getAsBoolean()) {
+                    stopPulse();
+                }
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+        };
+        CommandScheduler.getInstance().schedule(pulseScheduler);
     }
+
 }
