@@ -62,6 +62,8 @@ public class SwerveModule extends SubsystemBase {
         driveMtr.setIdleMode(IdleMode.kBrake);
         steerMtr.setIdleMode(IdleMode.kCoast);
 
+        driveMtr.setSmartCurrentLimit(DriveConstants.driveCurrentLimitAmps);
+
         steerController = steerMtr.getPIDController();
         driveController = driveMtr.getPIDController();
 
