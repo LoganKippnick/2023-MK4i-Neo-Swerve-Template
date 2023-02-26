@@ -48,7 +48,7 @@ public class Constants {
         kGamepad
     }
 
-    public static final class Controllers {
+    public static final class ControllerConstants {
 
         public static final int driverGamepadPort = 0;
 
@@ -57,7 +57,7 @@ public class Constants {
 
         public static final int operatorGamepadPort = 2;
 
-        public static final int combinedControllerPort = 3;
+        public static final int hybridControllerPort = 3;
 
         public static final double joystickDeadband = 0.075;
         public static final double gamepadDeadband = 0.15;
@@ -132,10 +132,12 @@ public class Constants {
         public static final double rearLeftModOffset = Units.degreesToRadians(292.139);
         public static final double rearRightModOffset = Units.degreesToRadians(313.183);
 
+        public static final int driveCurrentLimitAmps = 50;
+
         public static final double drivekP = 0.005;
 
-        public static final double steerkP = 1.2477 * 0.6;
-        public static final double steerkD = 0.9062 * 0.6;
+        public static final double steerkP = 1.2477 * 0.3;
+        public static final double steerkD = 0.9062 * 0.3;
 
         public static final double ksVolts = .055;
         public static final double kvVoltSecsPerMeter = .2;
@@ -156,10 +158,10 @@ public class Constants {
         public static final double maxAccelMetersPerSecondSq = 1;
 
         // TODO: Tune the PID values below. Rotation should be okay.
-        public static final double drivekP = 2.25;
+        public static final double drivekP = 3.9;
         public static final double drivekD = 0.0;
 
-        public static final double rotkP = 1.5;
+        public static final double rotkP = 1.0;
         public static final double rotkD = 0.25;
 
         public final static TrajectoryConfig config = 
@@ -196,22 +198,25 @@ public class Constants {
 
         public static final String trajectoryFileLocation = "pathplanner/generatedJSON/";
 
-        public static final double driveOntoChargeStationVelMetersPerSecond = 0.5;
+        public static final double driveOntoChargeStationVelMetersPerSecond = 0.25;
 
         public static final double onChargeStationDeg = 15.0;
-        public static final double chargeStationControllerToleranceDeg = 5.0;
-        public static final double chargeStationBalancedToleranceDeg = 1.0;
+        public static final double chargeStationControllerToleranceDeg = 10.0;
+        public static final double chargeStationBalancedToleranceDeg = 10.0;
 
-        public static final double dockMaxVelMetersPerSecond = 0.5;
+        public static final double dockVelMetersPerSecond = 0.1;
         
-        public static final double dockkP = 0.01;
+        public static final double dockkP = 0.006;
         public static final double dockkI = 0.0;
-        public static final double dockkD = 0.0;
+        public static final double dockkD = 0.0001;
     }
 
     public static final class CompressorConstants {
         public static final double maxPressurePSI = 120.0; // 120 PSI is the legal maximum air tank pressure.
         public static final double minPressurePSI = 80.0;
+
+        public static final double compressorReenableVoltage = 11.5;
+        public static final double compressorReenableSeconds = 5.0;
     }
     
     public static final class LiftConstants {
@@ -221,8 +226,8 @@ public class Constants {
         public static final double maxHeightInches = 77.0;
         public static final double inchesPerEncRev = 11 * gearReduction;
 
-        public static final double kP = 0.1;
-        public static final double kD = 2.1;
+        public static final double kP = 0.1 * 0.9;
+        public static final double kD = 2.1 * 0.9;
 
         public static final int maxCurrentAmps = 25;
 
@@ -240,22 +245,46 @@ public class Constants {
 
         public static final double manualControlPadding = 2.0;
 
+        public static final double targetTolerance = 1.0;
+
         public static final double downActuationHeightInches = 18.0;
         public static final double upActuationHeightInches = 24.0;
     }
 
     public class IntakeConstants {
 
-        public static final double gearReduction = 16.0 / 22.0;
+        public static final double rollerGearReduction = 1.0 / 12.0;
 
         public static final double pulleyDiameterInches = 1.0;
-        public static final double pulleyCircumferenceInches = pulleyDiameterInches * Math.PI;
+        public static final double beltDiameterInches = pulleyDiameterInches + ((1.0 / 16.0) * 2.0);
+        public static final double beltCircumferenceInches = beltDiameterInches * Math.PI;
 
-        public static final double encRevToInches = pulleyDiameterInches * gearReduction;
+        public static final double encRevToInches = beltCircumferenceInches;
 
-        public static final double kP = 0.01;
+        public static final double absEncOffset = 0.0;
+
+        public static final int actuationCurrentLimitAmps = 15;
+
+        public static final double kP = 3.0;
         public static final double kD = 0.0;
 
-        public static final double freeRPM = 11000 * gearReduction;
+        public static final double manualPower = 0.5;
+
+        public static final double manualControlPadding = 0.5;
+
+        public static final double freeRPM = 11000 * rollerGearReduction;
+
+        public static final double inInches = 2.0;
+        public static final double outInches = 15.0;
+
+        public static final double minInches = 0.0;
+        public static final double maxInches = 17.0;
+
+        public static final double clawOpenLimitInches = 11.0;
+
+        public static final double rollerWheelDiameterInches = 4.0;
+        public static final double rollerWheelCircumferenceInches = rollerWheelDiameterInches * Math.PI;
+
+        public static final double driveMetersPerSecondToRollerRPM = (39.37 * 60.0) / rollerWheelCircumferenceInches;
     }
 }
