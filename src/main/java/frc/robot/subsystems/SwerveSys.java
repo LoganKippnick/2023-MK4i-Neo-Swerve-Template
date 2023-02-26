@@ -133,6 +133,17 @@ public class SwerveSys extends SubsystemBase {
         SmartDashboard.putNumber("front right distance", frontRightMod.getDriveDistanceMeters());
         SmartDashboard.putNumber("rear left distance", rearLeftMod.getDriveDistanceMeters());
         SmartDashboard.putNumber("rear right distance", rearRightMod.getDriveDistanceMeters());
+
+        if(isLocked) {
+            SwerveModuleState[] states = new SwerveModuleState[] {
+                new SwerveModuleState(0.0, new Rotation2d(0.25 * Math.PI)),
+                new SwerveModuleState(0.0, new Rotation2d(-0.25 * Math.PI)),
+                new SwerveModuleState(0.0, new Rotation2d(-0.25 * Math.PI)),
+                new SwerveModuleState(0.0, new Rotation2d(0.25 * Math.PI))
+            };
+
+            setModuleStates(states);
+        }
     }
     
     /**
@@ -145,18 +156,7 @@ public class SwerveSys extends SubsystemBase {
      */
     public void drive(double driveX, double driveY, double rotation, boolean isFieldOriented) {
 
-        SwerveModuleState[] states;
-
-        if(isLocked) {
-            // All wheels turn in 45 degrees to lock the drive base.
-            states = new SwerveModuleState[] {
-                new SwerveModuleState(0.0, new Rotation2d(0.25 * Math.PI)),
-                new SwerveModuleState(0.0, new Rotation2d(-0.25 * Math.PI)),
-                new SwerveModuleState(0.0, new Rotation2d(-0.25 * Math.PI)),
-                new SwerveModuleState(0.0, new Rotation2d(0.25 * Math.PI))
-            };
-        }
-        else {
+        if (!isLocked) {
             // Reduces the speed of the drive base for "turtle" or "sprint" modes.
             driveX *= speedFactor;
             driveY *= speedFactor;
@@ -172,13 +172,13 @@ public class SwerveSys extends SubsystemBase {
                 : new ChassisSpeeds(driveX, driveY, rotation);
 
             // Uses kinematics (wheel placements) to convert overall robot state to array of individual module states.
-            states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
+            SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
+
+            // Makes sure the wheels don't try to spin faster than the maximum speed possible
+            SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxDriveSpeedMetersPerSec);
+
+            setModuleStates(states);
         }
-
-        // Makes sure the wheels don't try to spin faster than the maximum speed possible
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxDriveSpeedMetersPerSec);
-
-        setModuleStates(states);
     }
 
     /**
