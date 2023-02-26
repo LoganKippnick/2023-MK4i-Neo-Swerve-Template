@@ -152,6 +152,11 @@ public class Constants {
         kFromCenter
     }
 
+    public static enum DockHeading {
+        kLeft,
+        kRight
+    }
+
     public static final class AutoConstants {
 
         public static final double maxVelMetersPerSec = 2;

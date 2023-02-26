@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DockDirection;
+import frc.robot.Constants.DockHeading;
 import frc.robot.subsystems.SwerveSys;
 
 public class DockCmd extends CommandBase {
@@ -13,6 +14,7 @@ public class DockCmd extends CommandBase {
     private final SwerveSys swerveSys;
 
     private final DockDirection direction;
+    // private final DockHeading heading;
 
     private boolean onChargeStation = false;
     private boolean isBalanced = false;
@@ -29,10 +31,11 @@ public class DockCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public DockCmd(DockDirection direction, SwerveSys swerveSys) {
+    public DockCmd(DockDirection direction, DockHeading heading, SwerveSys swerveSys) {
 
         this.swerveSys = swerveSys;
         this.direction = direction;
+        // this.heading = heading;
 
         dockController = new PIDController(
             AutoConstants.dockkP,
@@ -43,7 +46,7 @@ public class DockCmd extends CommandBase {
         dockController.setTolerance(AutoConstants.chargeStationControllerToleranceDeg);
 
         rotController = AutoConstants.rotController;
-        rotController.setGoal(Math.PI * 0.5);
+        rotController.setGoal(Math.PI * (heading.equals(DockHeading.kLeft) ? 0.5 : -0.5));
 
         addRequirements(swerveSys);
     }
