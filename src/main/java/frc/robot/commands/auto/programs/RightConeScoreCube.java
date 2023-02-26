@@ -1,9 +1,10 @@
-package frc.robot.commands.auto;
+package frc.robot.commands.auto.programs;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.AutoRow3PoleCmd;
 import frc.robot.commands.WaitCmd;
 import frc.robot.commands.WaitUntilCmd;
+import frc.robot.commands.auto.FollowTrajectoryCmd;
 import frc.robot.commands.claw.CloseCmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.IntakeSys;
