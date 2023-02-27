@@ -2,7 +2,6 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.IntakeSys;
 
 public class InCmd extends CommandBase {
