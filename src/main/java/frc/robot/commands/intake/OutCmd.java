@@ -8,7 +8,6 @@ import frc.robot.subsystems.IntakeSys;
 public class OutCmd extends CommandBase {
 
     private final IntakeSys intakeSys;
-    private final ClawSys clawSys;
 
     /**
      * Constructs a new ExampleCmd.
@@ -19,9 +18,8 @@ public class OutCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public OutCmd(IntakeSys intakeSys, ClawSys clawSys) {
+    public OutCmd(IntakeSys intakeSys) {
         this.intakeSys = intakeSys;
-        this.clawSys = clawSys;
 
         addRequirements(intakeSys);
     }
@@ -35,8 +33,7 @@ public class OutCmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if(!clawSys.isOpen() || intakeSys.getCurrentPosition() > IntakeConstants.clawOpenLimitInches)
-            intakeSys.setTarget(IntakeConstants.outInches);
+        intakeSys.setTarget(IntakeConstants.outInches);
     }
    
     // Called once the command ends or is interrupted.
