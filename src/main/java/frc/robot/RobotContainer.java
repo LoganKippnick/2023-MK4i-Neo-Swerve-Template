@@ -11,11 +11,20 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerType;
+import frc.robot.Constants.DockDirection;
+import frc.robot.Constants.DockHeading;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.commands.WaitCmd;
+import frc.robot.commands.auto.DockCmd;
+import frc.robot.commands.auto.FollowTrajectoryCmd;
+import frc.robot.commands.auto.TestTrajectory;
+import frc.robot.commands.auto.programs.RightConeGrabCube;
+import frc.robot.commands.auto.TestTrajectory;
 import frc.robot.commands.claw.CloseCmd;
 import frc.robot.commands.claw.OpenCmd;
 import frc.robot.commands.drivetrain.DefaultSpeedCmd;
@@ -95,6 +104,9 @@ public class RobotContainer {
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
     public RobotContainer() {
+        matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, operatorController);
+
+        limelight.setPipelineIndex(0);
 
         new CompressorSys();
 
@@ -106,7 +118,7 @@ public class RobotContainer {
     public void configBindings() {
         
         // Set subsystem default commands, which run when no other command is scheduled.
-        if(DriverStation.getJoystickIsXbox(ControllerConstants.hybridControllerPort)) {
+        if(DriverStation.isJoystickConnected(ControllerConstants.hybridControllerPort)) {
             configHybridBindings();
             SmartDashboard.putString("control type", "hybrid");
         }
@@ -121,26 +133,24 @@ public class RobotContainer {
             }
             else {
                 SmartDashboard.putString("control type", "only operator");
+                configDriverBindings(ControllerType.kGamepad);
             }
 
             configOperatorBindings();
         }
 
-        brownOutRumble.rumbleWhen(() -> RobotController.isBrownedOut(), 2.0);
+        // brownOutRumble.rumbleWhen(() -> RobotController.isBrownedOut(), 2.0);
         
-        matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 60.0 && DriverStation.isTeleop(), 3);
-        matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 30.0 && DriverStation.isTeleop(), 2);
-        matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 15.0 && DriverStation.isTeleop(), 1);
+        // matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 60.0 && DriverStation.isTeleop(), 3);
+        // matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 30.0 && DriverStation.isTeleop(), 2);
+        // matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 15.0 && DriverStation.isTeleop(), 1);
 
-        matchTimeRumble.pulseWhen(() -> operatorController.getRightTriggerAxis() > 0.25, 3);
-        matchTimeRumble.debug();
+        // countdown10Rumble.setPulseTime(1.0);
+        // countdown10Rumble.pulseWhen(() -> DriverStation.getMatchTime() <= 10.0 && DriverStation.isTeleop(), 5);
 
-        countdown10Rumble.setPulseTime(1.0);
-        countdown10Rumble.pulseWhen(() -> DriverStation.getMatchTime() <= 10.0 && DriverStation.isTeleop(), 5);
-
-        countdown5Rumble.setPulseTime(1.0);
-        countdown5Rumble.setPulseLength(0.25);
-        countdown5Rumble.pulseWhen(() -> DriverStation.getMatchTime() <= 5.0 && DriverStation.isTeleop(), 5);
+        // countdown5Rumble.setPulseTime(1.0);
+        // countdown5Rumble.setPulseLength(0.25);
+        // countdown5Rumble.pulseWhen(() -> DriverStation.getMatchTime() <= 5.0 && DriverStation.isTeleop(), 5);
     }
 
     public void configDriverBindings(ControllerType driverControllerType) {
@@ -211,12 +221,13 @@ public class RobotContainer {
         operatorLeftBumper.onTrue(new OpenCmd(clawSys));
         operatorRightBumper.onTrue(new CloseCmd(clawSys));
 
-        operatorUpBtn.onTrue(new OutCmd(intakeSys, clawSys));
-        operatorDownBtn.onTrue(new InCmd(intakeSys, clawSys));
+        operatorUpBtn.onTrue(new OutCmd(intakeSys));
+        operatorDownBtn.onTrue(new InCmd(intakeSys));
 
         matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, operatorController);
-        // matchTimeRumble.debug();
+        matchTimeRumble.debug();
         // matchTimeRumble.pulseWhen(() -> operatorController.getRightTriggerAxis() > 0.25);
+        operatorLeftBtn.onTrue(new RunCommand(() -> matchTimeRumble.pulse()));
 
         countdown10Rumble = new Rumble(RumbleType.kRightRumble, 1.0, operatorController);
         countdown5Rumble = new Rumble(RumbleType.kRightRumble, 1.0, operatorController);
@@ -252,17 +263,14 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return null;
-        // return new DockCmd(DockDirection.kFromCenter, swerveSys);
+        return new RightConeGrabCube(swerveSys, liftSys, clawSys, intakeSys);
+        // return new DockCmd(DockDirection.kFromCenter, DockHeading.kLeft, swerveSys);
         // return new ResetPoseCmd(swerveSys).andThen(new TestTrajectory(swerveSys));
     }
 
-    public void periodic() {
-        limelight.setLED(VisionLEDMode.kOff);
-        limelight.setDriverMode(false);
-        
-        limelight.setPipelineIndex(1);
+    boolean hasPulsed = false;
 
+    public void periodic() {        
         SmartDashboard.putString("LED mode", limelight.getLEDMode().toString());
         SmartDashboard.putBoolean("is limelight connected", limelight.isConnected());
         SmartDashboard.putNumber("pipeline index", limelight.getPipelineIndex());
@@ -288,7 +296,6 @@ public class RobotContainer {
             return 0.0;
         
         return value;
-
     }
 
 }

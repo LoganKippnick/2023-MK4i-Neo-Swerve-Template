@@ -1,27 +1,20 @@
 package frc.robot.commands.auto;
 
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-
-import java.io.IOException;
-import java.nio.file.Path;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.SwerveSys;
 
-public class FollowTrajectoryCmd extends SwerveControllerCommand {
-
-    private final Trajectory trajectory;
+public class FollowTrajectoryCmd extends PPSwerveControllerCommand {
 
     public FollowTrajectoryCmd(String trajectoryName, SwerveSys swerveSys) {
 
         super(
-            createTrajectory(trajectoryName),
+            PathPlanner.loadPath(trajectoryName, new PathConstraints(4.0, 3.0)),
             swerveSys::getPose,
             DriveConstants.kinematics,
             AutoConstants.driveController,
@@ -30,34 +23,9 @@ public class FollowTrajectoryCmd extends SwerveControllerCommand {
             swerveSys::setModuleStates,
             swerveSys
         );
-
-        this.trajectory = createTrajectory(trajectoryName);
-    
     }
 
     public Pose2d getInitialPose() {   
-        return trajectory.getInitialPose();
+        return getInitialPose();
     }
-
-    /**
-     * Creates trajectories from a JSON file in deploy directory.
-     * 
-     * @param fileName The name of the JSON file to create a trajectory for (excluding the file extension).
-     * 
-     * @return The trajectory created from the JSON file.
-     */
-    public static Trajectory createTrajectory(String trajectoryName) {
-        Trajectory trajectory;
-        Path trajectoryPath =
-            Filesystem.getDeployDirectory().toPath().resolve(AutoConstants.trajectoryFileLocation + trajectoryName + ".wpilib.json");
-
-        try {
-            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-            return trajectory;
-        } catch (IOException ex) {
-            DriverStation.reportError("Unable to open trajectory: " + trajectoryName, ex.getStackTrace());
-            return new Trajectory();
-        }
-    }
-
 }

@@ -53,6 +53,7 @@ public class IntakeManualControlCmd extends CommandBase {
         double rollerPower = intakeTrigger.getAsDouble() - outtakeTrigger.getAsDouble();
         // if(rollerPower != 0.0) 
             intakeSys.manualRollerControl(rollerPower);
+
     }
     
     // Called once the command ends or is interrupted.

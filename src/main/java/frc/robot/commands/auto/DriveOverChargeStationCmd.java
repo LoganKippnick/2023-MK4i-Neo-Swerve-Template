@@ -1,7 +1,6 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
@@ -15,7 +14,7 @@ public class DriveOverChargeStationCmd extends CommandBase {
     private final DockDirection direction;
 
     private final PIDController strafeController;
-    private final ProfiledPIDController rotController;
+    private final PIDController rotController;
 
     private boolean isOverCenter = false;
 
@@ -41,7 +40,7 @@ public class DriveOverChargeStationCmd extends CommandBase {
         strafeController.setSetpoint(0.0);
 
         rotController = AutoConstants.rotController;
-        rotController.setGoal(0.0);
+        rotController.setSetpoint(0.0);
 
         addRequirements(swerveSys);
     }

@@ -132,7 +132,8 @@ public class Constants {
         public static final double rearLeftModOffset = Units.degreesToRadians(292.139);
         public static final double rearRightModOffset = Units.degreesToRadians(313.183);
 
-        public static final int driveCurrentLimitAmps = 50;
+        public static final int driveCurrentLimitAmps = 40;
+        public static final int dockCurrentLimitAmps = 50;
 
         public static final double drivekP = 0.005;
 
@@ -159,15 +160,15 @@ public class Constants {
 
     public static final class AutoConstants {
 
-        public static final double maxVelMetersPerSec = 2;
-        public static final double maxAccelMetersPerSecondSq = 1;
+        public static final double maxVelMetersPerSec = 4.0;
+        public static final double maxAccelMetersPerSecondSq = 3.0;
 
         // TODO: Tune the PID values below. Rotation should be okay.
-        public static final double drivekP = 3.9;
-        public static final double drivekD = 0.0;
+        public static final double drivekP = 12.8;
+        public static final double drivekD = 0.05;
 
-        public static final double rotkP = 1.0;
-        public static final double rotkD = 0.25;
+        public static final double rotkP = 1.5 * 10;
+        public static final double rotkD = 0.15 * 10;
 
         public final static TrajectoryConfig config = 
             new TrajectoryConfig(
@@ -183,16 +184,12 @@ public class Constants {
             drivekD
         );
 
-        public static final ProfiledPIDController rotController = constructRotController();
-        private static ProfiledPIDController constructRotController() {
-            ProfiledPIDController rotController = new ProfiledPIDController(
+        public static final PIDController rotController = constructRotController();
+        private static PIDController constructRotController() {
+            PIDController rotController = new PIDController(
                 rotkP,
                 0,
-                rotkD,
-                new TrapezoidProfile.Constraints(
-                    DriveConstants.maxTurnRateRadiansPerSec,
-                    DriveConstants.maxTurnRateRadiansPerSec
-                )
+                rotkD
             );
 
             // sets wraparound from 0 to 2 * PI
@@ -268,7 +265,7 @@ public class Constants {
 
         public static final double absEncOffset = 0.0;
 
-        public static final int actuationCurrentLimitAmps = 15;
+        public static final int actuationCurrentLimitAmps = 15; //20
 
         public static final double kP = 3.0;
         public static final double kD = 0.0;

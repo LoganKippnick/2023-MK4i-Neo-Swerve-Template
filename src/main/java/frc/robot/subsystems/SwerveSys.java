@@ -221,6 +221,10 @@ public class SwerveSys extends SubsystemBase {
         rearLeftMod.setDesiredState(moduleStates[2], true);
         rearRightMod.setDesiredState(moduleStates[3], true);
     }
+
+    public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+        setModuleStatesAuto(DriveConstants.kinematics.toSwerveModuleStates(chassisSpeeds));
+    }
     
 
     /**
@@ -264,10 +268,19 @@ public class SwerveSys extends SubsystemBase {
      */
     // TODO: Make sure this works.
     public void resetPose() {
-
-        resetHeading();
         resetDriveDistances();
+        resetHeading();
 
+        odometry = new SwerveDrivePoseEstimator(
+            DriveConstants.kinematics,
+            new Rotation2d(),
+            getModulePositions(),
+            new Pose2d()
+        );
+    }
+
+    public void setHeading(Rotation2d heading) {
+        imu.setYaw(heading.getDegrees());
     }
 
     /**
@@ -371,5 +384,12 @@ public class SwerveSys extends SubsystemBase {
      */
     public void resetHeading() {
         imu.setYaw(0.0);
+    }
+
+    public void setDriveCurrentLimit(int amps) {
+        frontLeftMod.setDriveCurrentLimit(amps);
+        frontRightMod.setDriveCurrentLimit(amps);
+        rearLeftMod.setDriveCurrentLimit(amps);
+        rearRightMod.setDriveCurrentLimit(amps);
     }
 }

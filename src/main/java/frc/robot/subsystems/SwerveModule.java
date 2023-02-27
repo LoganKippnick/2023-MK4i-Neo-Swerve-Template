@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
@@ -103,9 +104,7 @@ public class SwerveModule extends SubsystemBase {
      * Resets the distance traveled by the module.
      */
     public void resetDistance() {
-
         driveEnc.setPosition(0.0);
-
     }
 
     /**
@@ -164,7 +163,6 @@ public class SwerveModule extends SubsystemBase {
     /**
      * Calculates the angle motor setpoint based on the desired angle and the current angle measurement.
      */
-    // TODO: Figure out how necessary this method is.
     public double calculateAdjustedAngle(double targetAngle, double currentAngle) {
 
         double modAngle = currentAngle % (2.0 * Math.PI);
@@ -224,5 +222,9 @@ public class SwerveModule extends SubsystemBase {
                 DriveConstants.driveFF.calculate(speedMetersPerSecond)
             );
         }
-    }    
+    }
+
+    public void setDriveCurrentLimit(int amps) {
+        driveMtr.setSmartCurrentLimit(amps);
+    }
 }

@@ -1,7 +1,6 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
@@ -20,7 +19,7 @@ public class DockCmd extends CommandBase {
     private boolean isBalanced = false;
 
     private final PIDController dockController;
-    private final ProfiledPIDController rotController;
+    private final PIDController rotController;
 
     /**
      * Constructs a new ExampleCmd.
@@ -46,7 +45,7 @@ public class DockCmd extends CommandBase {
         dockController.setTolerance(AutoConstants.chargeStationControllerToleranceDeg);
 
         rotController = AutoConstants.rotController;
-        rotController.setGoal(Math.PI * (heading.equals(DockHeading.kLeft) ? 0.5 : -0.5));
+        rotController.setSetpoint(Math.PI * (heading.equals(DockHeading.kLeft) ? 0.5 : -0.5));
 
         addRequirements(swerveSys);
     }
@@ -95,8 +94,7 @@ public class DockCmd extends CommandBase {
             swerveSys.drive(
                 dockVel,
                 0.0,
-                // rotController.calculate(swerveSys.getHeading().getRadians()),
-                0.0,
+                rotController.calculate(swerveSys.getHeading().getRadians()),
                 true
             );
         }
