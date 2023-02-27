@@ -64,7 +64,7 @@ public class Constants {
 
         public static final double joystickDeadband = 0.075;
         public static final double gamepadDeadband = 0.15;
-        public static final double triggerDeadband = 0.25;
+        public static final double triggerPressedDeadband = 0.25;
     }
 
     public static final class PneumaticChannels {

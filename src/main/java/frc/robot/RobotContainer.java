@@ -64,7 +64,8 @@ public class RobotContainer {
     private final JoystickButton driverLeftBumper = new JoystickButton(driverController, 5);
     private final JoystickButton driverRightBumper = new JoystickButton(driverController, 6);
     private final JoystickButton driverMenuBtn = new JoystickButton(driverController, 8);
-    private final Trigger driverRightTriggerBtn = new Trigger(() -> driverController.getRightTriggerAxis() > ControllerConstants.triggerDeadband);
+    private final Trigger driverRightTriggerBtn =
+        new Trigger(() -> driverController.getRightTriggerAxis() > ControllerConstants.triggerPressedDeadband);
 
     private final JoystickButton operatorABtn = new JoystickButton(operatorController, 1);
     private final JoystickButton operatorBBtn = new JoystickButton(operatorController, 2);
