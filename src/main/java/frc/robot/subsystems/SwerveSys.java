@@ -114,7 +114,8 @@ public class SwerveSys extends SubsystemBase {
         SmartDashboard.putNumber("Odometry y", odometry.getEstimatedPosition().getY());
 
         SmartDashboard.putNumber("speed", getAverageDriveVelocityMetersPerSecond());
-        SmartDashboard.putNumber("forward speed", getForwardVelocityMetersPerSecond());
+        SmartDashboard.putNumber("direction of travel", getAverageDirection().getDegrees()); // TODO: Make sure this works.
+        SmartDashboard.putNumber("forward speed", getForwardVelocityMetersPerSecond()); // TODO: Make sure this works.
 
         SmartDashboard.putNumber("front left rotation encoder", frontLeftMod.getSteerEncAngle().getDegrees());
         SmartDashboard.putNumber("front right rotation encoder", frontRightMod.getSteerEncAngle().getDegrees());
