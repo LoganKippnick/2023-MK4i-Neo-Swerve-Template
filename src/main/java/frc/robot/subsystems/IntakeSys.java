@@ -18,6 +18,7 @@ public class IntakeSys extends SubsystemBase {
 
     private final CANSparkMax actuationMtr;
     private final CANSparkMax upperMtr;
+    @SuppressWarnings("unused")
     private final CANSparkMax lowerMtr;
 
     private final RelativeEncoder intakeEnc;
