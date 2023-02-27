@@ -15,7 +15,7 @@ public class Rumble {
     private final RumbleType rumbleType;
     private final double power;
 
-    private final CommandBase debug;
+    private final CommandBase debug; // TODO: Make sure this class works, then get rid of debug.
 
     private double pulseLength = 0.25;
     private double pulseTime = 0.5;
