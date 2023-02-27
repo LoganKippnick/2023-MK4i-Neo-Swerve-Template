@@ -33,7 +33,7 @@ public class CompressorSys extends SubsystemBase {
     @Override
     public void periodic() {
         if(RobotController.isBrownedOut()) {
-            compressor.disable();
+            setEnabled(false);
             timer.stop();
             timer.reset();
         }
@@ -43,7 +43,7 @@ public class CompressorSys extends SubsystemBase {
         }
 
         if(timer.hasElapsed(CompressorConstants.compressorReenableSeconds)) {
-            compressor.enableAnalog(CompressorConstants.minPressurePSI, CompressorConstants.maxPressurePSI);
+            setEnabled(true);
             timer.stop();
             timer.reset();
         }
@@ -62,6 +62,18 @@ public class CompressorSys extends SubsystemBase {
      */
     public boolean isEnabled() {
         return compressor.isEnabled();
+    }
+
+    /**
+     * Sets whether the compressor should enable or disable.
+     * 
+     * @param isEnabled True if the compressor should enable.
+     */
+    public void setEnabled(boolean isEnabled) {
+        if(isEnabled)
+            compressor.enableAnalog(CompressorConstants.minPressurePSI, CompressorConstants.maxPressurePSI);
+        else
+            compressor.disable();
     }
 
     /**
