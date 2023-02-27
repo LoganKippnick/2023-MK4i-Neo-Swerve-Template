@@ -239,13 +239,14 @@ public class Constants {
 
         public static final double downInches = 0.0;
         public static final double row1Inches = 35.0;
-        public static final double row2Inches = 54.5;
+        public static final double row2ShelfInches = 49.0; // TODO: Confirm this height
+        public static final double row2PoleInches = 55.0;
         public static final double row3ShelfInches = 71.0;
         public static final double row3PoleInches = 77.0;
 
         public static final double manualControlPadding = 2.0;
 
-        public static final double targetTolerance = 1.0;
+        public static final double targetTolerance = 0.25;
 
         public static final double downActuationHeightInches = 18.0;
         public static final double upActuationHeightInches = 24.0;

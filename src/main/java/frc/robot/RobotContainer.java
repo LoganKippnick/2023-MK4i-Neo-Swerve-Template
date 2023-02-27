@@ -28,7 +28,8 @@ import frc.robot.commands.intake.IntakeManualControlCmd;
 import frc.robot.commands.lift.DownCmd;
 import frc.robot.commands.lift.LiftManualControlCmd;
 import frc.robot.commands.lift.Row1Cmd;
-import frc.robot.commands.lift.Row2Cmd;
+import frc.robot.commands.lift.Row2PoleCmd;
+import frc.robot.commands.lift.Row2ShelfCmd;
 import frc.robot.commands.lift.Row3PoleCmd;
 import frc.robot.commands.lift.Row3ShelfCmd;
 import frc.robot.commands.vision.RestartLimelightCmd;
@@ -201,10 +202,11 @@ public class RobotContainer {
         );
 
         operatorABtn.onTrue(new Row1Cmd(true, liftSys));
-        operatorBBtn.onTrue(new Row2Cmd(true, liftSys));
+        operatorBBtn.onTrue(new Row2PoleCmd(true, liftSys));
         operatorXBtn.onTrue(new DownCmd(true, liftSys));
         operatorYBtn.onTrue(new Row3PoleCmd(true, liftSys));
 
+        operatorWindowBtn.and(operatorXBtn).onTrue(new Row2ShelfCmd(true, liftSys));
         operatorWindowBtn.and(operatorYBtn).onTrue(new Row3ShelfCmd(true, liftSys));
         
         operatorLeftBumper.onTrue(new OpenCmd(clawSys));
@@ -230,7 +232,7 @@ public class RobotContainer {
         );
 
         hybridABtn.onTrue(new Row1Cmd(true, liftSys));
-        hybridBBtn.onTrue(new Row2Cmd(true, liftSys));
+        hybridBBtn.onTrue(new Row2PoleCmd(true, liftSys));
         hybridXBtn.onTrue(new DownCmd(true, liftSys));
         hybridYBtn.onTrue(new Row3PoleCmd(true, liftSys));
 

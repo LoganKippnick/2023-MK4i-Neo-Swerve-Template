@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.LiftSys;
 
-public class Row2Cmd extends CommandBase {
+public class Row2ShelfCmd extends CommandBase {
 
     private final LiftSys liftSys;
 
@@ -19,7 +19,7 @@ public class Row2Cmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public Row2Cmd(boolean finishInstantly, LiftSys liftSys) {
+    public Row2ShelfCmd(boolean finishInstantly, LiftSys liftSys) {
         this.liftSys = liftSys;
         this.finishInstantly = finishInstantly;
 
@@ -35,7 +35,7 @@ public class Row2Cmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        liftSys.setTarget(LiftConstants.row2Inches);
+        liftSys.setTarget(LiftConstants.row2ShelfInches);
     }
 
     // Called once the command ends or is interrupted.
@@ -48,8 +48,8 @@ public class Row2Cmd extends CommandBase {
     @Override
     public boolean isFinished() {
         return finishInstantly || (
-            liftSys.getCurrentPosition() >= LiftConstants.row2Inches - LiftConstants.targetTolerance &&
-            liftSys.getCurrentPosition() <= LiftConstants.row2Inches + LiftConstants.targetTolerance
+            liftSys.getCurrentPosition() >= LiftConstants.row2ShelfInches - LiftConstants.targetTolerance &&
+            liftSys.getCurrentPosition() <= LiftConstants.row2ShelfInches + LiftConstants.targetTolerance
         );
     }
 
