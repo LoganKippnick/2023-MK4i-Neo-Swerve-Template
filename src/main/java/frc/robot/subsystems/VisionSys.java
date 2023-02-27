@@ -6,26 +6,26 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 
-/**
- * The type of target tracked based on the pipeline.
- */
-enum TargetType { // TODO: Make sure pipeline indexes are correct
-    kPoleTape(0, "reflective tape"),
-    kAprilTag(1, "april tag"),
-    kCone(2, "cone"),
-    kCube(3, "cube"),
-    kNone(-1, "none");
-
-    public final int pipelineIndex;
-    public final String name;
-
-    private TargetType(int pipelineIndex, String name) {
-        this.pipelineIndex = pipelineIndex;
-        this.name = name;
-    }
-}
-
 public class VisionSys extends SubsystemBase {
+
+    /**
+     * The type of target tracked based on the pipeline.
+     */
+    public static enum TargetType { // TODO: Make sure pipeline indexes are correct
+        kPoleTape(0, "reflective tape"),
+        kAprilTag(1, "april tag"),
+        kCone(2, "cone"),
+        kCube(3, "cube"),
+        kNone(-1, "none");
+
+        public final int pipelineIndex;
+        public final String name;
+
+        private TargetType(int pipelineIndex, String name) {
+            this.pipelineIndex = pipelineIndex;
+            this.name = name;
+        }
+    }
 
     PhotonCamera limelight;
     
