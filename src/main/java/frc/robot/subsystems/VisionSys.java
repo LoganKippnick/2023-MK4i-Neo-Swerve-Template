@@ -5,6 +5,7 @@ import org.photonvision.PhotonCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
+import frc.robot.Constants.VisionConstants;
 
 public class VisionSys extends SubsystemBase {
 
@@ -96,6 +97,15 @@ public class VisionSys extends SubsystemBase {
      */
     public double targetYDegrees() {
         return limelight.getLatestResult().getBestTarget().getPitch();
+    }
+
+    /**
+     * Checks whether the target is aligned.
+     * @return True if the target is within the alignment threshold.
+     */
+    public boolean targetIsXAligned() {
+        return targetXDegrees() > targetXDegrees() - VisionConstants.alignedToleranceDegrees &&
+        targetXDegrees() < targetXDegrees() + VisionConstants.alignedToleranceDegrees;
     }
 
     /**

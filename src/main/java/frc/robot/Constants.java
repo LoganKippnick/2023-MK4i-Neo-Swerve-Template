@@ -169,9 +169,9 @@ public class Constants {
         public static final double drivekP = 12.8;
         public static final double drivekD = 0.05;
 
-        // TODO: Tune rotation PID values
-        public static final double rotkP = 1.5 * 10;
-        public static final double rotkD = 0.15 * 10;
+        // TODO: Make sure this works.
+        public static final double rotkP = Units.radiansToDegrees(1.5);
+        public static final double rotkD = Units.radiansToDegrees(0.15);
 
         public final static TrajectoryConfig config = 
             new TrajectoryConfig(
@@ -187,7 +187,7 @@ public class Constants {
             drivekD
         );
 
-        public static final PIDController rotController = constructRotController();
+        public static final PIDController rotController = constructRotController(); // FIXME: Anything that calls this might have to be in degrees.
         private static PIDController constructRotController() {
             PIDController rotController = new PIDController(
                 rotkP,
@@ -216,7 +216,18 @@ public class Constants {
         public static final double dockkD = 0.0001;
     }
 
+    public static final class VisionConstants {
+
+        public static final double kP = 0.01;
+        public static final double kD = 0.0;
+
+        public static final PIDController alignController = new PIDController(kP, 0.0, kD);
+
+        public static final double alignedToleranceDegrees = 2.0;
+    }
+
     public static final class CompressorConstants {
+
         public static final double maxPressurePSI = 120.0; // 120 PSI is the legal maximum air tank pressure.
         public static final double minPressurePSI = 80.0;
 

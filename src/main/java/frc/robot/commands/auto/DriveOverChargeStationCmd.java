@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DockDirection;
+import frc.robot.Constants.DockHeading;
 import frc.robot.subsystems.SwerveSys;
 
 public class DriveOverChargeStationCmd extends CommandBase {
@@ -29,7 +30,7 @@ public class DriveOverChargeStationCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public DriveOverChargeStationCmd(DockDirection direction, SwerveSys swerveSys) {
+    public DriveOverChargeStationCmd(DockDirection direction, DockHeading heading, SwerveSys swerveSys) {
 
         this.swerveSys = swerveSys;
         this.direction = direction;
@@ -40,7 +41,7 @@ public class DriveOverChargeStationCmd extends CommandBase {
         strafeController.setSetpoint(0.0);
 
         rotController = AutoConstants.rotController;
-        rotController.setSetpoint(0.0);
+        rotController.setSetpoint((heading.equals(DockHeading.kLeft) ? 90 : -90));
 
         addRequirements(swerveSys);
     }
@@ -64,7 +65,7 @@ public class DriveOverChargeStationCmd extends CommandBase {
 
         swerveSys.drive(
             AutoConstants.driveOntoChargeStationVelMetersPerSecond * (direction.equals(DockDirection.kFromCenter) ? -1 : 1),
-            strafeController.calculate(swerveSys.getPose().getY()),
+            -strafeController.calculate(swerveSys.getPose().getY()),
             rotController.calculate(swerveSys.getHeading().getRadians()),
             true
         );

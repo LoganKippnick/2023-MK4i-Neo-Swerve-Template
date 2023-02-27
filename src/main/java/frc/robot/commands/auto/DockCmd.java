@@ -45,7 +45,7 @@ public class DockCmd extends CommandBase {
         dockController.setTolerance(AutoConstants.chargeStationControllerToleranceDeg);
 
         rotController = AutoConstants.rotController;
-        rotController.setSetpoint(Math.PI * (heading.equals(DockHeading.kLeft) ? 0.5 : -0.5));
+        rotController.setSetpoint((heading.equals(DockHeading.kLeft) ? 90 : -90));
 
         addRequirements(swerveSys);
     }
@@ -71,7 +71,7 @@ public class DockCmd extends CommandBase {
             swerveSys.drive(
                 AutoConstants.driveOntoChargeStationVelMetersPerSecond * (direction.equals(DockDirection.kFromCenter) ? -1 : 1),
                 0.0,
-                rotController.calculate(swerveSys.getHeading().getRadians()),
+                rotController.calculate(swerveSys.getHeading().getDegrees()),
                 true
             );
         }
@@ -94,7 +94,7 @@ public class DockCmd extends CommandBase {
             swerveSys.drive(
                 dockVel,
                 0.0,
-                rotController.calculate(swerveSys.getHeading().getRadians()),
+                rotController.calculate(swerveSys.getHeading().getDegrees()),
                 true
             );
         }
