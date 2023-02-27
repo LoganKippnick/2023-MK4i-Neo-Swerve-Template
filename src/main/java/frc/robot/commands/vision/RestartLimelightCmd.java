@@ -1,21 +1,16 @@
 package frc.robot.commands.vision;
 
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.CANDevices;
 import frc.robot.commands.WaitCmd;
+import frc.robot.subsystems.VisionSys;
 
 public class RestartLimelightCmd extends SequentialCommandGroup {
-
-    private static final PowerDistribution pdh = new PowerDistribution(CANDevices.powerDistributionHubId, ModuleType.kRev);
     
-    public RestartLimelightCmd() {
+    public RestartLimelightCmd(VisionSys visionSys) {
         super(
-            new RunCommand(() -> pdh.setSwitchableChannel(false)),
+            new SetPowerCmd(false, visionSys),
             new WaitCmd(3.0),
-            new RunCommand(() -> pdh.setSwitchableChannel(true))
+            new SetPowerCmd(true, visionSys)
         );
     }
 

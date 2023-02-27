@@ -4,6 +4,7 @@ import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CANDevices;
 
 /**
  * The type of target tracked based on the pipeline.
@@ -35,6 +36,7 @@ public class VisionSys extends SubsystemBase {
      */
     public VisionSys() {
         limelight = new PhotonCamera("Limelight");
+        setPower(true);
         setTargetType(TargetType.kNone);
     }
 
@@ -73,6 +75,14 @@ public class VisionSys extends SubsystemBase {
     }
 
     /**
+     * Checks whether the limelight is tracking a target.
+     * @return True if the limelight is tracking a target.
+     */
+    public boolean hasTarget() {
+        return limelight.getLatestResult().hasTargets();
+    }
+
+    /**
      * Returns the x-offset, or yaw, from the crosshair of the best target.
      * @return The x-offset, or yaw, from the crosshair of the best target, in degrees.
      */
@@ -97,7 +107,7 @@ public class VisionSys extends SubsystemBase {
     }
 
     /**
-     * Returns if driver mode is enabled.
+     * Checks if driver mode is enabled.
      * @return True if driver mode is enabled.
      */
     public boolean isDriverMode() {
@@ -106,9 +116,33 @@ public class VisionSys extends SubsystemBase {
 
     /**
      * Sets whether driver mode is enabled.
-     * @param isDriverMode True if driver mode should be enabled.
+     * @param isDriverMode Whether driver mode should be enabled.
      */
     public void setDriverMode(boolean isDriverMode) {
         limelight.setDriverMode(isDriverMode);
+    }
+
+    /**
+     * Checks whether the limelight is connected.
+     * @return True if the limelight is connected.
+     */
+    public boolean isConnected() {
+        return limelight.isConnected();
+    }
+
+    /**
+     * Checks whether the limelight is being powered.
+     * @return True if the PDH's switchable channel is enabled.
+     */
+    public boolean isPowered() {
+        return CANDevices.powerDistributionHub.getSwitchableChannel();
+    }
+
+    /**
+     * Sets whether the limelight should be powered.
+     * @param isPowered Whether the switchable channel should enable.
+     */
+    public void setPower(boolean isPowered) {
+        CANDevices.powerDistributionHub.setSwitchableChannel(isPowered);
     }
 }

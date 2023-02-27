@@ -6,6 +6,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 
 public class Constants {
 
@@ -39,6 +41,9 @@ public class Constants {
         public static final int actuationMtrId = 17;
         public static final int upperMtrId = 18;
         public static final int lowerMtrId = 19; 
+
+        public static final PowerDistribution powerDistributionHub =
+            new PowerDistribution(CANDevices.powerDistributionHubId, ModuleType.kRev);
     }
 
     public static enum ControllerType {

@@ -99,7 +99,7 @@ public class RobotContainer {
     public RobotContainer() {
         SmartDashboard.putData(autoSelector);
 
-        RestartLimelightCmd restartLimelight = new RestartLimelightCmd();
+        RestartLimelightCmd restartLimelight = new RestartLimelightCmd(visionSys);
         restartLimelight.setName("Restart Limelight");
         SmartDashboard.putData(restartLimelight); // TODO: See if this works.
 
