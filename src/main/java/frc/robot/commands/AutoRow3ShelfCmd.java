@@ -14,6 +14,7 @@ public class AutoRow3ShelfCmd extends SequentialCommandGroup {
             new Row3ShelfCmd(false, liftSys),
             new WaitCmd(0.5),
             new OpenCmd(clawSys),
+            new WaitCmd(0.5),
             new DownCmd(true, liftSys)
         );
     }
