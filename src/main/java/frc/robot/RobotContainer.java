@@ -1,8 +1,5 @@
 package frc.robot;
 
-import org.photonvision.PhotonCamera;
-import org.photonvision.common.hardware.VisionLEDMode;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
@@ -16,19 +13,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerType;
-import frc.robot.Constants.DockDirection;
-import frc.robot.Constants.DockHeading;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.commands.WaitCmd;
-import frc.robot.commands.auto.DockCmd;
-import frc.robot.commands.auto.FollowTrajectoryCmd;
-import frc.robot.commands.auto.TestTrajectory;
 import frc.robot.commands.auto.programs.RightConeGrabCube;
-import frc.robot.commands.auto.TestTrajectory;
 import frc.robot.commands.claw.CloseCmd;
 import frc.robot.commands.claw.OpenCmd;
 import frc.robot.commands.drivetrain.DefaultSpeedCmd;
-import frc.robot.commands.drivetrain.ResetPoseCmd;
+import frc.robot.commands.drivetrain.ResetHeadingCmd;
 import frc.robot.commands.drivetrain.SetLockedCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
 import frc.robot.commands.drivetrain.TurtleSpeedCmd;
@@ -41,11 +31,13 @@ import frc.robot.commands.lift.Row1Cmd;
 import frc.robot.commands.lift.Row2Cmd;
 import frc.robot.commands.lift.Row3PoleCmd;
 import frc.robot.commands.lift.Row3ShelfCmd;
+import frc.robot.commands.vision.RestartLimelightCmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.CompressorSys;
 import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.SwerveSys;
+import frc.robot.subsystems.VisionSys;
 
 public class RobotContainer {
     
@@ -54,8 +46,8 @@ public class RobotContainer {
     private final LiftSys liftSys = new LiftSys();
     private final ClawSys clawSys = new ClawSys();
     private final IntakeSys intakeSys = new IntakeSys();
-    
-    private final PhotonCamera limelight = new PhotonCamera("Limelight");
+    private final VisionSys visionSys = new VisionSys();  
+    private final CompressorSys compressorSys = new CompressorSys();  
 
     // Initialize joysticks.
     private final XboxController driverController = new XboxController(ControllerConstants.driverGamepadPort);
@@ -104,20 +96,20 @@ public class RobotContainer {
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
     public RobotContainer() {
-        matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, operatorController);
-
-        limelight.setPipelineIndex(0);
-
-        new CompressorSys();
-
         SmartDashboard.putData(autoSelector);
+
+        RestartLimelightCmd restartLimelight = new RestartLimelightCmd();
+        restartLimelight.setName("Restart Limelight");
+        SmartDashboard.putData(restartLimelight); // TODO: See if this works.
+
+        RunCommand toggleCompressor = new RunCommand(() -> compressorSys.setEnabled(!compressorSys.isEnabled()));
+        toggleCompressor.setName("Toggle Compressor");
+        SmartDashboard.putData(toggleCompressor); // TODO: See if this works.
 
         RobotController.setBrownoutVoltage(7.5);
     }
 
     public void configBindings() {
-        
-        // Set subsystem default commands, which run when no other command is scheduled.
         if(DriverStation.isJoystickConnected(ControllerConstants.hybridControllerPort)) {
             configHybridBindings();
             SmartDashboard.putString("control type", "hybrid");
@@ -133,28 +125,26 @@ public class RobotContainer {
             }
             else {
                 SmartDashboard.putString("control type", "only operator");
-                configDriverBindings(ControllerType.kGamepad);
             }
 
             configOperatorBindings();
         }
 
-        // brownOutRumble.rumbleWhen(() -> RobotController.isBrownedOut(), 2.0);
+        brownOutRumble.rumbleWhen(() -> RobotController.isBrownedOut(), 2.0);
         
-        // matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 60.0 && DriverStation.isTeleop(), 3);
-        // matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 30.0 && DriverStation.isTeleop(), 2);
-        // matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 15.0 && DriverStation.isTeleop(), 1);
+        matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 60.0 && DriverStation.isTeleop(), 3);
+        matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 30.0 && DriverStation.isTeleop(), 2);
+        matchTimeRumble.pulseWhen(() -> DriverStation.getMatchTime() <= 15.0 && DriverStation.isTeleop(), 1);
 
-        // countdown10Rumble.setPulseTime(1.0);
-        // countdown10Rumble.pulseWhen(() -> DriverStation.getMatchTime() <= 10.0 && DriverStation.isTeleop(), 5);
+        countdown10Rumble.setPulseTime(1.0);
+        countdown10Rumble.pulseWhen(() -> DriverStation.getMatchTime() <= 10.0 && DriverStation.isTeleop(), 5);
 
-        // countdown5Rumble.setPulseTime(1.0);
-        // countdown5Rumble.setPulseLength(0.25);
-        // countdown5Rumble.pulseWhen(() -> DriverStation.getMatchTime() <= 5.0 && DriverStation.isTeleop(), 5);
+        countdown5Rumble.setPulseTime(1.0);
+        countdown5Rumble.setPulseLength(0.25);
+        countdown5Rumble.pulseWhen(() -> DriverStation.getMatchTime() <= 5.0 && DriverStation.isTeleop(), 5);
     }
 
     public void configDriverBindings(ControllerType driverControllerType) {
-
         if(driverControllerType.equals(ControllerType.kGamepad)) {
             swerveSys.setDefaultCommand(
                 new SwerveDriveCmd(
@@ -168,7 +158,7 @@ public class RobotContainer {
             
             driverLeftBumper.onTrue(new SetLockedCmd(true, swerveSys)).onFalse(new SetLockedCmd(false, swerveSys));
             driverRightBumper.onTrue(new TurtleSpeedCmd(swerveSys)).onFalse(new DefaultSpeedCmd(swerveSys));
-            driverMenuBtn.onTrue(new ResetPoseCmd(swerveSys)); // FIXME: after debugging, change back to ResetHeadingCmd
+            driverMenuBtn.onTrue(new ResetHeadingCmd(swerveSys));
 
             brownOutRumble = new Rumble(RumbleType.kLeftRumble, 1.0, driverController);
             matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, driverController);
@@ -194,7 +184,6 @@ public class RobotContainer {
     }
 
     public void configOperatorBindings() {
-        
         liftSys.setDefaultCommand(
             new LiftManualControlCmd(
                 () -> deadband(operatorController.getRightY(), ControllerType.kGamepad),
@@ -225,16 +214,11 @@ public class RobotContainer {
         operatorDownBtn.onTrue(new InCmd(intakeSys));
 
         matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, operatorController);
-        matchTimeRumble.debug();
-        // matchTimeRumble.pulseWhen(() -> operatorController.getRightTriggerAxis() > 0.25);
-        operatorLeftBtn.onTrue(new RunCommand(() -> matchTimeRumble.pulse()));
-
         countdown10Rumble = new Rumble(RumbleType.kRightRumble, 1.0, operatorController);
         countdown5Rumble = new Rumble(RumbleType.kRightRumble, 1.0, operatorController);
     }
 
     public void configHybridBindings() {
-
         swerveSys.setDefaultCommand(
             new SwerveDriveCmd(
                 () -> deadband(hybridController.getLeftY(), ControllerType.kGamepad),
@@ -251,7 +235,7 @@ public class RobotContainer {
         hybridYBtn.onTrue(new Row3PoleCmd(true, liftSys));
 
         hybridWindowBtn.and(operatorYBtn).onTrue(new Row3ShelfCmd(false, liftSys));
-        hybridMenuBtn.onTrue(new ResetPoseCmd(swerveSys)); // FIXME: after debugging, change back to ResetHeadingCmd
+        hybridMenuBtn.onTrue(new ResetHeadingCmd(swerveSys));
         
         hybridLeftBumper.onTrue(new OpenCmd(clawSys));
         hybridRightBumper.onTrue(new CloseCmd(clawSys));
@@ -266,14 +250,6 @@ public class RobotContainer {
         return new RightConeGrabCube(swerveSys, liftSys, clawSys, intakeSys);
         // return new DockCmd(DockDirection.kFromCenter, DockHeading.kLeft, swerveSys);
         // return new ResetPoseCmd(swerveSys).andThen(new TestTrajectory(swerveSys));
-    }
-
-    boolean hasPulsed = false;
-
-    public void periodic() {        
-        SmartDashboard.putString("LED mode", limelight.getLEDMode().toString());
-        SmartDashboard.putBoolean("is limelight connected", limelight.isConnected());
-        SmartDashboard.putNumber("pipeline index", limelight.getPipelineIndex());
     }
 
     /**
@@ -297,5 +273,4 @@ public class RobotContainer {
         
         return value;
     }
-
 }
