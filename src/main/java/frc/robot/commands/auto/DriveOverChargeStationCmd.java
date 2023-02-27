@@ -56,8 +56,8 @@ public class DriveOverChargeStationCmd extends CommandBase {
     public void execute() {
 
         if(
-            (direction.equals(DockDirection.kFromCommunity) && swerveSys.getRoll() < -AutoConstants.onChargeStationDeg) ||
-            (direction.equals(DockDirection.kFromCommunity) && swerveSys.getRoll() > AutoConstants.onChargeStationDeg)
+            (direction.equals(DockDirection.kFromCommunity) && swerveSys.getRollDegrees() < -AutoConstants.onChargeStationDeg) ||
+            (direction.equals(DockDirection.kFromCommunity) && swerveSys.getRollDegrees() > AutoConstants.onChargeStationDeg)
         ) {
             isOverCenter = true;
         }
@@ -69,7 +69,7 @@ public class DriveOverChargeStationCmd extends CommandBase {
             true
         );
 
-        if(isOverCenter && Math.abs(swerveSys.getPitch()) < AutoConstants.chargeStationBalancedToleranceDeg) {
+        if(isOverCenter && Math.abs(swerveSys.getRollDegrees()) < AutoConstants.chargeStationBalancedToleranceDeg) {
             offChargeStationTimer.start();
         }
 

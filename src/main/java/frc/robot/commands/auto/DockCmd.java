@@ -62,7 +62,7 @@ public class DockCmd extends CommandBase {
         SmartDashboard.putBoolean("isBalanced", isBalanced);
 
 
-        if(Math.abs(swerveSys.getPitch()) > AutoConstants.onChargeStationDeg) {
+        if(Math.abs(swerveSys.getRollDegrees()) > AutoConstants.onChargeStationDeg) {
             onChargeStation = true;
         }
 
@@ -75,12 +75,12 @@ public class DockCmd extends CommandBase {
                 true
             );
         }
-        else if(Math.abs(swerveSys.getPitch()) < AutoConstants.chargeStationBalancedToleranceDeg) {
+        else if(Math.abs(swerveSys.getRollDegrees()) < AutoConstants.chargeStationBalancedToleranceDeg) {
             isBalanced = true;
             swerveSys.setLocked(true);
         }
         else {
-            // double dockVel = dockController.calculate(swerveSys.getPitch());
+            // double dockVel = dockController.calculate(swerveSys.getRoll());
             double dockVel = AutoConstants.dockVelMetersPerSecond;
             // if(Math.abs(dockVel) > AutoConstants.dockMaxVelMetersPerSecond) {
             //     dockVel = Math.copySign(AutoConstants.dockMaxVelMetersPerSecond, dockVel);

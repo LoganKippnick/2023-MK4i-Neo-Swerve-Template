@@ -10,7 +10,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
@@ -49,8 +48,6 @@ public class SwerveSys extends SubsystemBase {
             CANDevices.rearRightSteerEncId,
             DriveConstants.rearRightModOffset
         );
-
-    PowerDistribution pdh; // TODO: Make its own subsystem? For use with compressor.
 
     private boolean isLocked = false;
     public boolean isLocked() {
@@ -110,8 +107,8 @@ public class SwerveSys extends SubsystemBase {
         odometry.update(getHeading(), getModulePositions());
 
         SmartDashboard.putNumber("heading", getHeading().getDegrees());
-        SmartDashboard.putNumber("pitch", getPitch()); // TODO: Make sure pitch and roll values work (and figure out which one we need)
-        SmartDashboard.putNumber("roll", getRoll()); // TODO: Make methods for resetting pitch and/or roll
+        SmartDashboard.putNumber("pitch", getPitchDegrees());
+        SmartDashboard.putNumber("roll", getRollDegrees());
 
         SmartDashboard.putNumber("Odometry x", odometry.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Odometry y", odometry.getEstimatedPosition().getY());
@@ -266,7 +263,6 @@ public class SwerveSys extends SubsystemBase {
     /**
      * Resets the current pose.
      */
-    // TODO: Make sure this works.
     public void resetPose() {
         resetDriveDistances();
         resetHeading();
@@ -288,9 +284,8 @@ public class SwerveSys extends SubsystemBase {
      * 
      * @param pose The pose to set the robot to.
      */
-    // TODO: Make sure this works.
     public void setPose(Pose2d pose) {
-        imu.setYaw(pose.getRotation().getDegrees());
+        setHeading(pose.getRotation());
 
         odometry = new SwerveDrivePoseEstimator(
             DriveConstants.kinematics,
@@ -341,12 +336,28 @@ public class SwerveSys extends SubsystemBase {
     }
 
     /**
+     * Returns the average direction for each module to get an overall direction of travel for the robot.
+     * 
+     * @return The overall direction of travel of the robot
+     */
+    public Rotation2d getAverageDirection() {
+        return (
+            (frontLeftMod.getCanCoderAngle()
+            .plus(frontRightMod.getCanCoderAngle())
+            .plus(rearLeftMod.getCanCoderAngle())
+            .plus(rearRightMod.getCanCoderAngle())
+            .div(4.0)
+            )
+        );
+    }
+
+    /**
      * Returns the average velocity in the forward direction to get an overall velocity for the robot.
      * 
      * @return The velocity in the forward direction of the robot in meters per second.
      */
     public double getForwardVelocityMetersPerSecond() {
-        double rel = getHeading().getDegrees() % 90.0;
+        double rel = getAverageDirection().getDegrees() % 90.0;
         if(rel > 90.0 && rel < 270.0) rel *= -1.0;
         
         return getAverageDriveVelocityMetersPerSecond() * (rel / 90.0);
@@ -366,8 +377,9 @@ public class SwerveSys extends SubsystemBase {
      * 
      * @return The current pitch of the robot.
      */
-    public double getPitch() {
-        return imu.getPitch();
+    public double getPitchDegrees() {
+        // IMU is turned 90 degrees, so pitch and roll are flipped.
+        return imu.getRoll();
     }
 
     /**
@@ -375,8 +387,9 @@ public class SwerveSys extends SubsystemBase {
      * 
      * @return The current roll of the robot.
      */
-    public double getRoll() {
-        return imu.getRoll();
+    public double getRollDegrees() {
+        // IMU is turned 90 degrees, so pitch and roll are flipped.
+        return imu.getPitch();
     }
 
     /**
