@@ -307,7 +307,7 @@ public class SwerveSys extends SubsystemBase {
     }
 
     /**
-     * Returns the average distance driven for each module to get an overall distance driven by the robot.
+     * Returns the average distance driven of each module to get an overall distance driven by the robot.
      * 
      * @return The overall distance driven by the robot in meters.
      */
@@ -322,7 +322,7 @@ public class SwerveSys extends SubsystemBase {
     }
 
     /**
-     * Returns the average velocity for each module to get an overall velocity for the robot.
+     * Returns the average velocity of each module to get an overall velocity of the robot.
      * 
      * @return The overall velocity of the robot in meters per second.
      */
@@ -337,18 +337,17 @@ public class SwerveSys extends SubsystemBase {
     }
 
     /**
-     * Returns the average direction for each module to get an overall direction of travel for the robot.
+     * Returns the average direction of each module to get an overall direction of travel of the robot.
      * 
      * @return The overall direction of travel of the robot
      */
     public Rotation2d getAverageDirection() {
-        return (
-            (frontLeftMod.getCanCoderAngle()
-            .plus(frontRightMod.getCanCoderAngle())
-            .plus(rearLeftMod.getCanCoderAngle())
-            .plus(rearRightMod.getCanCoderAngle())
-            .div(4.0)
-            )
+        return new Rotation2d(
+            (frontLeftMod.getCanCoderAngle().getRadians()
+            + frontRightMod.getCanCoderAngle().getRadians()
+            + rearLeftMod.getCanCoderAngle().getRadians()
+            + rearRightMod.getCanCoderAngle().getRadians()
+            ) / 4.0
         );
     }
 
