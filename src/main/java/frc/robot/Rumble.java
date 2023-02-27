@@ -216,12 +216,12 @@ public class Rumble {
 
             @Override
             public void execute() {
-                if(isRumbling && timer.hasElapsed(pulseLength)) {
-                    stopRumble();
-                }
-                else if(!isRumbling && timer.hasElapsed(pulseTime)) {
+                if(!isRumbling && timer.hasElapsed(pulseTime)) {
                     startRumble();
                     timer.reset();
+                }
+                else if(isRumbling && timer.hasElapsed(pulseLength)) {
+                    stopRumble();
                 }
             }
 
@@ -317,10 +317,10 @@ public class Rumble {
             public void execute() {
                 if(isRumbling && timer.hasElapsed(pulseLength)) {
                     stopRumble();
+                    pulseCount++;
                 }
                 else if(!isRumbling && timer.hasElapsed(pulseTime)) {
                     startRumble();
-                    pulseCount++;
                     timer.reset();
                 }
             }
