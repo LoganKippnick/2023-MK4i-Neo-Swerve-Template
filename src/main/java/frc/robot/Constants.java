@@ -1,12 +1,10 @@
 package frc.robot;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
@@ -163,10 +161,10 @@ public class Constants {
         public static final double maxVelMetersPerSec = 4.0;
         public static final double maxAccelMetersPerSecondSq = 3.0;
 
-        // TODO: Tune the PID values below. Rotation should be okay.
         public static final double drivekP = 12.8;
         public static final double drivekD = 0.05;
 
+        // TODO: Tune rotation PID values
         public static final double rotkP = 1.5 * 10;
         public static final double rotkD = 0.15 * 10;
 
