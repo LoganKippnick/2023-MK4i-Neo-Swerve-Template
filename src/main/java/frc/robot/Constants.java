@@ -6,8 +6,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 
 public class Constants {
 
@@ -41,9 +39,6 @@ public class Constants {
         public static final int actuationMtrId = 17;
         public static final int upperMtrId = 18;
         public static final int lowerMtrId = 19; 
-
-        public static final PowerDistribution powerDistributionHub =
-            new PowerDistribution(CANDevices.powerDistributionHubId, ModuleType.kRev);
     }
 
     public static enum ControllerType {
@@ -130,10 +125,10 @@ public class Constants {
         public static final double defaultSpeedFactor = 1.0;
         // TODO: Sprint mode?
 
-        public static final double frontLeftModOffset = Units.degreesToRadians(105.420);
-        public static final double frontRightModOffset = Units.degreesToRadians(228.428);
-        public static final double rearLeftModOffset = Units.degreesToRadians(292.139);
-        public static final double rearRightModOffset = Units.degreesToRadians(313.183);
+        public static final double frontLeftModOffset = Units.degreesToRadians(105.38);
+        public static final double frontRightModOffset = Units.degreesToRadians(229.31);
+        public static final double rearLeftModOffset = Units.degreesToRadians(292.50);
+        public static final double rearRightModOffset = Units.degreesToRadians(313.15);
 
         public static final int driveCurrentLimitAmps = 40;
         public static final int dockCurrentLimitAmps = 50;
@@ -270,7 +265,7 @@ public class Constants {
 
     public class IntakeConstants {
 
-        public static final double rollerGearReduction = 1.0 / 12.0;
+        public static final double rollerGearReduction = 1.0 / 5.0;
 
         public static final double pulleyDiameterInches = 1.0;
         public static final double beltDiameterInches = pulleyDiameterInches + ((1.0 / 16.0) * 2.0);
@@ -280,7 +275,7 @@ public class Constants {
 
         public static final double absEncOffset = 0.0;
 
-        public static final int actuationCurrentLimitAmps = 15; //20
+        public static final int actuationCurrentLimitAmps = 20;
 
         public static final double kP = 3.0;
         public static final double kD = 0.0;
@@ -289,7 +284,7 @@ public class Constants {
 
         public static final double manualControlPadding = 0.5;
 
-        public static final double freeRPM = 11000 * rollerGearReduction;
+        public static final double freeRPM = 5600 * rollerGearReduction;
 
         public static final double inInches = 2.0;
         public static final double outInches = 15.0;
@@ -303,5 +298,7 @@ public class Constants {
         public static final double rollerWheelCircumferenceInches = rollerWheelDiameterInches * Math.PI;
 
         public static final double driveMetersPerSecondToRollerRPM = (39.37 * 60.0) / rollerWheelCircumferenceInches;
+
+        public static final double rollerRelativeMetersPerSecond = 3.75;
     }
 }
