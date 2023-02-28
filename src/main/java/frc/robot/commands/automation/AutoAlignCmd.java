@@ -35,7 +35,7 @@ public class AutoAlignCmd extends CommandBase {
         alignController.setSetpoint(0.0);
 
         rotController = AutoConstants.rotController;
-        rotController.setSetpoint(Math.PI);
+        rotController.setSetpoint(180);
         
         addRequirements(visionSys, swerveSys);
     }
@@ -52,7 +52,7 @@ public class AutoAlignCmd extends CommandBase {
         swerveSys.drive(
             -xControl.getAsDouble(),
             alignController.calculate(visionSys.targetXDegrees() - swerveSys.getHeading().getDegrees() - 180),
-            rotController.calculate(swerveSys.getHeading().getRadians()),
+            rotController.calculate(swerveSys.getHeading().getDegrees()),
             true
         );
     }
@@ -66,7 +66,11 @@ public class AutoAlignCmd extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return xControl.getAsDouble() < 0 && Math.abs(swerveSys.getAverageDriveDistanceMeters()) < 0.01 && visionSys.targetIsXAligned(); // FIXME: add lift conditions
+        return xControl.getAsDouble() > 0 &&
+            Math.abs(swerveSys.getAverageDriveVelocityMetersPerSecond()) < 0.01 &&
+            visionSys.targetIsXAligned() &&
+            liftSys.isAtTarget() &&
+            liftSys.isActuatedDown();
     }
 
     // Whether the command should run when robot is disabled.

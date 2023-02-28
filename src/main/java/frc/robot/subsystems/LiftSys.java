@@ -27,7 +27,7 @@ public class LiftSys extends SubsystemBase {
  
     private final DoubleSolenoid liftSol;
  
-    private double targetInches = 0;
+    private double targetInches = 0.0;
 
     private boolean isManual = false;
 
@@ -120,6 +120,7 @@ public class LiftSys extends SubsystemBase {
     public void setTarget(double inches) {
         isManual = false;
         if(inches > LiftConstants.maxHeightInches) inches = LiftConstants.maxHeightInches;
+        else if(inches < 0.0) inches = 0.0;
 
         targetInches = inches;
     }
@@ -137,11 +138,24 @@ public class LiftSys extends SubsystemBase {
         }
     }
 
+    public double getTargetInches() {
+        return targetInches;
+    }
+
+    public boolean isAtTarget() {
+        return getCurrentPosition() > targetInches - LiftConstants.targetTolerance &&
+            getCurrentPosition() < targetInches + LiftConstants.targetTolerance;
+    }
+
     public void actuateUp() {
         liftSol.set(Value.kReverse);
     }
 
     public void actuateDown() {
         liftSol.set(Value.kForward);
+    }
+
+    public boolean isActuatedDown() {
+        return liftSol.get().equals(Value.kForward);
     }
 }

@@ -47,10 +47,7 @@ public class Row1Cmd extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return finishInstantly || (
-            liftSys.getCurrentPosition() >= LiftConstants.row1Inches - LiftConstants.targetTolerance &&
-            liftSys.getCurrentPosition() <= LiftConstants.row1Inches + LiftConstants.targetTolerance
-        );
+        return finishInstantly || liftSys.isAtTarget();
     }
 
     // Whether the command should run when robot is disabled.

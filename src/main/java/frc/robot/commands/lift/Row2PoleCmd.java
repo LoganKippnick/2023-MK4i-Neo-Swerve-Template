@@ -47,10 +47,7 @@ public class Row2PoleCmd extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return finishInstantly || (
-            liftSys.getCurrentPosition() >= LiftConstants.row2PoleInches - LiftConstants.targetTolerance &&
-            liftSys.getCurrentPosition() <= LiftConstants.row2PoleInches + LiftConstants.targetTolerance
-        );
+        return finishInstantly || liftSys.isAtTarget();
     }
 
     // Whether the command should run when robot is disabled.
