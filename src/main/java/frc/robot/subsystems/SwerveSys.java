@@ -114,7 +114,7 @@ public class SwerveSys extends SubsystemBase {
         SmartDashboard.putNumber("Odometry y", odometry.getEstimatedPosition().getY());
 
         SmartDashboard.putNumber("speed", getAverageDriveVelocityMetersPerSecond());
-        SmartDashboard.putNumber("direction of travel", getAverageDirection().getDegrees()); // TODO: Make sure this works.
+        SmartDashboard.putNumber("direction of travel", getDirectionOfTravel().getDegrees()); // TODO: Make sure this works.
         SmartDashboard.putNumber("forward speed", getForwardVelocityMetersPerSecond()); // TODO: Make sure this works.
 
         SmartDashboard.putNumber("front left rotation encoder", frontLeftMod.getSteerEncAngle().getDegrees());
@@ -341,23 +341,23 @@ public class SwerveSys extends SubsystemBase {
      * 
      * @return The overall direction of travel of the robot
      */
-    public Rotation2d getAverageDirection() {
+    public Rotation2d getDirectionOfTravel() {
         return new Rotation2d(
-            (frontLeftMod.getCanCoderAngle().getRadians()
-            + frontRightMod.getCanCoderAngle().getRadians()
-            + rearLeftMod.getCanCoderAngle().getRadians()
-            + rearRightMod.getCanCoderAngle().getRadians()
+            (frontLeftMod.getCanCoderAngle().plus(new Rotation2d(frontLeftMod.getCurrentVelocityMetersPerSecond() < 0.0 ? Math.PI : 0.0)).getRadians()
+            + frontRightMod.getCanCoderAngle().plus(new Rotation2d(frontRightMod.getCurrentVelocityMetersPerSecond() < 0.0 ? Math.PI : 0.0)).getRadians()
+            + rearLeftMod.getCanCoderAngle().plus(new Rotation2d(rearLeftMod.getCurrentVelocityMetersPerSecond() < 0.0 ? Math.PI : 0.0)).getRadians()
+            + rearRightMod.getCanCoderAngle().plus(new Rotation2d(rearRightMod.getCurrentVelocityMetersPerSecond() < 0.0 ? Math.PI : 0.0)).getRadians()
             ) / 4.0
         );
     }
 
     /**
-     * Returns the average velocity in the forward direction to get an overall velocity for the robot.
+     * Returns the average velocity in the forward direction.
      * 
      * @return The velocity in the forward direction of the robot in meters per second.
      */
     public double getForwardVelocityMetersPerSecond() {
-        double rel = getAverageDirection().getDegrees() % 90.0;
+        double rel = getDirectionOfTravel().getDegrees() % 90.0;
         if(rel > 90.0 && rel < 270.0) rel *= -1.0;
         
         return getAverageDriveVelocityMetersPerSecond() * (rel / 90.0);
