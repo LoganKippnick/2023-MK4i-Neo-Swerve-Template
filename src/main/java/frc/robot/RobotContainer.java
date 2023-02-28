@@ -24,6 +24,8 @@ import frc.robot.commands.drivetrain.SwerveDriveCmd;
 import frc.robot.commands.drivetrain.TurtleSpeedCmd;
 import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
+import frc.robot.commands.intake.SetRelativeSpeedCmd;
+import frc.robot.commands.intake.StopRollersCmd;
 import frc.robot.commands.intake.IntakeManualControlCmd;
 import frc.robot.commands.lift.DownCmd;
 import frc.robot.commands.lift.LiftManualControlCmd;
@@ -61,6 +63,9 @@ public class RobotContainer {
     private final XboxController hybridController = new XboxController(ControllerConstants.hybridControllerPort);
 
     // Initialize controller buttons.
+    private final JoystickButton driverRightJoystickTriggerBtn = new JoystickButton(driverRightJoystick, 1);
+    private final JoystickButton driverRightJoystickThumbBtn = new JoystickButton(driverRightJoystick, 2);
+
     private final JoystickButton driverLeftBumper = new JoystickButton(driverController, 5);
     private final JoystickButton driverRightBumper = new JoystickButton(driverController, 6);
     private final JoystickButton driverMenuBtn = new JoystickButton(driverController, 8);
@@ -162,6 +167,12 @@ public class RobotContainer {
             driverRightBumper.onTrue(new TurtleSpeedCmd(swerveSys)).onFalse(new DefaultSpeedCmd(swerveSys));
             driverMenuBtn.onTrue(new ResetHeadingCmd(swerveSys));
 
+            driverRightTriggerBtn
+                .onTrue(new OutCmd(intakeSys))
+                .whileTrue(new SetRelativeSpeedCmd(intakeSys, swerveSys))
+                .onFalse(new InCmd(intakeSys))
+                .onFalse(new StopRollersCmd(intakeSys));
+
             brownOutRumble = new Rumble(RumbleType.kLeftRumble, 1.0, driverController);
             matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, driverController);
             countdown10Rumble = new Rumble(RumbleType.kRightRumble, 1.0, driverController);
@@ -177,6 +188,14 @@ public class RobotContainer {
                     swerveSys
                 )
             );
+
+            driverRightJoystickTriggerBtn
+                .onTrue(new OutCmd(intakeSys))
+                .whileTrue(new SetRelativeSpeedCmd(intakeSys, swerveSys))
+                .onFalse(new InCmd(intakeSys))
+                .onFalse(new StopRollersCmd(intakeSys));
+
+            driverRightJoystickThumbBtn.onTrue(new ResetHeadingCmd(swerveSys));
 
             brownOutRumble = new Rumble(RumbleType.kLeftRumble, 1.0);
             matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0);
