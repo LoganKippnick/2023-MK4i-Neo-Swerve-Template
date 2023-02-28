@@ -108,13 +108,13 @@ public class IntakeSys extends SubsystemBase {
     }
 
     public void manualRollerControl(double power) {
-        // if(power != 0.0) {
+        if(power != 0.0) {
             rollersAreManual = true;
             setRollerPower(power);
-        // }
-        // else {
-            // rollersAreManual = false;
-        // }
+        }
+        else {
+            rollersAreManual = false;
+        }
     }
 
     public void setRPM(double rpm) {
