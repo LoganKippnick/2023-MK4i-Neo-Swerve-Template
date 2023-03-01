@@ -1,14 +1,11 @@
-package frc.robot.commands.lift;
+package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.LiftConstants;
-import frc.robot.subsystems.LiftSys;
+import frc.robot.subsystems.IntakeSys;
 
-public class Row2PoleCmd extends CommandBase {
+public class StopRollersCmd extends CommandBase {
 
-    private final LiftSys liftSys;
-
-    private final boolean finishInstantly;
+    private final IntakeSys intakeSys;
 
     /**
      * Constructs a new ExampleCmd.
@@ -19,11 +16,9 @@ public class Row2PoleCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public Row2PoleCmd(boolean finishInstantly, LiftSys liftSys) {
-        this.liftSys = liftSys;
-        this.finishInstantly = finishInstantly;
+    public StopRollersCmd(IntakeSys intakeSys) {
 
-        addRequirements(liftSys);
+        this.intakeSys = intakeSys;
     }
 
     // Called when the command is initially scheduled.
@@ -35,19 +30,19 @@ public class Row2PoleCmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        liftSys.setTarget(LiftConstants.row2PoleInches);
+        intakeSys.setRollerPower(0.0);
     }
-
+    
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        
-    }
 
+    }
+    
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return finishInstantly || liftSys.isAtTarget();
+        return true;
     }
 
     // Whether the command should run when robot is disabled.

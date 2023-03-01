@@ -2,12 +2,16 @@ package frc.robot.subsystems;
 
 import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.VisionConstants;
 
 public class VisionSys extends SubsystemBase {
+
+    private final PowerDistribution powerDistributionHub;
 
     /**
      * The type of target tracked based on the pipeline.
@@ -39,6 +43,8 @@ public class VisionSys extends SubsystemBase {
         limelight = new PhotonCamera("Limelight");
         setPower(true);
         setTargetType(TargetType.kNone);
+
+        powerDistributionHub = new PowerDistribution(CANDevices.powerDistributionHubId, ModuleType.kRev);
     }
 
     // This method will be called once per scheduler run
@@ -104,8 +110,8 @@ public class VisionSys extends SubsystemBase {
      * @return True if the target is within the alignment threshold.
      */
     public boolean targetIsXAligned() {
-        return targetXDegrees() > targetXDegrees() - VisionConstants.alignedToleranceDegrees &&
-        targetXDegrees() < targetXDegrees() + VisionConstants.alignedToleranceDegrees;
+        return Math.abs(targetXDegrees()) < VisionConstants.alignedToleranceDegrees;
+        // test(porpoises); -Andy
     }
 
     /**
@@ -145,7 +151,8 @@ public class VisionSys extends SubsystemBase {
      * @return True if the PDH's switchable channel is enabled.
      */
     public boolean isPowered() {
-        return CANDevices.powerDistributionHub.getSwitchableChannel();
+        // return powerDistributionHub.getSwitchableChannel();
+        return true; // FIXME
     }
 
     /**
@@ -153,6 +160,7 @@ public class VisionSys extends SubsystemBase {
      * @param isPowered Whether the switchable channel should enable.
      */
     public void setPower(boolean isPowered) {
-        CANDevices.powerDistributionHub.setSwitchableChannel(isPowered);
+        // powerDistributionHub.setSwitchableChannel(isPowered);
+        // FIXME
     }
 }
