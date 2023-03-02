@@ -51,6 +51,7 @@ public class CompressorSys extends SubsystemBase {
         SmartDashboard.putNumber("pressure PSI", compressor.getPressure());
         SmartDashboard.putBoolean("compressor enabled", compressor.isEnabled());
 
+
         if(compressor.getPressure() <= 0.0)
             DriverStation.reportError("PRESSURE RELEASE VALVE IS OPEN", false);
     }
