@@ -41,10 +41,10 @@ public class VisionSys extends SubsystemBase {
      */
     public VisionSys() {
         limelight = new PhotonCamera("Limelight");
-        setPower(true);
         setTargetType(TargetType.kNone);
 
-        powerDistributionHub = new PowerDistribution(CANDevices.powerDistributionHubId, ModuleType.kRev);
+        powerDistributionHub = new PowerDistribution(1, ModuleType.kRev);
+        setPower(true); // TODO: Try this. If it still doesn't work, set the PDH's CAN ID to 1.
     }
 
     // This method will be called once per scheduler run
@@ -151,8 +151,8 @@ public class VisionSys extends SubsystemBase {
      * @return True if the PDH's switchable channel is enabled.
      */
     public boolean isPowered() {
-        // return powerDistributionHub.getSwitchableChannel();
-        return true; // FIXME
+        return powerDistributionHub.getSwitchableChannel();
+        // FIXME
     }
 
     /**
@@ -160,7 +160,7 @@ public class VisionSys extends SubsystemBase {
      * @param isPowered Whether the switchable channel should enable.
      */
     public void setPower(boolean isPowered) {
-        // powerDistributionHub.setSwitchableChannel(isPowered);
+        powerDistributionHub.setSwitchableChannel(isPowered);
         // FIXME
     }
 }
