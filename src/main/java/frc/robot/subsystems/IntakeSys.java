@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -29,6 +31,10 @@ public class IntakeSys extends SubsystemBase {
 
     private boolean actuationIsManual = false;
     private boolean rollersAreManual = false;
+    private boolean rollersAreRelative = false;
+
+    private DoubleSupplier robotSpeedMetersPerSecond;
+    private double relativeSpeed;
 
     /**
      * Intake needs to be offset since the encoder can't output negative values.
@@ -41,7 +47,7 @@ public class IntakeSys extends SubsystemBase {
      * 
      * <p>IntakeSys contains methods for control and actuation of the intake.
      */
-    public IntakeSys() {
+    public IntakeSys(DoubleSupplier robotSpeedMetersPerSecond) {
         // Initialize and configure actuators and sensors here
         actuationMtr = new CANSparkMax(CANDevices.actuationMtrId, MotorType.kBrushed);
         actuationMtr.setInverted(true);
@@ -49,6 +55,7 @@ public class IntakeSys extends SubsystemBase {
 
         upperMtr = new CANSparkMax(CANDevices.upperMtrId, MotorType.kBrushless);
         upperMtr.setInverted(true);
+        upperMtr.getEncoder().setVelocityConversionFactor(IntakeConstants.rollerGearReduction);
 
         lowerMtr = null; // new CANSparkMax(CANDevices.lowerMtrId, MotorType.kBrushless);
 
@@ -57,6 +64,9 @@ public class IntakeSys extends SubsystemBase {
         intakeEnc.setPosition(offsetInches);
         intakeEnc.setInverted(false);
         intakeEnc.setPositionConversionFactor(IntakeConstants.encRevToInches);
+
+        this.robotSpeedMetersPerSecond = robotSpeedMetersPerSecond;
+        relativeSpeed = IntakeConstants.rollerRelativeMetersPerSecond;
 
         controller = actuationMtr.getPIDController();
         controller.setP(IntakeConstants.kP);
@@ -68,7 +78,7 @@ public class IntakeSys extends SubsystemBase {
     public void periodic() {
         // The encoder is being dumb, so if it gives a really uneccesarily large reading it will try
         // zeroing it again.
-        if(getCurrentPosition() > 100.0) {
+        if(getCurrentPosition() > 100.0) { // FIXME: Do we still need this?
             intakeEnc.setPosition(offsetInches);
         }
 
@@ -79,10 +89,16 @@ public class IntakeSys extends SubsystemBase {
             controller.setReference(targetInches + offsetInches, ControlType.kPosition);
         }
 
-        SmartDashboard.putNumber("intake inches", getCurrentPosition());
-        SmartDashboard.putNumber("intake target", targetInches);
-        
-        SmartDashboard.putNumber("roller counts", upperMtr.getEncoder().getPosition());
+        if(!rollersAreManual && rollersAreRelative) {
+            setRPM((relativeSpeed - robotSpeedMetersPerSecond.getAsDouble()) * IntakeConstants.driveMetersPerSecondToRollerRPM);
+        }
+        else {
+            setRollerPower(0.0);
+        }
+
+        // SmartDashboard.putNumber("intake inches", getCurrentPosition());
+        // SmartDashboard.putNumber("intake target", targetInches);
+        // SmartDashboard.putNumber("roller speed m/s", upperMtr.getEncoder().getVelocity() / IntakeConstants.driveMetersPerSecondToRollerRPM);
     }
 
     // Put methods for controlling this subsystem here. Call these from Commands.
@@ -118,17 +134,17 @@ public class IntakeSys extends SubsystemBase {
     }
 
     public void setRPM(double rpm) {
-        if(!rollersAreManual) {
-            double power = rpm / IntakeConstants.freeRPM;
-            setRollerPower(power);
-        }
+        double power = rpm / IntakeConstants.freeRPM;
+        setRollerPower(power);
     }
 
     public void setRelativeSpeed(double metersPerSecond) {
-        if(!rollersAreManual) {
-            double rpm = metersPerSecond * IntakeConstants.driveMetersPerSecondToRollerRPM;
-            setRPM(rpm);
-        }
+        relativeSpeed = metersPerSecond;
+        rollersAreRelative = true;
+    }
+
+    public void disableRelativeSpeed() {
+        rollersAreRelative = false;
     }
 
     public void setTarget(double inches) {

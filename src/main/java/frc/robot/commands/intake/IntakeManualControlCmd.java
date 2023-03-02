@@ -50,10 +50,7 @@ public class IntakeManualControlCmd extends CommandBase {
         SmartDashboard.putNumber("actuationJoystick", actuationJoystick.getAsDouble());
         intakeSys.manualActuationControl(-actuationJoystick.getAsDouble());
 
-        double rollerPower = intakeTrigger.getAsDouble() - outtakeTrigger.getAsDouble();
-        // if(rollerPower != 0.0) 
-            intakeSys.manualRollerControl(rollerPower);
-
+        intakeSys.manualRollerControl(intakeTrigger.getAsDouble() - outtakeTrigger.getAsDouble());
     }
     
     // Called once the command ends or is interrupted.
