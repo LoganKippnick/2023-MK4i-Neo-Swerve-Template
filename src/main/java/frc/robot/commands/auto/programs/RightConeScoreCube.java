@@ -1,11 +1,19 @@
 package frc.robot.commands.auto.programs;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.WaitCmd;
 import frc.robot.commands.WaitUntilCmd;
 import frc.robot.commands.auto.FollowTrajectoryCmd;
 import frc.robot.commands.automation.AutoRow3PoleCmd;
+import frc.robot.commands.automation.AutoRow3ShelfCmd;
 import frc.robot.commands.claw.CloseCmd;
+import frc.robot.commands.drivetrain.SetPoseCmd;
+import frc.robot.commands.intake.InCmd;
+import frc.robot.commands.intake.OutCmd;
+import frc.robot.commands.intake.SetRelativeSpeedCmd;
+import frc.robot.commands.intake.StopRollersCmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
@@ -15,19 +23,24 @@ public class RightConeScoreCube extends SequentialCommandGroup {
     
     public RightConeScoreCube(SwerveSys swerveSys, LiftSys liftSys, ClawSys clawSys, IntakeSys intakeSys) {
         super(
+            new SetPoseCmd(new Pose2d(1.83, 0.5, new Rotation2d(Math.PI)), swerveSys),
             new CloseCmd(clawSys),
+            new InCmd(intakeSys),
+            new WaitCmd(0.5),
             new AutoRow3PoleCmd(liftSys, clawSys),
             new FollowTrajectoryCmd("RightStartToCube", swerveSys)
                 .alongWith(
-                    new WaitUntilCmd(() -> swerveSys.getPose().getX() > 4.5)
-                    .andThen() // TODO: Start and bring out intake
+                    new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
+                    .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys)))
                 ),
+            new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys)),
             new FollowTrajectoryCmd("RightGrabCubeToScore", swerveSys)
                 .alongWith(
-                    new WaitCmd(1.0)
+                    new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys))
+                    .andThen(new WaitCmd(1.5))
                     .andThen(new CloseCmd(clawSys))
-                    .andThen() // TODO: Stop and bring in intake
-                )
+                ),
+            new AutoRow3ShelfCmd(liftSys, clawSys)
         );
     }
 }

@@ -1,31 +1,42 @@
 package frc.robot.commands.auto;
 
-import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.SwerveSys;
 
 public class FollowTrajectoryCmd extends PPSwerveControllerCommand {
 
-    public FollowTrajectoryCmd(String trajectoryName, SwerveSys swerveSys) {
+    private final SwerveSys swerveSys;
+    
+    private final String trajectoryName;
+    private final double maxVelMetersPerSec;
+    private final double maxAccelMetersPerSecondSq;
 
+    public FollowTrajectoryCmd(String trajectoryName, double maxVelMetersPerSec, double maxAccelMetersPerSecondSq, SwerveSys swerveSys) {
         super(
-            PathPlanner.loadPath(trajectoryName, new PathConstraints(4.0, 3.0)),
-            swerveSys::getPose,
-            DriveConstants.kinematics,
+            PathPlanner.loadPath(trajectoryName, maxVelMetersPerSec, maxAccelMetersPerSecondSq),
+            swerveSys::getPose, 
+            AutoConstants.driveController, 
             AutoConstants.driveController,
-            AutoConstants.driveController,
-            AutoConstants.rotController,
-            swerveSys::setModuleStates,
+            AutoConstants.rotController, 
+            swerveSys::setChassisSpeeds, 
             swerveSys
         );
+
+        this.swerveSys = swerveSys;
+        this.trajectoryName = trajectoryName;
+        this.maxVelMetersPerSec = maxVelMetersPerSec;
+        this.maxAccelMetersPerSecondSq = maxAccelMetersPerSecondSq;
     }
 
-    public Pose2d getInitialPose() {   
-        return getInitialPose();
+    @Override
+    public void initialize() {
+        swerveSys.setField2dTrajectory(PathPlanner.loadPath(trajectoryName, maxVelMetersPerSec, maxAccelMetersPerSecondSq));
+    }
+
+    public FollowTrajectoryCmd(String trajectoryName, SwerveSys swerveSys) {
+        this(trajectoryName, AutoConstants.maxVelMetersPerSec, AutoConstants.maxAccelMetersPerSecondSq, swerveSys);
     }
 }

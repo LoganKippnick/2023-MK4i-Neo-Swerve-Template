@@ -121,9 +121,9 @@ public class Constants {
 
         public static final double maxTurnRateRadiansPerSec = 2 * Math.PI; //Rate the robot will spin with full Rot command
 
-        public static final double turtleModeSpeedFactor = 0.5;
-        public static final double defaultSpeedFactor = 1.0;
-        // TODO: Sprint mode?
+        public static final double turtleModeSpeedFactor = 0.25;
+        public static final double defaultSpeedFactor = 0.5;
+        public static final double sprintSpeedFactor = 1.0;
 
         public static final double frontLeftModOffset = Units.degreesToRadians(105.38);
         public static final double frontRightModOffset = Units.degreesToRadians(229.31);
@@ -158,15 +158,14 @@ public class Constants {
 
     public static final class AutoConstants {
 
-        public static final double maxVelMetersPerSec = 4.0;
-        public static final double maxAccelMetersPerSecondSq = 3.0;
+        public static final double maxVelMetersPerSec = 2.5;
+        public static final double maxAccelMetersPerSecondSq = 2.0;
 
-        public static final double drivekP = 12.8;
+        public static final double drivekP = 12.6; //12.8
         public static final double drivekD = 0.05;
 
-        // TODO: Make sure this works.
-        public static final double rotkP = Units.radiansToDegrees(1.5);
-        public static final double rotkD = Units.radiansToDegrees(0.15);
+        public static final double rotkP = 1.25;
+        public static final double rotkD = 0.5;
 
         public final static TrajectoryConfig config = 
             new TrajectoryConfig(
@@ -182,7 +181,7 @@ public class Constants {
             drivekD
         );
 
-        public static final PIDController rotController = constructRotController(); // FIXME: Anything that calls this might have to be in degrees.
+        public static final PIDController rotController = constructRotController();
         private static PIDController constructRotController() {
             PIDController rotController = new PIDController(
                 rotkP,
@@ -190,15 +189,13 @@ public class Constants {
                 rotkD
             );
 
-            // sets wraparound from 0 to 2 * PI
-            rotController.enableContinuousInput(0, 2 * Math.PI);
+            // Sets wraparound from 0 to 360.
+            rotController.enableContinuousInput(0, 360);
             
             return rotController;
         }
 
-        public static final String trajectoryFileLocation = "pathplanner/generatedJSON/";
-
-        public static final double driveOntoChargeStationVelMetersPerSecond = 0.25;
+        public static final double driveOntoChargeStationVelMetersPerSecond = 0.5;
 
         public static final double onChargeStationDeg = 15.0;
         public static final double chargeStationControllerToleranceDeg = 10.0;
@@ -213,12 +210,29 @@ public class Constants {
 
     public static final class VisionConstants {
 
-        public static final double kP = 0.01;
-        public static final double kD = 0.0;
+        public static final double alignkP = 0.01;
+        public static final double alignkD = 0.0;
 
-        public static final PIDController alignController = new PIDController(kP, 0.0, kD);
+        public static final PIDController alignController = new PIDController(alignkP, 0.0, alignkD);
 
         public static final double alignedToleranceDegrees = 2.0;
+
+        public static final double rotkP = 0.0375;
+        public static final double rotkD = 0.0045;
+
+        public static final PIDController rotController = constructRotController();
+        private static PIDController constructRotController() {
+            PIDController rotController = new PIDController(
+                rotkP,
+                0,
+                rotkD
+            );
+
+            // Sets wraparound from 0 to 360.
+            rotController.enableContinuousInput(0, 360);
+            
+            return rotController;
+        }
     }
 
     public static final class CompressorConstants {
@@ -244,8 +258,8 @@ public class Constants {
 
         public static final double feetPerSecondPerRPM = (inchesPerEncRev / 12) / 60;
 
-        public static final double minPower = -0.25;
-        public static final double maxPower = 0.25;
+        public static final double minPower = -0.45;
+        public static final double maxPower = 0.3;
         public static final double manualPower = 0.15;
 
         public static final double downInches = 0.0;
@@ -257,7 +271,7 @@ public class Constants {
 
         public static final double manualControlPadding = 2.0;
 
-        public static final double targetTolerance = 0.25;
+        public static final double targetTolerance = 0.5;
 
         public static final double downActuationHeightInches = 18.0;
         public static final double upActuationHeightInches = 24.0;
@@ -299,6 +313,6 @@ public class Constants {
 
         public static final double driveMetersPerSecondToRollerRPM = (39.37 * 60.0) / rollerWheelCircumferenceInches;
 
-        public static final double rollerRelativeMetersPerSecond = 3.75;
+        public static final double rollerRelativeMetersPerSecond = 4.25;
     }
 }

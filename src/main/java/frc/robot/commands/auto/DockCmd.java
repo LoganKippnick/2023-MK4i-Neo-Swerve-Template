@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DockDirection;
-import frc.robot.Constants.DockHeading;
 import frc.robot.subsystems.SwerveSys;
 
 public class DockCmd extends CommandBase {
@@ -19,7 +18,6 @@ public class DockCmd extends CommandBase {
     private boolean isBalanced = false;
 
     private final PIDController dockController;
-    private final PIDController rotController;
 
     /**
      * Constructs a new ExampleCmd.
@@ -30,11 +28,10 @@ public class DockCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public DockCmd(DockDirection direction, DockHeading heading, SwerveSys swerveSys) {
+    public DockCmd(DockDirection direction, SwerveSys swerveSys) {
 
         this.swerveSys = swerveSys;
         this.direction = direction;
-        // this.heading = heading;
 
         dockController = new PIDController(
             AutoConstants.dockkP,
@@ -43,9 +40,6 @@ public class DockCmd extends CommandBase {
         );
         dockController.setSetpoint(0.0);
         dockController.setTolerance(AutoConstants.chargeStationControllerToleranceDeg);
-
-        rotController = AutoConstants.rotController;
-        rotController.setSetpoint((heading.equals(DockHeading.kLeft) ? 90 : -90));
 
         addRequirements(swerveSys);
     }
@@ -61,7 +55,6 @@ public class DockCmd extends CommandBase {
     public void execute() {
         SmartDashboard.putBoolean("isBalanced", isBalanced);
 
-
         if(Math.abs(swerveSys.getRollDegrees()) > AutoConstants.onChargeStationDeg) {
             onChargeStation = true;
         }
@@ -71,7 +64,7 @@ public class DockCmd extends CommandBase {
             swerveSys.drive(
                 AutoConstants.driveOntoChargeStationVelMetersPerSecond * (direction.equals(DockDirection.kFromCenter) ? -1 : 1),
                 0.0,
-                rotController.calculate(swerveSys.getHeading().getDegrees()),
+                0.0,
                 true
             );
         }
@@ -94,7 +87,7 @@ public class DockCmd extends CommandBase {
             swerveSys.drive(
                 dockVel,
                 0.0,
-                rotController.calculate(swerveSys.getHeading().getDegrees()),
+                0.0,
                 true
             );
         }

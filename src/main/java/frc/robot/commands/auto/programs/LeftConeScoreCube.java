@@ -7,6 +7,7 @@ import frc.robot.commands.WaitCmd;
 import frc.robot.commands.WaitUntilCmd;
 import frc.robot.commands.auto.FollowTrajectoryCmd;
 import frc.robot.commands.automation.AutoRow3PoleCmd;
+import frc.robot.commands.automation.AutoRow3ShelfCmd;
 import frc.robot.commands.claw.CloseCmd;
 import frc.robot.commands.drivetrain.SetPoseCmd;
 import frc.robot.commands.intake.InCmd;
@@ -18,23 +19,28 @@ import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.SwerveSys;
 
-public class RightConeGrabCube extends SequentialCommandGroup {
+public class LeftConeScoreCube extends SequentialCommandGroup {
     
-    public RightConeGrabCube(SwerveSys swerveSys, LiftSys liftSys, ClawSys clawSys, IntakeSys intakeSys) {
+    public LeftConeScoreCube(SwerveSys swerveSys, LiftSys liftSys, ClawSys clawSys, IntakeSys intakeSys) {
         super(
-            new SetPoseCmd(new Pose2d(1.83, 0.5, new Rotation2d(Math.PI)), swerveSys),
+            new SetPoseCmd(new Pose2d(1.83, 4.98, new Rotation2d(Math.PI)), swerveSys),
             new CloseCmd(clawSys),
             new InCmd(intakeSys),
             new WaitCmd(0.5),
             new AutoRow3PoleCmd(liftSys, clawSys),
-            new FollowTrajectoryCmd("RightStartToCube", swerveSys)
+            new FollowTrajectoryCmd("LeftStartToCube", swerveSys)
                 .alongWith(
                     new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
                     .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys)))
                 ),
             new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys)),
-            new WaitCmd(1.5),
-            new CloseCmd(clawSys)
+            new FollowTrajectoryCmd("LeftGrabCubeToScore", swerveSys)
+                .alongWith(
+                    new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys))
+                    .andThen(new WaitCmd(1.5))
+                    .andThen(new CloseCmd(clawSys))
+                ),
+            new AutoRow3ShelfCmd(liftSys, clawSys)
         );
     }
 }

@@ -13,10 +13,10 @@ public class AutoRow3PoleCmd extends SequentialCommandGroup {
     public AutoRow3PoleCmd(LiftSys liftSys, ClawSys clawSys) {
         super(
             new Row3PoleCmd(false, liftSys),
-            new WaitCmd(0.5),
+            new WaitCmd(0.25),
             new OpenCmd(clawSys),
-            new WaitCmd(0.5),
-            new DownCmd(true, liftSys)
+            new WaitCmd(0.25),
+            new DownCmd(false, liftSys)
         );
     }
 

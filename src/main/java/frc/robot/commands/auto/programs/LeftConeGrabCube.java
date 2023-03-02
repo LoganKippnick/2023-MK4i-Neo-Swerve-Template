@@ -18,16 +18,16 @@ import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.SwerveSys;
 
-public class RightConeGrabCube extends SequentialCommandGroup {
+public class LeftConeGrabCube extends SequentialCommandGroup {
     
-    public RightConeGrabCube(SwerveSys swerveSys, LiftSys liftSys, ClawSys clawSys, IntakeSys intakeSys) {
+    public LeftConeGrabCube(SwerveSys swerveSys, LiftSys liftSys, ClawSys clawSys, IntakeSys intakeSys) {
         super(
-            new SetPoseCmd(new Pose2d(1.83, 0.5, new Rotation2d(Math.PI)), swerveSys),
+            new SetPoseCmd(new Pose2d(1.83, 4.98, new Rotation2d(Math.PI)), swerveSys),
             new CloseCmd(clawSys),
             new InCmd(intakeSys),
             new WaitCmd(0.5),
             new AutoRow3PoleCmd(liftSys, clawSys),
-            new FollowTrajectoryCmd("RightStartToCube", swerveSys)
+            new FollowTrajectoryCmd("LeftStartToCube", swerveSys)
                 .alongWith(
                     new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
                     .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys)))
