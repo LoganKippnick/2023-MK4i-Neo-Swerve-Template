@@ -90,9 +90,7 @@ public class RobotContainer {
     private final JoystickButton operatorRightBumper = new JoystickButton(operatorController, 6);
     private final JoystickButton operatorWindowBtn = new JoystickButton(operatorController, 7);
     private final POVButton operatorUpBtn = new POVButton(operatorController, 0);
-    private final POVButton operatorRightBtn = new POVButton(operatorController, 90);
     private final POVButton operatorDownBtn = new POVButton(operatorController, 180);
-    private final POVButton operatorLeftBtn = new POVButton(operatorController, 270);
 
     private final JoystickButton hybridABtn = new JoystickButton(hybridController, 1);
     private final JoystickButton hybridBBtn = new JoystickButton(hybridController, 2);
