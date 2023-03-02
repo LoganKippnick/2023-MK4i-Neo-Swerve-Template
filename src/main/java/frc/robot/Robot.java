@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -10,9 +12,15 @@ public class Robot extends TimedRobot {
 
     private Command autonomousCommand;
 
+    private UsbCamera camera;
+
     @Override
     public void robotInit() {
         robotContainer = new RobotContainer();
+
+        camera = new UsbCamera("driver camera", 0);
+        
+        CameraServer.startAutomaticCapture(camera);
     }
 
     @Override
