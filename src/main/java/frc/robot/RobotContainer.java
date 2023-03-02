@@ -14,12 +14,20 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerType;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.commands.auto.programs.Cone;
+import frc.robot.commands.auto.programs.Cube;
+import frc.robot.commands.auto.programs.LeftConeGrabCube;
+import frc.robot.commands.auto.programs.LeftConeGrabCubeDock;
+import frc.robot.commands.auto.programs.LeftConeScoreCube;
 import frc.robot.commands.auto.programs.RightConeGrabCube;
+import frc.robot.commands.auto.programs.RightConeGrabCubeDock;
+import frc.robot.commands.auto.programs.RightConeScoreCube;
 import frc.robot.commands.claw.CloseCmd;
 import frc.robot.commands.claw.OpenCmd;
 import frc.robot.commands.drivetrain.DefaultSpeedCmd;
 import frc.robot.commands.drivetrain.ResetHeadingCmd;
 import frc.robot.commands.drivetrain.SetLockedCmd;
+import frc.robot.commands.drivetrain.SprintSpeedCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
 import frc.robot.commands.drivetrain.TurtleSpeedCmd;
 import frc.robot.commands.intake.InCmd;
@@ -48,7 +56,7 @@ public class RobotContainer {
     private final SwerveSys swerveSys = new SwerveSys();
     private final LiftSys liftSys = new LiftSys();
     private final ClawSys clawSys = new ClawSys();
-    private final IntakeSys intakeSys = new IntakeSys();
+    private final IntakeSys intakeSys = new IntakeSys(() -> swerveSys.getForwardVelocityMetersPerSecond());
     private final VisionSys visionSys = new VisionSys();  
     private final CompressorSys compressorSys = new CompressorSys();  
 
@@ -71,6 +79,8 @@ public class RobotContainer {
     private final JoystickButton driverMenuBtn = new JoystickButton(driverController, 8);
     private final Trigger driverRightTriggerBtn =
         new Trigger(() -> driverController.getRightTriggerAxis() > ControllerConstants.triggerPressedDeadband);
+    private final Trigger driverLeftTriggerBtn =
+        new Trigger(() -> driverController.getLeftTriggerAxis() > ControllerConstants.triggerPressedDeadband);
 
     private final JoystickButton operatorABtn = new JoystickButton(operatorController, 1);
     private final JoystickButton operatorBBtn = new JoystickButton(operatorController, 2);
@@ -111,9 +121,19 @@ public class RobotContainer {
 
         RunCommand toggleCompressor = new RunCommand(() -> compressorSys.setEnabled(!compressorSys.isEnabled()));
         toggleCompressor.setName("Toggle Compressor");
-        SmartDashboard.putData(toggleCompressor); // TODO: See if this works.
+        SmartDashboard.putData(toggleCompressor);
 
         RobotController.setBrownoutVoltage(7.5);
+
+        autoSelector.addOption("Cone", new Cone(liftSys, clawSys, intakeSys));
+        autoSelector.addOption("Cube", new Cube(liftSys, clawSys, intakeSys));
+        autoSelector.addOption("LeftConeGrabCube", new LeftConeGrabCube(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("LeftConeGrabCubeDock", new LeftConeGrabCubeDock(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("LeftConeScoreCube", new LeftConeScoreCube(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("RightConeGrabCube", new RightConeGrabCube(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("RightConeGrabCubeDock", new RightConeGrabCubeDock(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("RightConeScoreCube", new RightConeScoreCube(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("DoNothing", null);
     }
 
     public void configBindings() {
@@ -132,6 +152,7 @@ public class RobotContainer {
             }
             else {
                 SmartDashboard.putString("control type", "only operator");
+                brownOutRumble = new Rumble(RumbleType.kRightRumble, 1.0);
             }
 
             configOperatorBindings();
@@ -169,9 +190,11 @@ public class RobotContainer {
 
             driverRightTriggerBtn
                 .onTrue(new OutCmd(intakeSys))
-                .whileTrue(new SetRelativeSpeedCmd(intakeSys, swerveSys))
+                .whileTrue(new SetRelativeSpeedCmd(intakeSys))
                 .onFalse(new InCmd(intakeSys))
                 .onFalse(new StopRollersCmd(intakeSys));
+
+            driverLeftTriggerBtn.onTrue(new SprintSpeedCmd(swerveSys)).onFalse(new DefaultSpeedCmd(swerveSys));
 
             brownOutRumble = new Rumble(RumbleType.kLeftRumble, 1.0, driverController);
             matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, driverController);
@@ -191,7 +214,7 @@ public class RobotContainer {
 
             driverRightJoystickTriggerBtn
                 .onTrue(new OutCmd(intakeSys))
-                .whileTrue(new SetRelativeSpeedCmd(intakeSys, swerveSys))
+                .whileTrue(new SetRelativeSpeedCmd(intakeSys))
                 .onFalse(new InCmd(intakeSys))
                 .onFalse(new StopRollersCmd(intakeSys));
 
@@ -269,9 +292,10 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new RightConeGrabCube(swerveSys, liftSys, clawSys, intakeSys);
+        return new LeftConeScoreCube(swerveSys, liftSys, clawSys, intakeSys);
+        // return new SetHeadingCmd(new Rotation2d(Math.PI), swerveSys).andThen(new FollowTrajectoryCmd("TestTrajectory", swerveSys));
         // return new DockCmd(DockDirection.kFromCenter, DockHeading.kLeft, swerveSys);
-        // return new ResetPoseCmd(swerveSys).andThen(new TestTrajectory(swerveSys));
+        // return new ResetPoseCmd(swerveSys).andThen(new FollowTrajectoryCmd("TestTrajectory", swerveSys));
     }
 
     /**
