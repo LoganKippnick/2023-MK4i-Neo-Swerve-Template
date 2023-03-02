@@ -279,7 +279,7 @@ public class Constants {
 
     public class IntakeConstants {
 
-        public static final double rollerGearReduction = 1.0 / 5.0;
+        public static final double rollerGearReduction = 1.0; //1.0 / 5.0;
 
         public static final double pulleyDiameterInches = 1.0;
         public static final double beltDiameterInches = pulleyDiameterInches + ((1.0 / 16.0) * 2.0);
@@ -313,6 +313,7 @@ public class Constants {
 
         public static final double driveMetersPerSecondToRollerRPM = (39.37 * 60.0) / rollerWheelCircumferenceInches;
 
+        public static final double rollerManualControlFactor = 0.25;
         public static final double rollerRelativeMetersPerSecond = 4.25;
     }
 }

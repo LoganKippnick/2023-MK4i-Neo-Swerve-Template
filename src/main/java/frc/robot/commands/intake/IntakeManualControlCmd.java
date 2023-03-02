@@ -2,8 +2,8 @@ package frc.robot.commands.intake;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakeSys;
 
 public class IntakeManualControlCmd extends CommandBase {
@@ -47,10 +47,12 @@ public class IntakeManualControlCmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        SmartDashboard.putNumber("actuationJoystick", actuationJoystick.getAsDouble());
         intakeSys.manualActuationControl(-actuationJoystick.getAsDouble());
 
-        intakeSys.manualRollerControl(intakeTrigger.getAsDouble() - outtakeTrigger.getAsDouble());
+        intakeSys.manualRollerControl(
+            (intakeTrigger.getAsDouble() - outtakeTrigger.getAsDouble())
+            * IntakeConstants.rollerManualControlFactor
+        );
     }
     
     // Called once the command ends or is interrupted.

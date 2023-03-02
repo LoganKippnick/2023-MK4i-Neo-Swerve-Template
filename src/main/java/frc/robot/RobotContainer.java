@@ -115,7 +115,7 @@ public class RobotContainer {
 
         RestartLimelightCmd restartLimelight = new RestartLimelightCmd(visionSys);
         restartLimelight.setName("Restart Limelight");
-        SmartDashboard.putData(restartLimelight); // TODO: See if this works.
+        SmartDashboard.putData(restartLimelight);
 
         RunCommand toggleCompressor = new RunCommand(() -> compressorSys.setEnabled(!compressorSys.isEnabled()));
         toggleCompressor.setName("Toggle Compressor");
