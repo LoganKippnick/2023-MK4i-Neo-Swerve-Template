@@ -33,6 +33,7 @@ public class FollowTrajectoryCmd extends PPSwerveControllerCommand {
 
     @Override
     public void initialize() {
+        super.initialize();
         swerveSys.setField2dTrajectory(PathPlanner.loadPath(trajectoryName, maxVelMetersPerSec, maxAccelMetersPerSecondSq));
     }
 
