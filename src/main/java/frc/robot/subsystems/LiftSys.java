@@ -94,11 +94,12 @@ public class LiftSys extends SubsystemBase {
         if(targetInches < 0.0) targetInches = 0.0;
         else if (targetInches > LiftConstants.maxHeightInches) targetInches = LiftConstants.maxHeightInches;
 
-        SmartDashboard.putNumber("lift inches", liftEnc.getPosition());
-        SmartDashboard.putNumber("lift velocity", liftEnc.getVelocity());
-        SmartDashboard.putNumber("lift target", targetInches);
-        SmartDashboard.putNumber("lift power", masterMtr.get());
-        SmartDashboard.putBoolean("lift isManual", isManual);
+        // SmartDashboard.putNumber("lift inches", liftEnc.getPosition());
+        // SmartDashboard.putNumber("lift velocity", liftEnc.getVelocity());
+        // SmartDashboard.putNumber("lift target", targetInches);
+        // SmartDashboard.putNumber("lift power", masterMtr.get());
+        // SmartDashboard.putBoolean("lift isManual", isManual);
+        // SmartDashboard.putBoolean("lift is at target", isAtTarget());
     }
 
     public double getCurrentPosition() {

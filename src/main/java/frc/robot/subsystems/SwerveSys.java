@@ -10,11 +10,15 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveSys extends SubsystemBase {
+
+    private final Field2d field;
 
     // Initializes swerve module objects
     private final SwerveModule frontLeftMod = 
@@ -97,6 +101,9 @@ public class SwerveSys extends SubsystemBase {
         rearRightMod.resetDistance();
 
         resetPose();
+
+        field = new Field2d();
+        SmartDashboard.putData("Field", field);
     }
 
     // This method will be called once per scheduler run
@@ -114,23 +121,25 @@ public class SwerveSys extends SubsystemBase {
         SmartDashboard.putNumber("Odometry y", odometry.getEstimatedPosition().getY());
 
         SmartDashboard.putNumber("speed", getAverageDriveVelocityMetersPerSecond());
-        SmartDashboard.putNumber("direction of travel", getDirectionOfTravel().getDegrees()); // TODO: Make sure this works.
-        SmartDashboard.putNumber("forward speed", getForwardVelocityMetersPerSecond()); // TODO: Make sure this works.
+        SmartDashboard.putNumber("direction of travel", getDirectionOfTravel().getDegrees());
+        SmartDashboard.putNumber("forward speed", getForwardVelocityMetersPerSecond());
 
-        SmartDashboard.putNumber("front left rotation encoder", frontLeftMod.getSteerEncAngle().getDegrees());
-        SmartDashboard.putNumber("front right rotation encoder", frontRightMod.getSteerEncAngle().getDegrees());
-        SmartDashboard.putNumber("rear left rotation encoder", rearLeftMod.getSteerEncAngle().getDegrees());
-        SmartDashboard.putNumber("rear right rotation encoder", rearRightMod.getSteerEncAngle().getDegrees());
+        field.setRobotPose(odometry.getEstimatedPosition());
 
-        SmartDashboard.putNumber("front left CANcoder", frontLeftMod.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("front right CANcoder", frontRightMod.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("rear left CANcoder", rearLeftMod.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("rear right CANcoder", rearRightMod.getCanCoderAngle().getDegrees());
+        // SmartDashboard.putNumber("front left rotation encoder", frontLeftMod.getSteerEncAngle().getDegrees());
+        // SmartDashboard.putNumber("front right rotation encoder", frontRightMod.getSteerEncAngle().getDegrees());
+        // SmartDashboard.putNumber("rear left rotation encoder", rearLeftMod.getSteerEncAngle().getDegrees());
+        // SmartDashboard.putNumber("rear right rotation encoder", rearRightMod.getSteerEncAngle().getDegrees());
 
-        SmartDashboard.putNumber("front left distance", frontLeftMod.getDriveDistanceMeters());
-        SmartDashboard.putNumber("front right distance", frontRightMod.getDriveDistanceMeters());
-        SmartDashboard.putNumber("rear left distance", rearLeftMod.getDriveDistanceMeters());
-        SmartDashboard.putNumber("rear right distance", rearRightMod.getDriveDistanceMeters());
+        // SmartDashboard.putNumber("front left CANcoder", frontLeftMod.getCanCoderAngle().getDegrees());
+        // SmartDashboard.putNumber("front right CANcoder", frontRightMod.getCanCoderAngle().getDegrees());
+        // SmartDashboard.putNumber("rear left CANcoder", rearLeftMod.getCanCoderAngle().getDegrees());
+        // SmartDashboard.putNumber("rear right CANcoder", rearRightMod.getCanCoderAngle().getDegrees());
+
+        // SmartDashboard.putNumber("front left distance", frontLeftMod.getDriveDistanceMeters());
+        // SmartDashboard.putNumber("front right distance", frontRightMod.getDriveDistanceMeters());
+        // SmartDashboard.putNumber("rear left distance", rearLeftMod.getDriveDistanceMeters());
+        // SmartDashboard.putNumber("rear right distance", rearRightMod.getDriveDistanceMeters());
 
         if(isLocked) {
             SwerveModuleState[] states = new SwerveModuleState[] {
@@ -142,6 +151,10 @@ public class SwerveSys extends SubsystemBase {
 
             setModuleStates(states);
         }
+    }
+
+    public void setField2dTrajectory(Trajectory trajectory) {
+        field.getObject("traj").setTrajectory(trajectory);
     }
     
     /**
@@ -357,10 +370,14 @@ public class SwerveSys extends SubsystemBase {
      * @return The velocity in the forward direction of the robot in meters per second.
      */
     public double getForwardVelocityMetersPerSecond() {
-        double rel = getDirectionOfTravel().getDegrees() % 90.0;
-        if(rel > 90.0 && rel < 270.0) rel *= -1.0;
-        
-        return getAverageDriveVelocityMetersPerSecond() * (rel / 90.0);
+        double rel = Math.abs(getDirectionOfTravel().getDegrees() % 90.0);
+        if(getDirectionOfTravel().getDegrees() > 90.0 || getDirectionOfTravel().getDegrees() < -90.0)
+            rel -= 90.0;
+
+        SmartDashboard.putNumber("rel", rel);
+        // if(getDirectionOfTravel().getDegrees() < -90.0 && getDirectionOfTravel().getDegrees() > -180.0)
+
+        return getAverageDriveVelocityMetersPerSecond() * (Math.copySign((90.0 - rel), rel) / 90.0);
     }
 
     /**
