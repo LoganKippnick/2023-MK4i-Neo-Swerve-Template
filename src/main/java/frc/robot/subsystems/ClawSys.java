@@ -21,7 +21,7 @@ public class ClawSys extends SubsystemBase {
     @Override
     public void periodic() {
 
-        SmartDashboard.putBoolean("isOpen", isOpen());
+        SmartDashboard.putBoolean("claw status", isOpen());
         
     }
 

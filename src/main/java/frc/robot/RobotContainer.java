@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerType;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.commands.auto.programs.CenterConeDock;
+import frc.robot.commands.auto.programs.CenterConeMobilityDock;
 import frc.robot.commands.auto.programs.Cone;
 import frc.robot.commands.auto.programs.Cube;
 import frc.robot.commands.auto.programs.LeftConeGrabCube;
@@ -111,7 +113,7 @@ public class RobotContainer {
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
     public RobotContainer() {
-        SmartDashboard.putData(autoSelector);
+        SmartDashboard.putData("auto chooser", autoSelector);
 
         RestartLimelightCmd restartLimelight = new RestartLimelightCmd(visionSys);
         restartLimelight.setName("Restart Limelight");
@@ -125,13 +127,15 @@ public class RobotContainer {
 
         autoSelector.addOption("Cone", new Cone(liftSys, clawSys, intakeSys));
         autoSelector.addOption("Cube", new Cube(liftSys, clawSys, intakeSys));
+        autoSelector.addOption("CenterConeDock", new CenterConeDock(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("CenterConeMobilityDock", new CenterConeMobilityDock(swerveSys, liftSys, clawSys, intakeSys));
         autoSelector.addOption("LeftConeGrabCube", new LeftConeGrabCube(swerveSys, liftSys, clawSys, intakeSys));
         autoSelector.addOption("LeftConeGrabCubeDock", new LeftConeGrabCubeDock(swerveSys, liftSys, clawSys, intakeSys));
         autoSelector.addOption("LeftConeScoreCube", new LeftConeScoreCube(swerveSys, liftSys, clawSys, intakeSys));
         autoSelector.addOption("RightConeGrabCube", new RightConeGrabCube(swerveSys, liftSys, clawSys, intakeSys));
         autoSelector.addOption("RightConeGrabCubeDock", new RightConeGrabCubeDock(swerveSys, liftSys, clawSys, intakeSys));
         autoSelector.addOption("RightConeScoreCube", new RightConeScoreCube(swerveSys, liftSys, clawSys, intakeSys));
-        autoSelector.addOption("DoNothing", null);
+        autoSelector.setDefaultOption("DoNothing", null);
     }
 
     public void configBindings() {
@@ -290,10 +294,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new LeftConeScoreCube(swerveSys, liftSys, clawSys, intakeSys);
-        // return new SetHeadingCmd(new Rotation2d(Math.PI), swerveSys).andThen(new FollowTrajectoryCmd("TestTrajectory", swerveSys));
-        // return new DockCmd(DockDirection.kFromCenter, DockHeading.kLeft, swerveSys);
-        // return new ResetPoseCmd(swerveSys).andThen(new FollowTrajectoryCmd("TestTrajectory", swerveSys));
+        return autoSelector.getSelected();
     }
 
     /**

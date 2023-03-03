@@ -49,7 +49,7 @@ public class CompressorSys extends SubsystemBase {
         }
 
         SmartDashboard.putNumber("pressure PSI", compressor.getPressure());
-        SmartDashboard.putBoolean("compressor enabled", compressor.isEnabled());
+        // SmartDashboard.putBoolean("compressor enabled", compressor.isEnabled());
 
 
         if(compressor.getPressure() <= 0.0)

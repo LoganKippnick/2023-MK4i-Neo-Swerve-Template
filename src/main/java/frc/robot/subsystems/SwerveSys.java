@@ -113,16 +113,19 @@ public class SwerveSys extends SubsystemBase {
         // Updates the odometry every 20ms
         odometry.update(getHeading(), getModulePositions());
 
-        SmartDashboard.putNumber("heading", getHeading().getDegrees());
-        SmartDashboard.putNumber("pitch", getPitchDegrees());
-        SmartDashboard.putNumber("roll", getRollDegrees());
+        SmartDashboard.putNumber("heading", -getHeading().getDegrees());
+        // SmartDashboard.putNumber("pitch", getPitchDegrees());
+        // SmartDashboard.putNumber("roll", getRollDegrees());
 
-        SmartDashboard.putNumber("Odometry x", odometry.getEstimatedPosition().getX());
-        SmartDashboard.putNumber("Odometry y", odometry.getEstimatedPosition().getY());
+        // SmartDashboard.putNumber("Odometry x", odometry.getEstimatedPosition().getX());
+        // SmartDashboard.putNumber("Odometry y", odometry.getEstimatedPosition().getY());
 
-        SmartDashboard.putNumber("speed", getAverageDriveVelocityMetersPerSecond());
-        SmartDashboard.putNumber("direction of travel", getDirectionOfTravel().getDegrees());
-        SmartDashboard.putNumber("forward speed", getForwardVelocityMetersPerSecond());
+        SmartDashboard.putNumber("speed m/s", getAverageDriveVelocityMetersPerSecond());
+        SmartDashboard.putNumber("speed mph", getAverageDriveVelocityMetersPerSecond() * 2.23694);
+        // SmartDashboard.putNumber("direction of travel", getDirectionOfTravel().getDegrees());
+        // SmartDashboard.putNumber("forward speed", getForwardVelocityMetersPerSecond());
+
+        SmartDashboard.putBoolean("balanced", Math.abs(getRollDegrees()) < 4.0);
 
         field.setRobotPose(odometry.getEstimatedPosition());
 
@@ -172,8 +175,6 @@ public class SwerveSys extends SubsystemBase {
             driveX *= speedFactor;
             driveY *= speedFactor;
             rotation *= speedFactor;
-
-            SmartDashboard.putNumber("rot", rotation);
 
             // Represents the overall state of the drive base.
             ChassisSpeeds speeds =
@@ -374,7 +375,6 @@ public class SwerveSys extends SubsystemBase {
         if(getDirectionOfTravel().getDegrees() > 90.0 || getDirectionOfTravel().getDegrees() < -90.0)
             rel -= 90.0;
 
-        SmartDashboard.putNumber("rel", rel);
         // if(getDirectionOfTravel().getDegrees() < -90.0 && getDirectionOfTravel().getDegrees() > -180.0)
 
         return getAverageDriveVelocityMetersPerSecond() * (Math.copySign((90.0 - rel), rel) / 90.0);

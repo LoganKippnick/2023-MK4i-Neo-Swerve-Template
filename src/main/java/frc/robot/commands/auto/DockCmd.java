@@ -1,7 +1,6 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DockDirection;
@@ -15,7 +14,6 @@ public class DockCmd extends CommandBase {
     // private final DockHeading heading;
 
     private boolean onChargeStation = false;
-    private boolean isBalanced = false;
 
     private final PIDController dockController;
 
@@ -39,7 +37,6 @@ public class DockCmd extends CommandBase {
             AutoConstants.dockkD
         );
         dockController.setSetpoint(0.0);
-        dockController.setTolerance(AutoConstants.chargeStationControllerToleranceDeg);
 
         addRequirements(swerveSys);
     }
@@ -53,8 +50,6 @@ public class DockCmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        SmartDashboard.putBoolean("isBalanced", isBalanced);
-
         if(Math.abs(swerveSys.getRollDegrees()) > AutoConstants.onChargeStationDeg) {
             onChargeStation = true;
         }
@@ -69,7 +64,6 @@ public class DockCmd extends CommandBase {
             );
         }
         else if(Math.abs(swerveSys.getRollDegrees()) < AutoConstants.chargeStationBalancedToleranceDeg) {
-            isBalanced = true;
             swerveSys.setLocked(true);
         }
         else {
@@ -81,7 +75,6 @@ public class DockCmd extends CommandBase {
             if(direction.equals(DockDirection.kFromCenter)) {
                 dockVel *= -1;
             }
-            SmartDashboard.putNumber("dockVel", dockVel);
 
             swerveSys.setLocked(false);
             swerveSys.drive(

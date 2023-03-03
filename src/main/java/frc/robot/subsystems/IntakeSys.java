@@ -7,9 +7,9 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.IntakeConstants;
@@ -56,6 +56,7 @@ public class IntakeSys extends SubsystemBase {
         upperMtr = new CANSparkMax(CANDevices.upperMtrId, MotorType.kBrushless);
         upperMtr.setInverted(true);
         upperMtr.getEncoder().setVelocityConversionFactor(IntakeConstants.rollerGearReduction);
+        upperMtr.setIdleMode(IdleMode.kBrake);
 
         lowerMtr = null; // new CANSparkMax(CANDevices.lowerMtrId, MotorType.kBrushless);
 
@@ -152,7 +153,6 @@ public class IntakeSys extends SubsystemBase {
     }
 
     public void manualActuationControl(double manual) {
-        SmartDashboard.putNumber("manual", manual);
         if(manual != 0) {
             actuationIsManual = true;
             setActuationPower(manual * IntakeConstants.manualPower);

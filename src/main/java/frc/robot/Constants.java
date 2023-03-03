@@ -195,11 +195,11 @@ public class Constants {
             return rotController;
         }
 
-        public static final double driveOntoChargeStationVelMetersPerSecond = 0.5;
+        public static final double driveOntoChargeStationVelMetersPerSecond = 0.75;
+        public static final double DriveOverChargeStationVelMetersPerSecond = 0.2;
 
-        public static final double onChargeStationDeg = 15.0;
-        public static final double chargeStationControllerToleranceDeg = 10.0;
-        public static final double chargeStationBalancedToleranceDeg = 10.0;
+        public static final double onChargeStationDeg = 10.0;
+        public static final double chargeStationBalancedToleranceDeg = 13.0;
 
         public static final double dockVelMetersPerSecond = 0.1;
         
@@ -314,6 +314,6 @@ public class Constants {
         public static final double driveMetersPerSecondToRollerRPM = (39.37 * 60.0) / rollerWheelCircumferenceInches;
 
         public static final double rollerManualControlFactor = 0.25;
-        public static final double rollerRelativeMetersPerSecond = 4.25;
+        public static final double rollerRelativeMetersPerSecond = 5.50;
     }
 }

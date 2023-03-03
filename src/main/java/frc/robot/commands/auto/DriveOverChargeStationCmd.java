@@ -1,11 +1,9 @@
 package frc.robot.commands.auto;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DockDirection;
-import frc.robot.Constants.DockHeading;
 import frc.robot.subsystems.SwerveSys;
 
 public class DriveOverChargeStationCmd extends CommandBase {
@@ -14,10 +12,8 @@ public class DriveOverChargeStationCmd extends CommandBase {
 
     private final DockDirection direction;
 
-    private final PIDController strafeController;
-    private final PIDController rotController;
-
     private boolean isOverCenter = false;
+    private boolean onChargeStation = false;
 
     private final Timer offChargeStationTimer;
 
@@ -30,18 +26,12 @@ public class DriveOverChargeStationCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public DriveOverChargeStationCmd(DockDirection direction, DockHeading heading, SwerveSys swerveSys) {
+    public DriveOverChargeStationCmd(DockDirection direction, SwerveSys swerveSys) {
 
         this.swerveSys = swerveSys;
         this.direction = direction;
 
         offChargeStationTimer = new Timer();
-
-        strafeController = AutoConstants.driveController;
-        strafeController.setSetpoint(0.0);
-
-        rotController = AutoConstants.rotController;
-        rotController.setSetpoint((heading.equals(DockHeading.kLeft) ? 90 : -90));
 
         addRequirements(swerveSys);
     }
@@ -56,21 +46,39 @@ public class DriveOverChargeStationCmd extends CommandBase {
     @Override
     public void execute() {
 
-        if(
-            (direction.equals(DockDirection.kFromCommunity) && swerveSys.getRollDegrees() < -AutoConstants.onChargeStationDeg) ||
-            (direction.equals(DockDirection.kFromCommunity) && swerveSys.getRollDegrees() > AutoConstants.onChargeStationDeg)
-        ) {
+        if(swerveSys.getRollDegrees() > 3.0) {
             isOverCenter = true;
         }
 
-        swerveSys.drive(
-            AutoConstants.driveOntoChargeStationVelMetersPerSecond * (direction.equals(DockDirection.kFromCenter) ? -1 : 1),
-            -strafeController.calculate(swerveSys.getPose().getY()),
-            rotController.calculate(swerveSys.getHeading().getRadians()),
-            true
-        );
+        if(Math.abs(swerveSys.getRollDegrees()) > AutoConstants.onChargeStationDeg) {
+            onChargeStation = true;
+        }
 
-        if(isOverCenter && Math.abs(swerveSys.getRollDegrees()) < AutoConstants.chargeStationBalancedToleranceDeg) {
+        if(!isOverCenter)
+            if(!onChargeStation)
+                swerveSys.drive(
+                    AutoConstants.driveOntoChargeStationVelMetersPerSecond * (direction.equals(DockDirection.kFromCenter) ? -1 : 1),
+                    0.0,
+                    0.0,
+                    true
+                );
+            else
+                swerveSys.drive(
+                    AutoConstants.DriveOverChargeStationVelMetersPerSecond * (direction.equals(DockDirection.kFromCenter) ? -1 : 1),
+                    0.0,
+                    0.0,
+                    true
+                );
+        else
+            swerveSys.drive(
+                AutoConstants.dockVelMetersPerSecond * (direction.equals(DockDirection.kFromCenter) ? -1 : 1),
+                0.0,
+                0.0,
+                true
+            );
+        
+
+        if(isOverCenter && Math.abs(swerveSys.getRollDegrees()) < 3.0) { // TODO: only works when direction is kFromCommunity
             offChargeStationTimer.start();
         }
 
@@ -85,7 +93,7 @@ public class DriveOverChargeStationCmd extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return offChargeStationTimer.hasElapsed(1.0);
+        return offChargeStationTimer.hasElapsed(0.75);
     }
 
     // Whether the command should run when robot is disabled.
