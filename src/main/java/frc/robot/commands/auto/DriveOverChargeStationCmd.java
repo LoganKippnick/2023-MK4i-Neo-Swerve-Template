@@ -78,7 +78,7 @@ public class DriveOverChargeStationCmd extends CommandBase {
             );
         
 
-        if(isOverCenter && Math.abs(swerveSys.getRollDegrees()) < 3.0) { // TODO: only works when direction is kFromCommunity
+        if(isOverCenter && Math.abs(swerveSys.getRollDegrees()) < 3.0) {
             offChargeStationTimer.start();
         }
 
