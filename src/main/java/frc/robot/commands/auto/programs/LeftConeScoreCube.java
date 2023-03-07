@@ -37,7 +37,7 @@ public class LeftConeScoreCube extends SequentialCommandGroup {
             new FollowTrajectoryCmd("LeftGrabCubeToScore", swerveSys)
                 .alongWith(
                     new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys))
-                    .andThen(new WaitCmd(1.5))
+                    .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 2.23))
                     .andThen(new CloseCmd(clawSys))
                 ),
             new AutoRow3ShelfCmd(liftSys, clawSys)

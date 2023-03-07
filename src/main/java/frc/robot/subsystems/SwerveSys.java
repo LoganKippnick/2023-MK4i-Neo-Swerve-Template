@@ -113,7 +113,7 @@ public class SwerveSys extends SubsystemBase {
         // Updates the odometry every 20ms
         odometry.update(getHeading(), getModulePositions());
 
-        SmartDashboard.putNumber("heading", -getHeading().getDegrees());
+        SmartDashboard.putNumber("heading", -getHeading().getDegrees() % 180);
         // SmartDashboard.putNumber("pitch", getPitchDegrees());
         // SmartDashboard.putNumber("roll", getRollDegrees());
 

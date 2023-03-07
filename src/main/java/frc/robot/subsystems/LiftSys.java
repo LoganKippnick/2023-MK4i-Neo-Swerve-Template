@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.LiftConstants;
@@ -93,12 +94,13 @@ public class LiftSys extends SubsystemBase {
         if(targetInches < 0.0) targetInches = 0.0;
         else if (targetInches > LiftConstants.maxHeightInches) targetInches = LiftConstants.maxHeightInches;
 
-        // SmartDashboard.putNumber("lift inches", liftEnc.getPosition());
+        SmartDashboard.putNumber("lift inches", liftEnc.getPosition());
         // SmartDashboard.putNumber("lift velocity", liftEnc.getVelocity());
         // SmartDashboard.putNumber("lift target", targetInches);
         // SmartDashboard.putNumber("lift power", masterMtr.get());
         // SmartDashboard.putBoolean("lift isManual", isManual);
         // SmartDashboard.putBoolean("lift is at target", isAtTarget());
+        SmartDashboard.putString("lift actuation", (isActuatedDown() ? "down" : "up"));
     }
 
     public double getCurrentPosition() {

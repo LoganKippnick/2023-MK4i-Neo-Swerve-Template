@@ -57,6 +57,7 @@ public class IntakeSys extends SubsystemBase {
         upperMtr.setInverted(true);
         upperMtr.getEncoder().setVelocityConversionFactor(IntakeConstants.rollerGearReduction);
         upperMtr.setIdleMode(IdleMode.kBrake);
+        upperMtr.setSmartCurrentLimit(IntakeConstants.rollerCurrentLimitAmps);
 
         lowerMtr = null; // new CANSparkMax(CANDevices.lowerMtrId, MotorType.kBrushless);
 
@@ -90,7 +91,7 @@ public class IntakeSys extends SubsystemBase {
             controller.setReference(targetInches + offsetInches, ControlType.kPosition);
         }
 
-        if(!rollersAreManual && rollersAreRelative) {
+        if(!rollersAreManual && rollersAreRelative && getCurrentPosition() > 8.0 /* TODO: Make constant */) {
             setRPM((relativeSpeed - robotSpeedMetersPerSecond.getAsDouble()) * IntakeConstants.driveMetersPerSecondToRollerRPM);
         }
         else {
@@ -150,6 +151,11 @@ public class IntakeSys extends SubsystemBase {
 
     public void setTarget(double inches) {
         targetInches = inches;
+    }
+
+    public boolean isAtTarget() {
+        return getCurrentPosition() > targetInches - IntakeConstants.targetToleranceInches &&
+            getCurrentPosition() < targetInches + IntakeConstants.targetToleranceInches;
     }
 
     public void manualActuationControl(double manual) {

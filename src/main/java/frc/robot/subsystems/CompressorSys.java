@@ -14,7 +14,11 @@ public class CompressorSys extends SubsystemBase {
 
     private final Compressor compressor;
 
-    private final Timer timer;
+    private final Timer timeoutTimer;
+    private final Timer runTimer;
+
+    private int turnOnCount = 0;
+    private boolean hasTurnedOff = true;
 
     /**
      * Constructs a new CompressorSys.
@@ -26,7 +30,9 @@ public class CompressorSys extends SubsystemBase {
 
         compressor.enableAnalog(CompressorConstants.minPressurePSI, CompressorConstants.maxPressurePSI);
 
-        timer = new Timer();
+        timeoutTimer = new Timer();
+        runTimer = new Timer();
+        runTimer.reset();
     }
 
     // This method will be called once per scheduler run
@@ -34,26 +40,42 @@ public class CompressorSys extends SubsystemBase {
     public void periodic() {
         if(RobotController.isBrownedOut()) {
             setEnabled(false);
-            timer.stop();
-            timer.reset();
+            timeoutTimer.stop();
+            timeoutTimer.reset();
         }
 
-        if(!compressor.isEnabled() && timer.get() == 0.0 && RobotController.getBatteryVoltage() > CompressorConstants.compressorReenableVoltage) {
-            timer.start();
+        if(!compressor.isEnabled() && timeoutTimer.get() == 0.0 && RobotController.getBatteryVoltage() > CompressorConstants.compressorReenableVoltage) {
+            timeoutTimer.start();
         }
 
-        if(timer.hasElapsed(CompressorConstants.compressorReenableSeconds)) {
+        if(timeoutTimer.hasElapsed(CompressorConstants.compressorReenableSeconds)) {
             setEnabled(true);
-            timer.stop();
-            timer.reset();
+            timeoutTimer.stop();
+            timeoutTimer.reset();
         }
+
+        if(isRunning()) runTimer.start();
+        else runTimer.stop();
 
         SmartDashboard.putNumber("pressure PSI", compressor.getPressure());
         // SmartDashboard.putBoolean("compressor enabled", compressor.isEnabled());
 
+        SmartDashboard.putBoolean("compressor running", isRunning());
+        SmartDashboard.putNumber("compressor elapsed", runTimer.get());
+
 
         if(compressor.getPressure() <= 0.0)
             DriverStation.reportError("PRESSURE RELEASE VALVE IS OPEN", false);
+
+        if(isRunning() && hasTurnedOff) {
+            turnOnCount++;
+            hasTurnedOff = false;
+        }
+
+        SmartDashboard.putNumber("compressor turn on count", turnOnCount);
+
+        if(!isRunning()) hasTurnedOff = true;
+
     }
 
     /**
@@ -84,6 +106,10 @@ public class CompressorSys extends SubsystemBase {
      */
     public double getPressurePSI() {
         return compressor.getPressure();
+    }
+
+    public boolean isRunning() {
+        return compressor.getCurrent() > 0.25;
     }
 
 }

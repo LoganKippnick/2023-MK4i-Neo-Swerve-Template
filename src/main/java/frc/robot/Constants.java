@@ -251,8 +251,8 @@ public class Constants {
         public static final double maxHeightInches = 77.0;
         public static final double inchesPerEncRev = 11 * gearReduction;
 
-        public static final double kP = 0.1 * 0.9;
-        public static final double kD = 2.1 * 0.9;
+        public static final double kP = 0.09;
+        public static final double kD = 2.0;
 
         public static final int maxCurrentAmps = 25;
 
@@ -271,7 +271,7 @@ public class Constants {
 
         public static final double manualControlPadding = 2.0;
 
-        public static final double targetTolerance = 0.5;
+        public static final double targetTolerance = 0.5; // TODO: targetToleranceInches
 
         public static final double downActuationHeightInches = 18.0;
         public static final double upActuationHeightInches = 24.0;
@@ -290,6 +290,7 @@ public class Constants {
         public static final double absEncOffset = 0.0;
 
         public static final int actuationCurrentLimitAmps = 20;
+        public static final int rollerCurrentLimitAmps = 50;
 
         public static final double kP = 3.0;
         public static final double kD = 0.0;
@@ -306,6 +307,8 @@ public class Constants {
         public static final double minInches = 0.0;
         public static final double maxInches = 17.0;
 
+        public static final double targetToleranceInches = 0.5;
+
         public static final double clawOpenLimitInches = 11.0;
 
         public static final double rollerWheelDiameterInches = 4.0;
@@ -314,6 +317,6 @@ public class Constants {
         public static final double driveMetersPerSecondToRollerRPM = (39.37 * 60.0) / rollerWheelCircumferenceInches;
 
         public static final double rollerManualControlFactor = 0.25;
-        public static final double rollerRelativeMetersPerSecond = 5.50;
+        public static final double rollerRelativeMetersPerSecond = 7.0;
     }
 }
