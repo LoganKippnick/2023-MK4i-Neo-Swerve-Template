@@ -106,7 +106,7 @@ public class LiftSys extends SubsystemBase {
     public double getCurrentPosition() {
         return liftEnc.getPosition();
     }
-
+        // Carl was here; 
     public void setPower(double power) {
         if(
             (liftEnc.getPosition() <= LiftConstants.manualControlPadding && power < 0.0) ||
