@@ -14,7 +14,7 @@ public class VisionSys extends SubsystemBase {
     /**
      * The type of target tracked based on the pipeline.
      */
-    public static enum TargetType { // TODO: Make sure pipeline indexes are correct
+    public static enum TargetType { // TODO: Make sure pipeline indexes and target types are correct
         kPoleTape(0, "reflective tape"),
         kAprilTag(1, "april tag"),
         kCone(2, "cone"),
@@ -42,7 +42,7 @@ public class VisionSys extends SubsystemBase {
         setTargetType(TargetType.kNone);
 
         powerDistributionHub = new PowerDistribution(1, ModuleType.kRev);
-        setPower(true); // TODO: Try this. If it still doesn't work, set the PDH's CAN ID to 1.
+        setPower(true);
     }
 
     // This method will be called once per scheduler run
@@ -148,7 +148,6 @@ public class VisionSys extends SubsystemBase {
      */
     public boolean isPowered() {
         return powerDistributionHub.getSwitchableChannel();
-        // FIXME
     }
 
     /**
@@ -157,6 +156,5 @@ public class VisionSys extends SubsystemBase {
      */
     public void setPower(boolean isPowered) {
         powerDistributionHub.setSwitchableChannel(isPowered);
-        // FIXME
     }
 }

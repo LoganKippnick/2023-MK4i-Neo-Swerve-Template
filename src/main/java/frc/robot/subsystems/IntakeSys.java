@@ -80,7 +80,7 @@ public class IntakeSys extends SubsystemBase {
     public void periodic() {
         // The encoder is being dumb, so if it gives a really uneccesarily large reading it will try
         // zeroing it again.
-        if(getCurrentPosition() > 100.0) { // FIXME: Do we still need this?
+        if(getCurrentPosition() > 100.0) {
             intakeEnc.setPosition(offsetInches);
         }
 
