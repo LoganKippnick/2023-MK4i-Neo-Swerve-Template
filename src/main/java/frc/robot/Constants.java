@@ -77,7 +77,7 @@ public class Constants {
         /**
          * The track width from wheel center to wheel center.
          */
-        public static final double trackWidth = Units.inchesToMeters(29.5);
+        public static final double trackWidth = Units.inchesToMeters(29.5); //FIXME: Change this to actual track width to fix pose estimation issues
 
         /**
          * The track length from wheel center to wheel center.
