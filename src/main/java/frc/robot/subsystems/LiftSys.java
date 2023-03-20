@@ -62,8 +62,6 @@ public class LiftSys extends SubsystemBase {
 
         controller.setP(LiftConstants.kP);
         controller.setD(LiftConstants.kD);
-
-        controller.setOutputRange(LiftConstants.minPower, LiftConstants.maxPower);
         
         controller.setIZone(0);
         
@@ -74,10 +72,6 @@ public class LiftSys extends SubsystemBase {
     public void periodic() {
         if(isManual) {
             controller.setOutputRange(-LiftConstants.manualPower, LiftConstants.manualPower);
-        }
-        else {
-            controller.setOutputRange(LiftConstants.minPower, LiftConstants.maxPower);
-            controller.setReference(targetInches, ControlType.kPosition);
         }
 
         if(
@@ -93,6 +87,8 @@ public class LiftSys extends SubsystemBase {
 
         if(targetInches < 0.0) targetInches = 0.0;
         else if (targetInches > LiftConstants.maxHeightInches) targetInches = LiftConstants.maxHeightInches;
+
+        controller.setReference(targetInches, ControlType.kPosition);
 
         SmartDashboard.putNumber("lift inches", liftEnc.getPosition());
         // SmartDashboard.putNumber("lift velocity", liftEnc.getVelocity());
@@ -119,10 +115,13 @@ public class LiftSys extends SubsystemBase {
         }
     }
 
-    public void setTarget(double inches) {
+    public void setTarget(double inches, double power) {
         isManual = false;
+
         if(inches > LiftConstants.maxHeightInches) inches = LiftConstants.maxHeightInches;
         else if(inches < 0.0) inches = 0.0;
+
+        controller.setOutputRange(-power, power);
 
         targetInches = inches;
     }
@@ -145,8 +144,7 @@ public class LiftSys extends SubsystemBase {
     }
 
     public boolean isAtTarget() {
-        return getCurrentPosition() > targetInches - LiftConstants.targetTolerance &&
-            getCurrentPosition() < targetInches + LiftConstants.targetTolerance;
+        return Math.abs(getCurrentPosition() - targetInches) < LiftConstants.targetTolerance;
     }
 
     public void actuateUp() {
