@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.CompressorConstants;
@@ -39,7 +38,7 @@ public class CompressorSys extends SubsystemBase {
     @Override
     public void periodic() {
         if(RobotController.isBrownedOut()) {
-            setEnabled(false);
+            disable();
             timeoutTimer.stop();
             timeoutTimer.reset();
         }
@@ -49,20 +48,13 @@ public class CompressorSys extends SubsystemBase {
         }
 
         if(timeoutTimer.hasElapsed(CompressorConstants.compressorReenableSeconds)) {
-            setEnabled(true);
+            enable();
             timeoutTimer.stop();
             timeoutTimer.reset();
         }
 
         if(isRunning()) runTimer.start();
         else runTimer.stop();
-
-        SmartDashboard.putNumber("pressure PSI", compressor.getPressure());
-        // SmartDashboard.putBoolean("compressor enabled", compressor.isEnabled());
-
-        SmartDashboard.putBoolean("compressor running", isRunning());
-        SmartDashboard.putNumber("compressor elapsed", runTimer.get());
-
 
         if(compressor.getPressure() <= 0.0)
             DriverStation.reportError("PRESSURE RELEASE VALVE IS OPEN", false);
@@ -71,8 +63,6 @@ public class CompressorSys extends SubsystemBase {
             turnOnCount++;
             hasTurnedOff = false;
         }
-
-        SmartDashboard.putNumber("compressor turn on count", turnOnCount);
 
         if(!isRunning()) hasTurnedOff = true;
 
@@ -88,15 +78,25 @@ public class CompressorSys extends SubsystemBase {
     }
 
     /**
-     * Sets whether the compressor should enable or disable.
-     * 
-     * @param isEnabled True if the compressor should enable.
+     * Disables the compressor.
      */
-    public void setEnabled(boolean isEnabled) {
-        if(isEnabled)
-            compressor.enableAnalog(CompressorConstants.minPressurePSI, CompressorConstants.maxPressurePSI);
-        else
-            compressor.disable();
+    public void disable() {
+        compressor.disable();
+    }
+
+    /**
+     * Enables the compressor.
+     */
+    public void enable() {
+        compressor.enableAnalog(CompressorConstants.minPressurePSI, CompressorConstants.maxPressurePSI);
+    }
+
+    /**
+     * Enables the compressor and tops it off.
+     */
+    public void run() {
+        compressor.enableAnalog(CompressorConstants.maxPressurePSI - 1.0, CompressorConstants.maxPressurePSI);
+        compressor.enableAnalog(CompressorConstants.minPressurePSI, CompressorConstants.maxPressurePSI);
     }
 
     /**
@@ -109,7 +109,15 @@ public class CompressorSys extends SubsystemBase {
     }
 
     public boolean isRunning() {
-        return compressor.getCurrent() > 0.25;
+        return compressor.getCurrent() > 0.15;
+    }
+
+    public double getRunTimeSeconds() {
+        return runTimer.get();
+    }
+
+    public int getTurnOnCount() {
+        return turnOnCount;
     }
 
 }

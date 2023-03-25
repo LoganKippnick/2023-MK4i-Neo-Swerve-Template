@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.LiftConstants;
@@ -42,12 +41,13 @@ public class LiftSys extends SubsystemBase {
         masterMtr = new CANSparkMax(CANDevices.masterMtrId, MotorType.kBrushless);
         slaveMtr = new CANSparkMax(CANDevices.slaveMtrId, MotorType.kBrushless);
 
-        masterMtr.setInverted(false);
-        slaveMtr.setInverted(true);
+        masterMtr.setInverted(true);
+        slaveMtr.setInverted(false);
 
         masterMtr.setSmartCurrentLimit(LiftConstants.maxCurrentAmps);
 
         masterMtr.setIdleMode(IdleMode.kBrake);
+        slaveMtr.setIdleMode(IdleMode.kBrake);
 
         slaveMtr.follow(masterMtr, true);
 
@@ -93,14 +93,6 @@ public class LiftSys extends SubsystemBase {
 
         if(targetInches < 0.0) targetInches = 0.0;
         else if (targetInches > LiftConstants.maxHeightInches) targetInches = LiftConstants.maxHeightInches;
-
-        SmartDashboard.putNumber("lift inches", liftEnc.getPosition());
-        // SmartDashboard.putNumber("lift velocity", liftEnc.getVelocity());
-        // SmartDashboard.putNumber("lift target", targetInches);
-        // SmartDashboard.putNumber("lift power", masterMtr.get());
-        // SmartDashboard.putBoolean("lift isManual", isManual);
-        // SmartDashboard.putBoolean("lift is at target", isAtTarget());
-        SmartDashboard.putString("lift actuation", (isActuatedDown() ? "down" : "up"));
     }
 
     public double getCurrentPosition() {
@@ -145,8 +137,8 @@ public class LiftSys extends SubsystemBase {
     }
 
     public boolean isAtTarget() {
-        return getCurrentPosition() > targetInches - LiftConstants.targetTolerance &&
-            getCurrentPosition() < targetInches + LiftConstants.targetTolerance;
+        return getCurrentPosition() > targetInches - LiftConstants.targetToleranceInches &&
+            getCurrentPosition() < targetInches + LiftConstants.targetToleranceInches;
     }
 
     public void actuateUp() {
@@ -159,5 +151,9 @@ public class LiftSys extends SubsystemBase {
 
     public boolean isActuatedDown() {
         return liftSol.get().equals(Value.kForward);
+    }
+
+    public boolean isManual() {
+        return isManual;
     }
 }

@@ -9,7 +9,7 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.SwerveSys;
 import frc.robot.subsystems.VisionSys;
-import frc.robot.subsystems.VisionSys.TargetType;
+import frc.robot.subsystems.VisionSys.Pipeline;
 
 public class AutoAlignCmd extends CommandBase {
 
@@ -22,14 +22,14 @@ public class AutoAlignCmd extends CommandBase {
     private final PIDController alignController;
     private final PIDController rotController;
 
-    private final TargetType targetType;
+    private final Pipeline pipeline;
     
-    public AutoAlignCmd(DoubleSupplier xControl, TargetType targetType, VisionSys visionSys, SwerveSys swerveSys, LiftSys liftSys) {
+    public AutoAlignCmd(DoubleSupplier xControl, Pipeline pipeline, VisionSys visionSys, SwerveSys swerveSys, LiftSys liftSys) {
         this.visionSys = visionSys;
         this.swerveSys = swerveSys;
         this.liftSys = liftSys;
         this.xControl = xControl;
-        this.targetType = targetType;
+        this.pipeline = pipeline;
 
         alignController = VisionConstants.alignController;
         alignController.setSetpoint(0.0);
@@ -43,7 +43,7 @@ public class AutoAlignCmd extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        visionSys.setTargetType(targetType);
+        visionSys.setPipeline(pipeline);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
