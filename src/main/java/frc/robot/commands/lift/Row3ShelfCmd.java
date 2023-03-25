@@ -35,7 +35,7 @@ public class Row3ShelfCmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        liftSys.setTarget(LiftConstants.row3ShelfInches);
+        liftSys.setTarget(LiftConstants.row3ShelfInches, LiftConstants.placeCubePower);
     }
 
     // Called once the command ends or is interrupted.

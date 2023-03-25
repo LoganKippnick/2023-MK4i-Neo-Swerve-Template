@@ -50,9 +50,9 @@ public class DownCmd extends CommandBase {
     @Override
     public void execute() {
         if(!isWaiting || timer.hasElapsed(0.75))
-            liftSys.setTarget(LiftConstants.downInches);
+            liftSys.setTarget(LiftConstants.downInches, LiftConstants.downPower);
         else
-            liftSys.setTarget(LiftConstants.downActuationHeightInches - LiftConstants.targetToleranceInches);
+            liftSys.setTarget(LiftConstants.downActuationHeightInches - LiftConstants.targetToleranceInches, LiftConstants.downPower);
     }
 
     
