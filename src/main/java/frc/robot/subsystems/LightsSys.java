@@ -21,6 +21,9 @@ public class LightsSys extends SubsystemBase {
     private int partyHue;
     private final int partyHueIncrement = 1;
 
+    private boolean isWeeWooMode = false;
+    private final Timer weeWooTimer;
+
     /**
      * Constructs a new ExampleSys.
      * 
@@ -34,6 +37,7 @@ public class LightsSys extends SubsystemBase {
         leftStrip.setDimness(0.25);
 
         blinkTimer = new Timer();
+        weeWooTimer = new Timer();
         
         setStatus(GameElement.kNone);
     }
@@ -41,7 +45,7 @@ public class LightsSys extends SubsystemBase {
     // This method will be called once per scheduler run
     @Override
     public void periodic() {
-        if(!isPartyMode || isBlinking) {
+        if((!isPartyMode && !isWeeWooMode) || isBlinking) {
             if(status.equals(GameElement.kCone)) {
                 rightStrip.setColor(Color.kYellow);
                 leftStrip.setColor(Color.kYellow);
@@ -60,20 +64,20 @@ public class LightsSys extends SubsystemBase {
             if(blinkCounter >= 3) {
                 isBlinking = false;
             }
-            else if(blinkTimer.get() == 0.0 && blinkCounter == 0) {
-                rightStrip.setBrightness(1.0);
-                leftStrip.setBrightness(1.0);
-                blinkTimer.start();
-            }
-            else if(blinkTimer.get() >= 0.5) {
-                rightStrip.setBrightness(0.0);
-                leftStrip.setBrightness(0.0);
-            }
-            else if(blinkTimer.get() >= 1.0) {
+            else if(blinkTimer.hasElapsed(1.0)) {
                 rightStrip.setBrightness(1.0);
                 leftStrip.setBrightness(1.0);
                 blinkCounter++;
                 blinkTimer.reset();
+            }
+            else if(blinkTimer.hasElapsed(0.5)) {
+                rightStrip.setBrightness(0.0);
+                leftStrip.setBrightness(0.0);
+            }
+            else if(blinkTimer.get() == 0.0 && blinkCounter == 0) {
+                rightStrip.setBrightness(1.0);
+                leftStrip.setBrightness(1.0);
+                blinkTimer.start();
             }
         }
         else if(isPartyMode) {
@@ -89,7 +93,24 @@ public class LightsSys extends SubsystemBase {
                 partyHue -= 180;
             }
         }
-        
+        else if(isWeeWooMode) {
+            if(weeWooTimer.hasElapsed(1.0)) {
+                weeWooTimer.reset();
+            }
+            else if(weeWooTimer.hasElapsed(0.5)) {
+                rightStrip.setColor(Color.kBlue);
+                leftStrip.setColor(Color.kBlue);
+            }
+            else if(weeWooTimer.get() == 0.0) {
+                weeWooTimer.start();
+                rightStrip.setColor(Color.kRed);
+                leftStrip.setColor(Color.kRed);
+            }
+            else {
+                rightStrip.setColor(Color.kRed);
+                leftStrip.setColor(Color.kRed);
+            }
+        }
         
         if(!isBlinking) {   
             blinkTimer.stop();
@@ -103,6 +124,11 @@ public class LightsSys extends SubsystemBase {
 
         if(!isPartyMode) {
             partyHue = 0;
+        }
+
+        if(!isWeeWooMode) {
+            weeWooTimer.stop();
+            blinkTimer.reset();
         }
     }
 
