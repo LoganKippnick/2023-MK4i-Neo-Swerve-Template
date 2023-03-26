@@ -27,7 +27,7 @@ public class RightConeGrabCube extends SequentialCommandGroup {
             new InCmd(intakeSys),
             new WaitCmd(0.5),
             new AutoRow3PoleCmd(liftSys, clawSys),
-            new FollowTrajectoryCmd("RightStartToCube", swerveSys)
+            new FollowTrajectoryCmd("RightStartToCube1", swerveSys)
                 .alongWith(
                     new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
                     .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys)))

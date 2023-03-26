@@ -9,6 +9,12 @@ import edu.wpi.first.math.util.Units;
 
 public class Constants {
 
+    public enum GameElement {
+        kCone,
+        kCube,
+        kNone
+    }
+
     public static final class CANDevices {
 
         public static final int powerDistributionHubId = 0;

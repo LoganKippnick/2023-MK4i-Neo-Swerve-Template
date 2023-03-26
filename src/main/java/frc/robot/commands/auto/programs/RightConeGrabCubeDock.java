@@ -13,7 +13,7 @@ import frc.robot.commands.claw.CloseCmd;
 import frc.robot.commands.drivetrain.SetPoseCmd;
 import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
-import frc.robot.commands.intake.SetRelativeSpeedCmd;
+import frc.robot.commands.intake.SetAbsoluteSpeedCmd;
 import frc.robot.commands.intake.StopRollersCmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.IntakeSys;
@@ -24,22 +24,19 @@ public class RightConeGrabCubeDock extends SequentialCommandGroup {
     
     public RightConeGrabCubeDock(SwerveSys swerveSys, LiftSys liftSys, ClawSys clawSys, IntakeSys intakeSys) {
         super(
-            new SetPoseCmd(new Pose2d(1.83, 0.5, new Rotation2d(Math.PI)), swerveSys),
+            new SetPoseCmd(new Pose2d(1.83, 4.98, new Rotation2d(Math.PI)), swerveSys),
             new CloseCmd(clawSys),
             new InCmd(intakeSys),
             new WaitCmd(0.375),
             new AutoRow3PoleCmd(liftSys, clawSys),
-            new FollowTrajectoryCmd("RightStartToCube", swerveSys)
+            new FollowTrajectoryCmd("RightStartToCube1Dock", swerveSys)
                 .alongWith(
                     new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
-                    .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys)))
-                ),
-            new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys)),
-            new FollowTrajectoryCmd("RightGrabCubeToDock", swerveSys)
-                .alongWith(
-                    new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys))
-                    .andThen(new WaitCmd(1.5))
-                    .andThen(new CloseCmd(clawSys))
+                .andThen(new OutCmd(intakeSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys)))
+                .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 6.75))
+                .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys)))
+                .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getY() < 3.24))
+                .andThen(new CloseCmd(clawSys))
                 ),
             new DockCmd(DockDirection.kFromCenter, swerveSys)
         );

@@ -13,7 +13,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerType;
+import frc.robot.Constants.GameElement;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.commands.SetElementStatusCmd;
 import frc.robot.commands.auto.programs.CenterConeDock;
 import frc.robot.commands.auto.programs.CenterConeGrabCubeDock;
 import frc.robot.commands.auto.programs.CenterConeMobilityDock;
@@ -50,6 +52,7 @@ import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.CompressorSys;
 import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
+import frc.robot.subsystems.LightsSys;
 import frc.robot.subsystems.SwerveSys;
 import frc.robot.subsystems.VisionSys;
 
@@ -62,6 +65,7 @@ public class RobotContainer {
     private final IntakeSys intakeSys = new IntakeSys(() -> swerveSys.getForwardVelocityMetersPerSecond());
     private final VisionSys visionSys = new VisionSys();  
     private final CompressorSys compressorSys = new CompressorSys();  
+    private final LightsSys lightsSys = new LightsSys();
 
     // Initialize joysticks.
     private final XboxController driverController = new XboxController(ControllerConstants.driverGamepadPort);
@@ -92,6 +96,7 @@ public class RobotContainer {
     private final JoystickButton operatorLeftBumper = new JoystickButton(operatorController, 5);
     private final JoystickButton operatorRightBumper = new JoystickButton(operatorController, 6);
     private final JoystickButton operatorWindowBtn = new JoystickButton(operatorController, 7);
+    private final JoystickButton operatorMenuBtn = new JoystickButton(operatorController, 8);
     private final POVButton operatorUpBtn = new POVButton(operatorController, 0);
     private final POVButton operatorDownBtn = new POVButton(operatorController, 180);
 
@@ -256,6 +261,11 @@ public class RobotContainer {
         operatorBBtn.onTrue(new Row2PoleCmd(true, liftSys));
         operatorXBtn.onTrue(new DownCmd(true, liftSys));
         operatorYBtn.onTrue(new Row3PoleCmd(true, liftSys));
+
+        operatorWindowBtn.onTrue(new SetElementStatusCmd(GameElement.kCube, liftSys, visionSys, lightsSys));
+        operatorMenuBtn.onTrue(new SetElementStatusCmd(GameElement.kCone, liftSys, visionSys, lightsSys));
+
+        operatorWindowBtn.and(operatorMenuBtn).onTrue(new SetElementStatusCmd(GameElement.kNone, liftSys, visionSys, lightsSys));
 
         operatorWindowBtn.and(operatorXBtn).onTrue(new Row2ShelfCmd(true, liftSys));
         operatorWindowBtn.and(operatorYBtn).onTrue(new Row3ShelfCmd(true, liftSys));
