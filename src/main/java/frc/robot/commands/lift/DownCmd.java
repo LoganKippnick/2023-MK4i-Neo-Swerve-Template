@@ -36,7 +36,7 @@ public class DownCmd extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        if(liftSys.getCurrentPosition() < LiftConstants.row1Inches + 6.0) {
+        if(liftSys.getCurrentPosition() < LiftConstants.row1Inches + 6.0 && liftSys.isActuatedDown()) {
             isWaiting = true;
         }
         else

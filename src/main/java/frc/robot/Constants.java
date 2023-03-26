@@ -247,7 +247,7 @@ public class Constants {
 
         public static final double gearReduction = 1.0 / 5.0;
 
-        public static final double maxHeightInches = 77.0;
+        public static final double maxHeightInches = 76.5;
         public static final double inchesPerEncRev = 11 * gearReduction;
 
         public static final double kP = 0.09;
@@ -257,20 +257,20 @@ public class Constants {
 
         public static final double feetPerSecondPerRPM = (inchesPerEncRev / 12) / 60;
 
-        public static final double manualPower = 0.15;
+        public static final double manualPower = 0.25;
         public static final double downPower = 0.45;
-        public static final double hybridPower = 0.45;
+        public static final double hybridPower = 0.55;
         public static final double placeConePower = 0.3;
-        public static final double placeCubePower = 0.45;
+        public static final double placeCubePower = 0.55;
 
         public static final double downInches = 0.0;
         public static final double row1Inches = 35.0;
         public static final double row2ShelfInches = 49.0;
         public static final double row2PoleInches = 55.0;
         public static final double row3ShelfInches = 71.0;
-        public static final double row3PoleInches = 77.0;
+        public static final double row3PoleInches = 76.5;
 
-        public static final double manualControlPadding = 2.0; //TODO: manualControlPaddingInches
+        public static final double manualControlPaddingInches = 2.0;
 
         public static final double targetToleranceInches = 0.5;
 
