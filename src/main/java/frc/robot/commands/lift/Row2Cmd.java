@@ -1,10 +1,11 @@
 package frc.robot.commands.lift;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.GameElement;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.LiftSys;
 
-public class Row3ShelfCmd extends CommandBase {
+public class Row2Cmd extends CommandBase {
 
     private final LiftSys liftSys;
 
@@ -19,7 +20,7 @@ public class Row3ShelfCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public Row3ShelfCmd(boolean finishInstantly, LiftSys liftSys) {
+    public Row2Cmd(boolean finishInstantly, LiftSys liftSys) {
         this.liftSys = liftSys;
         this.finishInstantly = finishInstantly;
 
@@ -35,7 +36,10 @@ public class Row3ShelfCmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        liftSys.setTarget(LiftConstants.row3ShelfInches, LiftConstants.placeCubePower);
+        if(liftSys.getMode().equals(GameElement.kCube))
+            liftSys.setTarget(LiftConstants.row2ShelfInches, LiftConstants.placeCubePower);
+        else
+            liftSys.setTarget(LiftConstants.row2PoleInches, LiftConstants.placeConePower);
     }
 
     // Called once the command ends or is interrupted.
@@ -43,7 +47,7 @@ public class Row3ShelfCmd extends CommandBase {
     public void end(boolean interrupted) {
         
     }
-    
+
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {

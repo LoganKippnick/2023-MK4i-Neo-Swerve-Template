@@ -5,7 +5,6 @@ import frc.robot.Constants.GameElement;
 import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.LightsSys;
 import frc.robot.subsystems.VisionSys;
-import frc.robot.subsystems.VisionSys.Pipeline;
 
 public class SetElementStatusCmd extends CommandBase {
 
@@ -44,6 +43,7 @@ public class SetElementStatusCmd extends CommandBase {
     @Override
     public void execute() {
         lightsSys.setStatus(element);
+        liftSys.setMode(element);
         if(element.equals(lightsSys.getStatus())) {
             visionSys.setTarget(element);
         }

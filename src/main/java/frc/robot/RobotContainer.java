@@ -43,10 +43,8 @@ import frc.robot.commands.intake.IntakeManualControlCmd;
 import frc.robot.commands.lift.DownCmd;
 import frc.robot.commands.lift.LiftManualControlCmd;
 import frc.robot.commands.lift.Row1Cmd;
-import frc.robot.commands.lift.Row2PoleCmd;
-import frc.robot.commands.lift.Row2ShelfCmd;
-import frc.robot.commands.lift.Row3PoleCmd;
-import frc.robot.commands.lift.Row3ShelfCmd;
+import frc.robot.commands.lift.Row2Cmd;
+import frc.robot.commands.lift.Row3Cmd;
 import frc.robot.commands.vision.RestartLimelightCmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.CompressorSys;
@@ -258,17 +256,14 @@ public class RobotContainer {
         );
 
         operatorABtn.onTrue(new Row1Cmd(true, liftSys));
-        operatorBBtn.onTrue(new Row2PoleCmd(true, liftSys));
+        operatorBBtn.onTrue(new Row2Cmd(true, liftSys));
         operatorXBtn.onTrue(new DownCmd(true, liftSys));
-        operatorYBtn.onTrue(new Row3PoleCmd(true, liftSys));
+        operatorYBtn.onTrue(new Row3Cmd(true, liftSys));
 
         operatorWindowBtn.onTrue(new SetElementStatusCmd(GameElement.kCube, liftSys, visionSys, lightsSys));
         operatorMenuBtn.onTrue(new SetElementStatusCmd(GameElement.kCone, liftSys, visionSys, lightsSys));
 
         operatorWindowBtn.and(operatorMenuBtn).onTrue(new SetElementStatusCmd(GameElement.kNone, liftSys, visionSys, lightsSys));
-
-        operatorWindowBtn.and(operatorXBtn).onTrue(new Row2ShelfCmd(true, liftSys));
-        operatorWindowBtn.and(operatorYBtn).onTrue(new Row3ShelfCmd(true, liftSys));
         
         operatorLeftBumper.onTrue(new OpenCmd(clawSys));
         operatorRightBumper.onTrue(new CloseCmd(clawSys));
@@ -293,11 +288,10 @@ public class RobotContainer {
         );
 
         hybridABtn.onTrue(new Row1Cmd(true, liftSys));
-        hybridBBtn.onTrue(new Row2PoleCmd(true, liftSys));
+        hybridBBtn.onTrue(new Row2Cmd(true, liftSys));
         hybridXBtn.onTrue(new DownCmd(true, liftSys));
-        hybridYBtn.onTrue(new Row3PoleCmd(true, liftSys));
+        hybridYBtn.onTrue(new Row3Cmd(true, liftSys));
 
-        hybridWindowBtn.and(operatorYBtn).onTrue(new Row3ShelfCmd(false, liftSys));
         hybridMenuBtn.onTrue(new ResetHeadingCmd(swerveSys));
         
         hybridLeftBumper.onTrue(new OpenCmd(clawSys));
