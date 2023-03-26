@@ -113,6 +113,7 @@ public class RobotContainer {
     private final JoystickButton hybridRightBumper = new JoystickButton(hybridController, 6);
     private final JoystickButton hybridWindowBtn = new JoystickButton(hybridController, 7);
     private final JoystickButton hybridMenuBtn = new JoystickButton(driverController, 8);
+    private final JoystickButton hybridRightJoystickPressBtn = new JoystickButton(hybridController, 10);
 
     // Instantiate controller rumble.
     private Rumble matchTimeRumble;
@@ -326,10 +327,17 @@ public class RobotContainer {
         hybridXBtn.onTrue(new DownCmd(true, liftSys));
         hybridYBtn.onTrue(new Row3Cmd(true, liftSys));
 
-        hybridMenuBtn.onTrue(new ResetHeadingCmd(swerveSys));
+        hybridWindowBtn.onTrue(new SetElementStatusCmd(GameElement.kCube, liftSys, visionSys, lightsSys));
+        hybridMenuBtn.onTrue(new SetElementStatusCmd(GameElement.kCone, liftSys, visionSys, lightsSys));
+
+        hybridWindowBtn.and(operatorMenuBtn).onTrue(new SetElementStatusCmd(GameElement.kNone, liftSys, visionSys, lightsSys));
         
         hybridLeftBumper.onTrue(new OpenCmd(clawSys));
         hybridRightBumper.onTrue(new CloseCmd(clawSys));
+
+        hybridRightJoystickPressBtn.onTrue(new ResetHeadingCmd(swerveSys));
+
+        // TODO: LED animations on hybrid D pad
 
         brownOutRumble = new Rumble(RumbleType.kLeftRumble, 1.0, hybridController);
         matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, hybridController);
