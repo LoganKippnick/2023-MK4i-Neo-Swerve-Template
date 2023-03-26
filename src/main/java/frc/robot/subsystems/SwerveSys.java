@@ -113,36 +113,12 @@ public class SwerveSys extends SubsystemBase {
         // Updates the odometry every 20ms
         odometry.update(getHeading(), getModulePositions());
 
-        SmartDashboard.putNumber("heading", -getHeading().getDegrees() % 180);
-        // SmartDashboard.putNumber("pitch", getPitchDegrees());
-        // SmartDashboard.putNumber("roll", getRollDegrees());
-
-        // SmartDashboard.putNumber("Odometry x", odometry.getEstimatedPosition().getX());
-        // SmartDashboard.putNumber("Odometry y", odometry.getEstimatedPosition().getY());
-
-        SmartDashboard.putNumber("speed m/s", getAverageDriveVelocityMetersPerSecond());
-        SmartDashboard.putNumber("speed mph", getAverageDriveVelocityMetersPerSecond() * 2.23694);
-        // SmartDashboard.putNumber("direction of travel", getDirectionOfTravel().getDegrees());
-        // SmartDashboard.putNumber("forward speed", getForwardVelocityMetersPerSecond());
-
-        SmartDashboard.putBoolean("balanced", Math.abs(getRollDegrees()) < 4.0);
-
         field.setRobotPose(odometry.getEstimatedPosition());
 
-        // SmartDashboard.putNumber("front left rotation encoder", frontLeftMod.getSteerEncAngle().getDegrees());
-        // SmartDashboard.putNumber("front right rotation encoder", frontRightMod.getSteerEncAngle().getDegrees());
-        // SmartDashboard.putNumber("rear left rotation encoder", rearLeftMod.getSteerEncAngle().getDegrees());
-        // SmartDashboard.putNumber("rear right rotation encoder", rearRightMod.getSteerEncAngle().getDegrees());
-
-        // SmartDashboard.putNumber("front left CANcoder", frontLeftMod.getCanCoderAngle().getDegrees());
-        // SmartDashboard.putNumber("front right CANcoder", frontRightMod.getCanCoderAngle().getDegrees());
-        // SmartDashboard.putNumber("rear left CANcoder", rearLeftMod.getCanCoderAngle().getDegrees());
-        // SmartDashboard.putNumber("rear right CANcoder", rearRightMod.getCanCoderAngle().getDegrees());
-
-        // SmartDashboard.putNumber("front left distance", frontLeftMod.getDriveDistanceMeters());
-        // SmartDashboard.putNumber("front right distance", frontRightMod.getDriveDistanceMeters());
-        // SmartDashboard.putNumber("rear left distance", rearLeftMod.getDriveDistanceMeters());
-        // SmartDashboard.putNumber("rear right distance", rearRightMod.getDriveDistanceMeters());
+        SmartDashboard.putNumber("front left CANcoder", frontLeftMod.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("front right CANcoder", frontRightMod.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("rear left CANcoder", rearLeftMod.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("rear right CANcoder", rearRightMod.getCanCoderAngle().getDegrees());
 
         if(isLocked) {
             SwerveModuleState[] states = new SwerveModuleState[] {

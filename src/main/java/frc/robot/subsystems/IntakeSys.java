@@ -91,16 +91,16 @@ public class IntakeSys extends SubsystemBase {
             controller.setReference(targetInches + offsetInches, ControlType.kPosition);
         }
 
-        if(!rollersAreManual && rollersAreRelative && getCurrentPosition() > 8.0 /* TODO: Make constant */) {
-            setRPM((relativeSpeed - robotSpeedMetersPerSecond.getAsDouble()) * IntakeConstants.driveMetersPerSecondToRollerRPM);
+        if(!rollersAreManual && getCurrentPosition() > IntakeConstants.intakeRollerStartInches) {
+            if(rollersAreRelative)
+                setRPM((relativeSpeed - robotSpeedMetersPerSecond.getAsDouble()) * IntakeConstants.driveMetersPerSecondToRollerRPM);
+            else
+                setRPM(relativeSpeed * IntakeConstants.driveMetersPerSecondToRollerRPM);
         }
         else {
             setRollerPower(0.0);
         }
 
-        // SmartDashboard.putNumber("intake inches", getCurrentPosition());
-        // SmartDashboard.putNumber("intake target", targetInches);
-        // SmartDashboard.putNumber("roller speed m/s", upperMtr.getEncoder().getVelocity() / IntakeConstants.driveMetersPerSecondToRollerRPM);
     }
 
     // Put methods for controlling this subsystem here. Call these from Commands.
@@ -140,9 +140,22 @@ public class IntakeSys extends SubsystemBase {
         setRollerPower(power);
     }
 
+    public double getCurrentSpeedRPM() {
+        return upperMtr.getEncoder().getVelocity();
+    }
+
+    public double getCurrentSpeedMetersPerSecond() {
+        return getCurrentSpeedRPM() / IntakeConstants.driveMetersPerSecondToRollerRPM;
+    }
+
     public void setRelativeSpeed(double metersPerSecond) {
         relativeSpeed = metersPerSecond;
         rollersAreRelative = true;
+    }
+
+    public void setAbsoluteSpeed(double metersPerSecond) {
+        relativeSpeed = metersPerSecond;
+        rollersAreRelative = false;
     }
 
     public void disableRelativeSpeed() {

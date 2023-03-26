@@ -36,7 +36,7 @@ public class DownCmd extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        if(liftSys.getCurrentPosition() < LiftConstants.row1Inches + 6.0) {
+        if(liftSys.getCurrentPosition() < LiftConstants.row1Inches + 6.0 && liftSys.isActuatedDown()) {
             isWaiting = true;
         }
         else
@@ -52,7 +52,7 @@ public class DownCmd extends CommandBase {
         if(!isWaiting || timer.hasElapsed(0.75))
             liftSys.setTarget(LiftConstants.downInches, LiftConstants.downPower);
         else
-            liftSys.setTarget(LiftConstants.downActuationHeightInches - LiftConstants.targetTolerance, LiftConstants.downPower);
+            liftSys.setTarget(LiftConstants.downActuationHeightInches - LiftConstants.targetToleranceInches, LiftConstants.downPower);
     }
 
     
@@ -67,8 +67,8 @@ public class DownCmd extends CommandBase {
     @Override
     public boolean isFinished() {
         return (liftSys.getTargetInches() == LiftConstants.downInches) || (!finishInstantly && (
-            liftSys.getCurrentPosition() >= LiftConstants.downInches - LiftConstants.targetTolerance &&
-            liftSys.getCurrentPosition() <= LiftConstants.downInches + LiftConstants.targetTolerance
+            liftSys.getCurrentPosition() >= LiftConstants.downInches - LiftConstants.targetToleranceInches &&
+            liftSys.getCurrentPosition() <= LiftConstants.downInches + LiftConstants.targetToleranceInches
         ));
     }
 

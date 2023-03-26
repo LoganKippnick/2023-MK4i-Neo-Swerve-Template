@@ -42,8 +42,8 @@ public class LiftSys extends SubsystemBase {
         masterMtr = new CANSparkMax(CANDevices.masterMtrId, MotorType.kBrushless);
         slaveMtr = new CANSparkMax(CANDevices.slaveMtrId, MotorType.kBrushless);
 
-        masterMtr.setInverted(false);
-        slaveMtr.setInverted(true);
+        masterMtr.setInverted(true);
+        slaveMtr.setInverted(false);
 
         masterMtr.setSmartCurrentLimit(LiftConstants.maxCurrentAmps);
 
@@ -91,8 +91,6 @@ public class LiftSys extends SubsystemBase {
         if(targetInches < 0.0) targetInches = 0.0;
         else if (targetInches > LiftConstants.maxHeightInches) targetInches = LiftConstants.maxHeightInches;
 
-        controller.setReference(targetInches, ControlType.kPosition);
-
         SmartDashboard.putNumber("lift inches", liftEnc.getPosition());
         // SmartDashboard.putNumber("lift velocity", liftEnc.getVelocity());
         // SmartDashboard.putNumber("lift target", targetInches);
@@ -108,8 +106,8 @@ public class LiftSys extends SubsystemBase {
         // Carl was here; 
     public void setPower(double power) {
         if(
-            (liftEnc.getPosition() <= LiftConstants.manualControlPadding && power < 0.0) ||
-            (liftEnc.getPosition() >= LiftConstants.maxHeightInches - LiftConstants.manualControlPadding && power > 0.0)
+            (liftEnc.getPosition() <= LiftConstants.manualControlPaddingInches && power < 0.0) ||
+            (liftEnc.getPosition() >= LiftConstants.maxHeightInches - LiftConstants.manualControlPaddingInches && power > 0.0)
         ) {
             masterMtr.set(0.0);
         }
@@ -147,7 +145,7 @@ public class LiftSys extends SubsystemBase {
     }
 
     public boolean isAtTarget() {
-        return Math.abs(getCurrentPosition() - targetInches) < LiftConstants.targetTolerance;
+        return Math.abs(getCurrentPosition() - targetInches) < LiftConstants.targetToleranceInches;
     }
 
     public void actuateUp() {
@@ -160,5 +158,9 @@ public class LiftSys extends SubsystemBase {
 
     public boolean isActuatedDown() {
         return liftSol.get().equals(Value.kForward);
+    }
+
+    public boolean isManual() {
+        return isManual;
     }
 }

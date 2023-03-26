@@ -10,14 +10,14 @@ import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.SwerveSys;
 import frc.robot.subsystems.VisionSys;
-import frc.robot.subsystems.VisionSys.TargetType;
+import frc.robot.subsystems.VisionSys.Pipeline;
 
 public class AutoPlaceElementCmd extends SequentialCommandGroup {
     
-    public AutoPlaceElementCmd(DoubleSupplier xControl, TargetType targetType, VisionSys visionSys, SwerveSys swerveSys, ClawSys clawSys, LiftSys liftSys) {
+    public AutoPlaceElementCmd(DoubleSupplier xControl, Pipeline pipeline, VisionSys visionSys, SwerveSys swerveSys, ClawSys clawSys, LiftSys liftSys) {
         // TODO: driver buttons binded to whileTrue
         super(
-            new AutoAlignCmd(xControl, targetType, visionSys, swerveSys, liftSys),
+            new AutoAlignCmd(xControl, pipeline, visionSys, swerveSys, liftSys),
             new OpenCmd(clawSys),
             new WaitCmd(0.5),
             new DownCmd(true, liftSys)

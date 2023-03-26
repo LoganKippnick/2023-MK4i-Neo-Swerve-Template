@@ -14,17 +14,15 @@ public class VisionSys extends SubsystemBase {
     /**
      * The type of target tracked based on the pipeline.
      */
-    public static enum TargetType { // TODO: Make sure pipeline indexes and target types are correct
+    public static enum Pipeline {
         kPoleTape(0, "reflective tape"),
         kAprilTag(1, "april tag"),
-        kCone(2, "cone"),
-        kCube(3, "cube"),
-        kNone(-1, "none");
+        kIntake(2, "intake");
 
         public final int pipelineIndex;
         public final String name;
 
-        private TargetType(int pipelineIndex, String name) {
+        private Pipeline(int pipelineIndex, String name) {
             this.pipelineIndex = pipelineIndex;
             this.name = name;
         }
@@ -39,7 +37,7 @@ public class VisionSys extends SubsystemBase {
      */
     public VisionSys() {
         limelight = new PhotonCamera("Limelight");
-        setTargetType(TargetType.kNone);
+        setPipeline(Pipeline.kIntake);
 
         powerDistributionHub = new PowerDistribution(1, ModuleType.kRev);
         setPower(true);
@@ -54,25 +52,22 @@ public class VisionSys extends SubsystemBase {
      * Returns the type of target currently being tracked.
      * @return The type of target currently being tracked.
      */
-    public TargetType getTargetType() {
-        if(isDriverMode()) return TargetType.kNone;
-        else if(limelight.getPipelineIndex() == TargetType.kPoleTape.pipelineIndex) return TargetType.kPoleTape;
-        else if(limelight.getPipelineIndex() == TargetType.kAprilTag.pipelineIndex) return TargetType.kAprilTag;
-        else if(limelight.getPipelineIndex() == TargetType.kCone.pipelineIndex) return TargetType.kCone;
-        else if(limelight.getPipelineIndex() == TargetType.kCone.pipelineIndex) return TargetType.kCube;
-        else return TargetType.kNone;
+    public Pipeline getPipeline() {
+        if(limelight.getPipelineIndex() == Pipeline.kPoleTape.pipelineIndex) return Pipeline.kPoleTape;
+        else if(limelight.getPipelineIndex() == Pipeline.kAprilTag.pipelineIndex) return Pipeline.kAprilTag;
+        else return Pipeline.kIntake;
     }
 
     /**
      * Sets the type of target to track.
-     * @param targetType The type of target to track. If TargetType.kNone, enables driver mode, otherwise disables it.
+     * @param pipeline The type of target to track. If Pipeline.kNone, enables driver mode, otherwise disables it.
      */
-    public void setTargetType(TargetType targetType) {
-        if(targetType.equals(TargetType.kNone)) {
+    public void setPipeline(Pipeline pipeline) {
+        limelight.setPipelineIndex(pipeline.pipelineIndex);
+        if(pipeline.equals(Pipeline.kIntake)) {
             limelight.setDriverMode(true);
         }
         else {
-            limelight.setPipelineIndex(targetType.pipelineIndex);
             limelight.setDriverMode(false);
         }
     }

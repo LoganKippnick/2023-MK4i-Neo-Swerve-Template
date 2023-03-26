@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerType;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.auto.programs.CenterConeDock;
+import frc.robot.commands.auto.programs.CenterConeGrabCubeDock;
 import frc.robot.commands.auto.programs.CenterConeMobilityDock;
 import frc.robot.commands.auto.programs.Cone;
 import frc.robot.commands.auto.programs.Cube;
@@ -34,7 +35,7 @@ import frc.robot.commands.drivetrain.SwerveDriveCmd;
 import frc.robot.commands.drivetrain.TurtleSpeedCmd;
 import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
-import frc.robot.commands.intake.SetRelativeSpeedCmd;
+import frc.robot.commands.intake.SetAbsoluteSpeedCmd;
 import frc.robot.commands.intake.StopRollersCmd;
 import frc.robot.commands.intake.IntakeManualControlCmd;
 import frc.robot.commands.lift.DownCmd;
@@ -119,9 +120,13 @@ public class RobotContainer {
         restartLimelight.setName("Restart Limelight");
         SmartDashboard.putData(restartLimelight);
 
-        RunCommand toggleCompressor = new RunCommand(() -> compressorSys.setEnabled(!compressorSys.isEnabled()));
-        toggleCompressor.setName("Toggle Compressor");
-        SmartDashboard.putData(toggleCompressor);
+        RunCommand runCompressor = new RunCommand(() -> compressorSys.run(), compressorSys);
+        runCompressor.setName("Run Compressor");
+        SmartDashboard.putData(runCompressor);
+
+        RunCommand disableCompressor = new RunCommand(() -> compressorSys.disable(), compressorSys);
+        disableCompressor.setName("Disable Compressor");
+        SmartDashboard.putData(disableCompressor);
 
         RobotController.setBrownoutVoltage(7.5);
 
@@ -129,6 +134,7 @@ public class RobotContainer {
         autoSelector.addOption("Cube", new Cube(liftSys, clawSys, intakeSys));
         autoSelector.addOption("CenterConeDock", new CenterConeDock(swerveSys, liftSys, clawSys, intakeSys));
         autoSelector.addOption("CenterConeMobilityDock", new CenterConeMobilityDock(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("CenterConeGrabCubeDock", new CenterConeGrabCubeDock(swerveSys, liftSys, clawSys, intakeSys));
         autoSelector.addOption("LeftConeGrabCube", new LeftConeGrabCube(swerveSys, liftSys, clawSys, intakeSys));
         autoSelector.addOption("LeftConeGrabCubeDock", new LeftConeGrabCubeDock(swerveSys, liftSys, clawSys, intakeSys));
         autoSelector.addOption("LeftConeScoreCube", new LeftConeScoreCube(swerveSys, liftSys, clawSys, intakeSys));
@@ -192,7 +198,7 @@ public class RobotContainer {
 
             driverRightTriggerBtn
                 .onTrue(new OutCmd(intakeSys))
-                .whileTrue(new SetRelativeSpeedCmd(intakeSys))
+                .whileTrue(new SetAbsoluteSpeedCmd(intakeSys))
                 .onFalse(new InCmd(intakeSys))
                 .onFalse(new StopRollersCmd(intakeSys));
 
@@ -216,7 +222,7 @@ public class RobotContainer {
 
             driverRightJoystickTriggerBtn
                 .onTrue(new OutCmd(intakeSys))
-                .whileTrue(new SetRelativeSpeedCmd(intakeSys))
+                .whileTrue(new SetAbsoluteSpeedCmd(intakeSys))
                 .onFalse(new InCmd(intakeSys))
                 .onFalse(new StopRollersCmd(intakeSys));
 
@@ -317,5 +323,38 @@ public class RobotContainer {
             return 0.0;
         
         return value;
+    }
+
+    public void updateInterface() {
+        // BATTERY
+        SmartDashboard.putNumber("battery voltage", RobotController.getBatteryVoltage());
+
+        // SWERVE
+        SmartDashboard.putNumber("heading", -swerveSys.getHeading().getDegrees() % 180);
+
+        SmartDashboard.putNumber("speed m/s", swerveSys.getAverageDriveVelocityMetersPerSecond());
+        SmartDashboard.putNumber("speed mph", swerveSys.getAverageDriveVelocityMetersPerSecond() * 2.23694);
+
+        SmartDashboard.putBoolean("balanced", Math.abs(swerveSys.getRollDegrees()) < 4.0);
+
+        // COMPRESSOR
+        SmartDashboard.putNumber("pressure PSI", compressorSys.getPressurePSI());
+
+        SmartDashboard.putBoolean("compressor running", compressorSys.isRunning());
+        SmartDashboard.putNumber("compressor elapsed", compressorSys.getRunTimeSeconds());
+        SmartDashboard.putNumber("compressor turn on count", compressorSys.getTurnOnCount());
+
+        // INTAKE
+        SmartDashboard.putNumber("intake inches", intakeSys.getCurrentPosition());
+        SmartDashboard.putNumber("roller speed m/s", intakeSys.getCurrentSpeedMetersPerSecond());
+
+        // LIFT
+        SmartDashboard.putNumber("lift inches", liftSys.getCurrentPosition());
+        SmartDashboard.putString("lift actuation", (liftSys.isActuatedDown() ? "down" : "up"));
+        SmartDashboard.putNumber("lift target", liftSys.getTargetInches());
+        SmartDashboard.putBoolean("lift isManual", liftSys.isManual());
+
+        // CLAW
+        SmartDashboard.putBoolean("claw status", clawSys.isOpen());
     }
 }

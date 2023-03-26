@@ -77,22 +77,22 @@ public class Constants {
         /**
          * The track width from wheel center to wheel center.
          */
-        public static final double trackWidth = Units.inchesToMeters(29.5); //FIXME: Change this to actual track width to fix pose estimation issues
+        public static final double trackWidth = Units.inchesToMeters(24.375);
 
         /**
          * The track length from wheel center to wheel center.
          */
-        public static final double wheelBase = Units.inchesToMeters(29.5);
+        public static final double wheelBase = Units.inchesToMeters(24.375);
 
         /**
          * The SwerveDriveKinematics used for control and odometry.
          */
         public static final SwerveDriveKinematics kinematics = 
             new SwerveDriveKinematics(
-                new Translation2d(trackWidth / 2.0, wheelBase / 2.0), //front left
-                new Translation2d(trackWidth / 2.0, -wheelBase / 2.0), //front right
-                new Translation2d(-trackWidth / 2.0, wheelBase / 2.0), //rear left
-                new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0) //rear right
+                new Translation2d(trackWidth / 2.0, wheelBase / 2.0),  // front left
+                new Translation2d(trackWidth / 2.0, -wheelBase / 2.0), // front right
+                new Translation2d(-trackWidth / 2.0, wheelBase / 2.0), // rear left
+                new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0) // rear right
             );
 
         /**
@@ -125,10 +125,10 @@ public class Constants {
         public static final double defaultSpeedFactor = 0.5;
         public static final double sprintSpeedFactor = 1.0;
 
-        public static final double frontLeftModOffset = Units.degreesToRadians(105.38);
-        public static final double frontRightModOffset = Units.degreesToRadians(229.31);
-        public static final double rearLeftModOffset = Units.degreesToRadians(292.50);
-        public static final double rearRightModOffset = Units.degreesToRadians(313.15);
+        public static final double frontLeftModOffset = Units.degreesToRadians(284.50 - 180);
+        public static final double frontRightModOffset = Units.degreesToRadians(48.42 + 180);
+        public static final double rearLeftModOffset = Units.degreesToRadians(176.40 + 180);
+        public static final double rearRightModOffset = Units.degreesToRadians(135.97 + 180);
 
         public static final int driveCurrentLimitAmps = 40;
         public static final int dockCurrentLimitAmps = 50;
@@ -138,12 +138,11 @@ public class Constants {
         public static final double steerkP = 1.2477 * 0.3;
         public static final double steerkD = 0.9062 * 0.3;
 
-        public static final double ksVolts = .055;
-        public static final double kvVoltSecsPerMeter = .2;
-        public static final double kaVoltSecsPerMeterSq = .02;
+        public static final double ksVolts = 0.667;
+        public static final double kvVoltSecsPerMeter = 2.44;
+        public static final double kaVoltSecsPerMeterSq = 0.0;
 
-        // TODO: Input FF constants above into FF to see if it works better. If not, change constants to match: ks = 0.667; kv = 2.44; ka = 0
-        public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.667, 2.44, 0);
+        public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(ksVolts, kvVoltSecsPerMeter, kaVoltSecsPerMeterSq);
     }
 
     public static enum DockDirection {
@@ -158,8 +157,8 @@ public class Constants {
 
     public static final class AutoConstants {
 
-        public static final double maxVelMetersPerSec = 2.5;
-        public static final double maxAccelMetersPerSecondSq = 2.0;
+        public static final double maxVelMetersPerSec = 3.25;
+        public static final double maxAccelMetersPerSecondSq = 3.25;
 
         public static final double drivekP = 12.6; //12.8
         public static final double drivekD = 0.05;
@@ -248,7 +247,7 @@ public class Constants {
 
         public static final double gearReduction = 1.0 / 5.0;
 
-        public static final double maxHeightInches = 77.0;
+        public static final double maxHeightInches = 76.5;
         public static final double inchesPerEncRev = 11 * gearReduction;
 
         public static final double kP = 0.09;
@@ -258,22 +257,22 @@ public class Constants {
 
         public static final double feetPerSecondPerRPM = (inchesPerEncRev / 12) / 60;
 
-        public static final double manualPower = 0.15;
+        public static final double manualPower = 0.25;
         public static final double downPower = 0.45;
-        public static final double hybridPower = 0.45;
+        public static final double hybridPower = 0.55;
         public static final double placeConePower = 0.3;
-        public static final double placeCubePower = 0.45;
+        public static final double placeCubePower = 0.55;
 
         public static final double downInches = 0.0;
         public static final double row1Inches = 35.0;
         public static final double row2ShelfInches = 49.0;
         public static final double row2PoleInches = 55.0;
         public static final double row3ShelfInches = 71.0;
-        public static final double row3PoleInches = 77.0;
+        public static final double row3PoleInches = 76.5;
 
-        public static final double manualControlPadding = 2.0; //TODO: manualControlPaddingInches
+        public static final double manualControlPaddingInches = 2.0;
 
-        public static final double targetTolerance = 0.5; // TODO: targetToleranceInches
+        public static final double targetToleranceInches = 0.5;
 
         public static final double downActuationHeightInches = 18.0;
         public static final double upActuationHeightInches = 24.0;
@@ -281,7 +280,7 @@ public class Constants {
 
     public class IntakeConstants {
 
-        public static final double rollerGearReduction = 1.0; //1.0 / 5.0;
+        public static final double rollerGearReduction = 16.0 / 22.0;
 
         public static final double pulleyDiameterInches = 1.0;
         public static final double beltDiameterInches = pulleyDiameterInches + ((1.0 / 16.0) * 2.0);
@@ -306,6 +305,8 @@ public class Constants {
         public static final double inInches = 2.0;
         public static final double outInches = 15.0;
 
+        public static final double intakeRollerStartInches = 8.0;
+
         public static final double minInches = 0.0;
         public static final double maxInches = 17.0;
 
@@ -318,7 +319,8 @@ public class Constants {
 
         public static final double driveMetersPerSecondToRollerRPM = (39.37 * 60.0) / rollerWheelCircumferenceInches;
 
-        public static final double rollerManualControlFactor = 0.25;
-        public static final double rollerRelativeMetersPerSecond = 7.0;
+        public static final double rollerManualControlFactor = 0.8;
+        public static final double rollerRelativeMetersPerSecond = 6.5;
+        public static final double rollerAbsoluteMetersPerSecond = 6.5;
     }
 }

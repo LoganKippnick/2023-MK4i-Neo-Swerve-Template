@@ -9,11 +9,14 @@ import frc.robot.commands.auto.FollowTrajectoryCmd;
 import frc.robot.commands.automation.AutoRow3PoleCmd;
 import frc.robot.commands.automation.AutoRow3ShelfCmd;
 import frc.robot.commands.claw.CloseCmd;
+import frc.robot.commands.claw.OpenCmd;
 import frc.robot.commands.drivetrain.SetPoseCmd;
 import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
+import frc.robot.commands.intake.SetAbsoluteSpeedCmd;
 import frc.robot.commands.intake.SetRelativeSpeedCmd;
 import frc.robot.commands.intake.StopRollersCmd;
+import frc.robot.commands.lift.Row3ShelfCmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
@@ -22,25 +25,44 @@ import frc.robot.subsystems.SwerveSys;
 public class RightConeScoreCube extends SequentialCommandGroup {
     
     public RightConeScoreCube(SwerveSys swerveSys, LiftSys liftSys, ClawSys clawSys, IntakeSys intakeSys) {
+        // super(
+        //     new SetPoseCmd(new Pose2d(1.83, 0.5, new Rotation2d(Math.PI)), swerveSys),
+        //     new CloseCmd(clawSys),
+        //     new InCmd(intakeSys),
+        //     new WaitCmd(0.5),
+        //     new AutoRow3PoleCmd(liftSys, clawSys),
+        //     new FollowTrajectoryCmd("RightStartToCube", swerveSys)
+        //         .alongWith(
+        //             new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
+        //             .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys)))
+        //         ),
+        //     new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys)),
+        //     new FollowTrajectoryCmd("RightGrabCubeToScore", swerveSys)
+        //         .alongWith(
+        //             new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys))
+        //             .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 2.23))
+        //             .andThen(new CloseCmd(clawSys))
+        //         ),
+        //     new AutoRow3ShelfCmd(liftSys, clawSys)
+        // );
         super(
             new SetPoseCmd(new Pose2d(1.83, 0.5, new Rotation2d(Math.PI)), swerveSys),
             new CloseCmd(clawSys),
             new InCmd(intakeSys),
             new WaitCmd(0.5),
             new AutoRow3PoleCmd(liftSys, clawSys),
-            new FollowTrajectoryCmd("RightStartToCube", swerveSys)
-                .alongWith(
-                    new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
-                    .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys)))
-                ),
-            new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys)),
-            new FollowTrajectoryCmd("RightGrabCubeToScore", swerveSys)
-                .alongWith(
-                    new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys))
-                    .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 2.23))
-                    .andThen(new CloseCmd(clawSys))
-                ),
-            new AutoRow3ShelfCmd(liftSys, clawSys)
+            new FollowTrajectoryCmd("RightStartToScoreCube", swerveSys).alongWith(
+                new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
+                .andThen(new OutCmd(intakeSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys)))
+                .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 6.75))
+                .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys)))
+                .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 2.23))
+                .andThen(new CloseCmd(clawSys))
+                .andThen(new WaitCmd(0.5))
+                .andThen(new Row3ShelfCmd(true, liftSys))
+            ),
+            new WaitCmd(0.5),
+            new OpenCmd(clawSys)
         );
     }
 }
