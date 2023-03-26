@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.led.animations.AnimationDirection;
+import frc.robot.led.animations.SetSolid;
 import frc.robot.led.animations.base.BrightnessAnimation;
 import frc.robot.led.animations.base.ColorAnimation;
 import frc.robot.led.animations.base.CombinedAnimation;
-import frc.robot.led.animations.color.SetColor;
 
 public class LEDStrip {
 
@@ -22,6 +22,14 @@ public class LEDStrip {
 
     private final Color[] colorStates;
     private final double[] brightnessStates;
+
+    private double dimness = 1.0;
+    public double getDimness() {
+        return dimness;
+    }
+    public void setDimness(double dimness) {
+        this.dimness = dimness;
+    }
 
     private CombinedAnimation defaultAnimation;
     private CombinedAnimation currentAnimation;
@@ -44,17 +52,26 @@ public class LEDStrip {
         for(int i = 0; i < offBuffer.getLength(); i++) offBuffer.setLED(i, Color.kBlack);
 
         colorStates = new Color[length];
+        for(Color color : colorStates) {
+            color = Color.kBlack;
+        }
+
         brightnessStates = new double[length];
+        for(double brightness : brightnessStates) {
+            brightness = 1.0;
+        }
 
         led.setData(buffer);
         led.start();
 
-        defaultAnimation = new CombinedAnimation(new SetColor(Color.kBlack, this)); // TODO: make sure this doesn't have a stroke by calling itself in the constructor
+        defaultAnimation = new SetSolid(Color.kBlack, this); // TODO: make sure this doesn't have a stroke by calling itself in the constructor
         setAnimation(defaultAnimation);
+        defaultAnimation.schedule();
     }
 
     public void setDefaultAnimation(CombinedAnimation animation) {
         defaultAnimation = animation;
+        animation.schedule();
     }
 
     public void setDefaultAnimation(ColorAnimation animation) {
@@ -66,7 +83,8 @@ public class LEDStrip {
     }
 
     public void setAnimation(CombinedAnimation animation) {
-        currentAnimation.cancel();
+        if(currentAnimation != null)
+            currentAnimation.cancel();
         animation.schedule();
         currentAnimation = animation;
     }
@@ -95,7 +113,7 @@ public class LEDStrip {
         return buffer.getLED(index);
     }
 
-    private void update() {
+    public void update() {
         if(!isEnabled) {
             led.setData(offBuffer);
         }
@@ -104,9 +122,9 @@ public class LEDStrip {
             for(int i = 0; i < buffer.getLength(); i++) {
                 buffer.setRGB(
                     i, 
-                    (int) Math.round(colorStates[i].red * brightnessStates[i]),
-                    (int) Math.round(colorStates[i].green * brightnessStates[i]),
-                    (int) Math.round(colorStates[i].blue * brightnessStates[i])
+                    (int) Math.round(colorStates[i].red * 255 * brightnessStates[i] * dimness),
+                    (int) Math.round(colorStates[i].green * 255 * brightnessStates[i] * dimness),
+                    (int) Math.round(colorStates[i].blue * 255 * brightnessStates[i] * dimness)
                 );
             }
         }

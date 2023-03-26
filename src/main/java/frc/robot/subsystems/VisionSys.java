@@ -5,6 +5,7 @@ import org.photonvision.PhotonCamera;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.GameElement;
 import frc.robot.Constants.VisionConstants;
 
 public class VisionSys extends SubsystemBase {
@@ -69,6 +70,18 @@ public class VisionSys extends SubsystemBase {
         }
         else {
             limelight.setDriverMode(false);
+        }
+    }
+
+    public void setTarget(GameElement element) {
+        if(element.equals(GameElement.kCone)) {
+            setPipeline(Pipeline.kPoleTape);
+        }
+        else if(element.equals(GameElement.kCube)) {
+            setPipeline(Pipeline.kAprilTag);
+        }
+        else {
+            setPipeline(Pipeline.kIntake);
         }
     }
 

@@ -34,6 +34,8 @@ public class SequentialBrightnessAnimation extends BrightnessAnimation {
         if(currentAnimation.isFinished()) {
             currentAnimationIndex++;
             currentAnimation = animations[currentAnimationIndex];
+
+            currentAnimation.initialize();
         }
     }
 
