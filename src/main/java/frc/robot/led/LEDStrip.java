@@ -69,6 +69,10 @@ public class LEDStrip {
         defaultAnimation.schedule();
     }
 
+    public int getLength() {
+        return buffer.getLength();
+    }
+
     public void setDefaultAnimation(CombinedAnimation animation) {
         defaultAnimation = animation;
         animation.schedule();
