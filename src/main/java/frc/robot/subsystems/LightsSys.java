@@ -106,16 +106,16 @@ public class LightsSys extends SubsystemBase {
                 weeWooTimer.reset();
             }
             else if(weeWooTimer.hasElapsed(0.5)) {
-                rightStrip.setColor(Color.kBlue);
+                rightStrip.setColor(Color.kRed);
                 leftStrip.setColor(Color.kBlue);
             }
             else if(weeWooTimer.get() == 0.0) {
                 weeWooTimer.start();
-                rightStrip.setColor(Color.kRed);
+                rightStrip.setColor(Color.kBlue);
                 leftStrip.setColor(Color.kRed);
             }
             else {
-                rightStrip.setColor(Color.kRed);
+                rightStrip.setColor(Color.kBlue);
                 leftStrip.setColor(Color.kRed);
             }
         }
