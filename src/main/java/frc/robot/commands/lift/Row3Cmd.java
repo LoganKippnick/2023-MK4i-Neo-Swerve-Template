@@ -27,6 +27,12 @@ public class Row3Cmd extends CommandBase {
         addRequirements(liftSys);
     }
 
+    public Row3Cmd(GameElement element, boolean finishInstantly, LiftSys liftSys) {
+        this(true, liftSys);
+
+        liftSys.setMode(element);
+    }
+
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {

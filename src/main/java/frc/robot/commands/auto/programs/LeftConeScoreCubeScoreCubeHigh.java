@@ -3,6 +3,7 @@ package frc.robot.commands.auto.programs;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.GameElement;
 import frc.robot.commands.WaitCmd;
 import frc.robot.commands.WaitUntilCmd;
 import frc.robot.commands.auto.FollowTrajectoryCmd;
@@ -14,7 +15,7 @@ import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
 import frc.robot.commands.intake.SetAbsoluteSpeedCmd;
 import frc.robot.commands.intake.StopRollersCmd;
-import frc.robot.commands.lift.Row3ShelfCmd;
+import frc.robot.commands.lift.Row3Cmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
@@ -37,7 +38,7 @@ public class LeftConeScoreCubeScoreCubeHigh extends SequentialCommandGroup {
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 2.23))
                 .andThen(new CloseCmd(clawSys))
                 .andThen(new WaitCmd(0.5))
-                .andThen(new Row3ShelfCmd(true, liftSys))
+                .andThen(new Row3Cmd(GameElement.kCube, true, liftSys))
             ),
             new WaitCmd(0.5),
             new OpenCmd(clawSys),
@@ -49,7 +50,7 @@ public class LeftConeScoreCubeScoreCubeHigh extends SequentialCommandGroup {
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 2.23))
                 .andThen(new CloseCmd(clawSys))
                 .andThen(new WaitCmd(0.5))
-                .andThen(new Row3ShelfCmd(true, liftSys))
+                .andThen(new Row3Cmd(GameElement.kCube, true, liftSys))
             ),
             new WaitCmd(0.5),
             new OpenCmd(clawSys)
