@@ -84,6 +84,8 @@ public class RobotContainer {
     private final JoystickButton driverRightJoystickTriggerBtn = new JoystickButton(driverRightJoystick, 1);
     private final JoystickButton driverRightJoystickThumbBtn = new JoystickButton(driverRightJoystick, 2);
 
+    private final JoystickButton driverABtn = new JoystickButton(driverController, 1);
+    private final JoystickButton driverBBtn = new JoystickButton(driverController, 2);
     private final JoystickButton driverLeftBumper = new JoystickButton(driverController, 5);
     private final JoystickButton driverRightBumper = new JoystickButton(driverController, 6);
     private final JoystickButton driverMenuBtn = new JoystickButton(driverController, 8);
@@ -207,6 +209,25 @@ public class RobotContainer {
                     swerveSys
                 )
             );
+
+            driverABtn.onTrue(new RunCommand(() -> {
+                if(lightsSys.isPartyMode()) {
+                    lightsSys.cancelAnimations();
+                }
+                else {
+                    lightsSys.setPartyMode(true);
+                    lightsSys.setWeeWooMode(false);
+                }
+            }));
+            driverBBtn.onTrue(new RunCommand(() -> {
+                if(lightsSys.isWeeWooMode()) {
+                    lightsSys.cancelAnimations();
+                }
+                else {
+                    lightsSys.setWeeWooMode(true);
+                    lightsSys.setPartyMode(false);
+                }
+            }));
             
             driverLeftBumper.onTrue(new SetLockedCmd(true, swerveSys)).onFalse(new SetLockedCmd(false, swerveSys));
             driverRightBumper.onTrue(new TurtleSpeedCmd(swerveSys)).onFalse(new DefaultSpeedCmd(swerveSys));

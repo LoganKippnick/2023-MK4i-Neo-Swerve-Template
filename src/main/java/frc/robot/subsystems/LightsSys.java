@@ -18,10 +18,18 @@ public class LightsSys extends SubsystemBase {
     private final Timer blinkTimer;
 
     private boolean isPartyMode = false;
+    public boolean isPartyMode() {
+        return isPartyMode;
+    }
+
     private int partyHue;
     private final int partyHueIncrement = 1;
 
     private boolean isWeeWooMode = false;
+    public boolean isWeeWooMode() {
+        return isWeeWooMode;
+    }
+
     private final Timer weeWooTimer;
 
     /**
@@ -144,5 +152,18 @@ public class LightsSys extends SubsystemBase {
 
     public void blink() {
         isBlinking = true;
+    }
+
+    public void setPartyMode(boolean isPartyMode) {
+        this.isPartyMode = isPartyMode;
+    }
+
+    public void setWeeWooMode(boolean isWeeWooMode) {
+        this.isWeeWooMode = isWeeWooMode;
+    }
+
+    public void cancelAnimations() {
+        isPartyMode = false;
+        isWeeWooMode = false;
     }
 }
