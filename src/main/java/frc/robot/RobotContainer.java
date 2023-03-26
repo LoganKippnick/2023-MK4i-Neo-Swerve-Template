@@ -24,9 +24,14 @@ import frc.robot.commands.auto.programs.Cube;
 import frc.robot.commands.auto.programs.LeftConeGrabCube;
 import frc.robot.commands.auto.programs.LeftConeGrabCubeDock;
 import frc.robot.commands.auto.programs.LeftConeScoreCube;
+import frc.robot.commands.auto.programs.LeftConeScoreCubeDock;
+import frc.robot.commands.auto.programs.LeftConeScoreCubeGrabCube;
+import frc.robot.commands.auto.programs.LeftConeScoreCubeScoreCubeHigh;
+import frc.robot.commands.auto.programs.LeftConeScoreCubeScoreCubeMid;
 import frc.robot.commands.auto.programs.RightConeGrabCube;
 import frc.robot.commands.auto.programs.RightConeGrabCubeDock;
 import frc.robot.commands.auto.programs.RightConeScoreCube;
+import frc.robot.commands.auto.programs.RightConeScoreCubeGrabCube;
 import frc.robot.commands.claw.CloseCmd;
 import frc.robot.commands.claw.OpenCmd;
 import frc.robot.commands.drivetrain.DefaultSpeedCmd;
@@ -141,9 +146,17 @@ public class RobotContainer {
         autoSelector.addOption("LeftConeGrabCube", new LeftConeGrabCube(swerveSys, liftSys, clawSys, intakeSys));
         autoSelector.addOption("LeftConeGrabCubeDock", new LeftConeGrabCubeDock(swerveSys, liftSys, clawSys, intakeSys));
         autoSelector.addOption("LeftConeScoreCube", new LeftConeScoreCube(swerveSys, liftSys, clawSys, intakeSys));
-        autoSelector.addOption("RightConeGrabCube", new RightConeGrabCube(swerveSys, liftSys, clawSys, intakeSys));
-        autoSelector.addOption("RightConeGrabCubeDock", new RightConeGrabCubeDock(swerveSys, liftSys, clawSys, intakeSys));
-        autoSelector.addOption("RightConeScoreCube", new RightConeScoreCube(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("LeftConeScoreCubeDock", new LeftConeScoreCubeDock(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("LeftConeScoreCubeGrabCube", new LeftConeScoreCubeGrabCube(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("LeftConeScoreCubeScoreCubeMid", new LeftConeScoreCubeScoreCubeMid(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("LeftConeScoreCubeScoreCubeHigh", new LeftConeScoreCubeScoreCubeHigh(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("RightConeGrabCube", new LeftConeGrabCube(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("RightConeGrabCubeDock", new LeftConeGrabCubeDock(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("RightConeScoreCube", new LeftConeScoreCube(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("RightConeScoreCubeDock", new LeftConeScoreCubeDock(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("RightConeScoreCubeGrabCube", new RightConeScoreCubeGrabCube(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("RightConeScoreCubeScoreCubeMid", new LeftConeScoreCubeScoreCubeMid(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("RightConeScoreCubeScoreCubeHigh", new LeftConeScoreCubeScoreCubeHigh(swerveSys, liftSys, clawSys, intakeSys));
         autoSelector.setDefaultOption("DoNothing", null);
     }
 

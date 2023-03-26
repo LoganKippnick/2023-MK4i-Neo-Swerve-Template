@@ -49,6 +49,7 @@ public class SetElementStatusCmd extends CommandBase {
         }
         else {
             visionSys.setTarget(GameElement.kNone);
+            lightsSys.blink();
         }
     }
     

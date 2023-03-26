@@ -23,16 +23,16 @@ import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.SwerveSys;
 
-public class LeftConeScoreCubeGrabConeDock extends SequentialCommandGroup {
+public class RightConeScoreCubeGrabCubeDock extends SequentialCommandGroup {
     
-    public LeftConeScoreCubeGrabConeDock(SwerveSys swerveSys, LiftSys liftSys, ClawSys clawSys, IntakeSys intakeSys) {
+    public RightConeScoreCubeGrabCubeDock(SwerveSys swerveSys, LiftSys liftSys, ClawSys clawSys, IntakeSys intakeSys) {
         super(
             new SetPoseCmd(new Pose2d(1.83, 0.5, new Rotation2d(Math.PI)), swerveSys),
             new CloseCmd(clawSys),
             new InCmd(intakeSys),
             new WaitCmd(0.5),
             new AutoRow3PoleCmd(liftSys, clawSys),
-            new FollowTrajectoryCmd("LeftStartToScoreCube1", swerveSys).alongWith(
+            new FollowTrajectoryCmd("RightStartToScoreCube1", swerveSys).alongWith(
                 new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
                 .andThen(new OutCmd(intakeSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 6.75))
@@ -44,14 +44,14 @@ public class LeftConeScoreCubeGrabConeDock extends SequentialCommandGroup {
             ),
             new WaitCmd(0.5),
             new OpenCmd(clawSys),
-            new FollowTrajectoryCmd("LeftScoreCube1ToGrabCube2Dock", swerveSys).alongWith(
+            new FollowTrajectoryCmd("RightScoreCubeToGrabCube2Dock", swerveSys).alongWith(
                 new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
                 .andThen(new OutCmd(intakeSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 6.75))
                 .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 2.23))
+                .andThen(new CloseCmd(clawSys))
             ),
-            new CloseCmd(clawSys),
             new DockCmd(DockDirection.kFromCenter, swerveSys)
         );
     }
