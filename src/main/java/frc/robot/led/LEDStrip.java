@@ -52,19 +52,19 @@ public class LEDStrip {
         for(int i = 0; i < offBuffer.getLength(); i++) offBuffer.setLED(i, Color.kBlack);
 
         colorStates = new Color[length];
-        for(Color color : colorStates) {
-            color = Color.kBlack;
+        for(int i = 0; i < colorStates.length; i++) {
+            colorStates[i] = Color.kBlack;
         }
 
         brightnessStates = new double[length];
-        for(double brightness : brightnessStates) {
-            brightness = 1.0;
+        for(int i = 0; i < brightnessStates.length; i++) {
+            brightnessStates[i] = 1.0;
         }
 
         led.setData(buffer);
         led.start();
 
-        defaultAnimation = new SetSolid(Color.kBlack, this); // TODO: make sure this doesn't have a stroke by calling itself in the constructor
+        defaultAnimation = new SetSolid(Color.kBlack, this);
         setAnimation(defaultAnimation);
         defaultAnimation.schedule();
     }
