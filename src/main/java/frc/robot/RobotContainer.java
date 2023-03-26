@@ -120,6 +120,7 @@ public class RobotContainer {
     private Rumble brownOutRumble;
     private Rumble countdown10Rumble;
     private Rumble countdown5Rumble;
+    private Rumble targetAlignedRumble;
 
     // Initialize auto selector.
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
@@ -164,6 +165,12 @@ public class RobotContainer {
     }
 
     public void configBindings() {
+        brownOutRumble = new Rumble(RumbleType.kLeftRumble, 1.0, driverController);
+        matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, driverController);
+        countdown10Rumble = new Rumble(RumbleType.kRightRumble, 1.0, driverController);
+        countdown5Rumble = new Rumble(RumbleType.kRightRumble, 1.0, driverController);
+        targetAlignedRumble = new Rumble(RumbleType.kLeftRumble, 1.0, driverController);
+
         if(DriverStation.isJoystickConnected(ControllerConstants.hybridControllerPort)) {
             configHybridBindings();
             SmartDashboard.putString("control type", "hybrid");
@@ -197,6 +204,8 @@ public class RobotContainer {
         countdown5Rumble.setPulseTime(1.0);
         countdown5Rumble.setPulseLength(0.25);
         countdown5Rumble.pulseWhen(() -> DriverStation.getMatchTime() <= 5.0 && DriverStation.isTeleop(), 5);
+
+        targetAlignedRumble.pulseWhen(() -> visionSys.targetIsXAligned());
     }
 
     public void configDriverBindings(ControllerType driverControllerType) {
@@ -242,10 +251,11 @@ public class RobotContainer {
 
             driverLeftTriggerBtn.onTrue(new SprintSpeedCmd(swerveSys)).onFalse(new DefaultSpeedCmd(swerveSys));
 
-            brownOutRumble = new Rumble(RumbleType.kLeftRumble, 1.0, driverController);
-            matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, driverController);
-            countdown10Rumble = new Rumble(RumbleType.kRightRumble, 1.0, driverController);
-            countdown5Rumble = new Rumble(RumbleType.kRightRumble, 1.0, driverController);
+            brownOutRumble.addControllers(driverController);
+            matchTimeRumble.addControllers(driverController);
+            countdown10Rumble.addControllers(driverController);
+            countdown5Rumble.addControllers(driverController);
+            targetAlignedRumble.addControllers(driverController);
         }
         else {
             swerveSys.setDefaultCommand(
@@ -265,11 +275,6 @@ public class RobotContainer {
                 .onFalse(new StopRollersCmd(intakeSys));
 
             driverRightJoystickThumbBtn.onTrue(new ResetHeadingCmd(swerveSys));
-
-            brownOutRumble = new Rumble(RumbleType.kLeftRumble, 1.0);
-            matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0);
-            countdown10Rumble = new Rumble(RumbleType.kRightRumble, 1.0);
-            countdown5Rumble = new Rumble(RumbleType.kRightRumble, 1.0);
         }
     }
 
@@ -306,9 +311,10 @@ public class RobotContainer {
         operatorUpBtn.onTrue(new OutCmd(intakeSys));
         operatorDownBtn.onTrue(new InCmd(intakeSys));
 
-        matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, operatorController);
-        countdown10Rumble = new Rumble(RumbleType.kRightRumble, 1.0, operatorController);
-        countdown5Rumble = new Rumble(RumbleType.kRightRumble, 1.0, operatorController);
+        matchTimeRumble.addControllers(operatorController);
+        countdown10Rumble.addControllers(operatorController);
+        countdown5Rumble.addControllers(operatorController);
+        targetAlignedRumble.addControllers(operatorController);
     }
 
     public void configHybridBindings() {
@@ -339,10 +345,11 @@ public class RobotContainer {
 
         // TODO: LED animations on hybrid D pad
 
-        brownOutRumble = new Rumble(RumbleType.kLeftRumble, 1.0, hybridController);
-        matchTimeRumble = new Rumble(RumbleType.kRightRumble, 1.0, hybridController);
-        countdown10Rumble = new Rumble(RumbleType.kRightRumble, 1.0, hybridController);
-        countdown5Rumble = new Rumble(RumbleType.kRightRumble, 1.0, hybridController);
+        brownOutRumble.addControllers(hybridController);
+        matchTimeRumble.addControllers(hybridController);
+        countdown10Rumble.addControllers(hybridController);
+        countdown5Rumble.addControllers(hybridController);
+        targetAlignedRumble.addControllers(hybridController);
     }
 
     public Command getAutonomousCommand() {

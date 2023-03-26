@@ -90,7 +90,7 @@ public class VisionSys extends SubsystemBase {
      * @return True if the limelight is tracking a target.
      */
     public boolean hasTarget() {
-        return limelight.getLatestResult().hasTargets();
+        return limelight.getLatestResult().hasTargets() && targetYDegrees() < 0.0;
     }
 
     /**
@@ -98,7 +98,12 @@ public class VisionSys extends SubsystemBase {
      * @return The x-offset, or yaw, from the crosshair of the best target, in degrees.
      */
     public double targetXDegrees() {
-        return limelight.getLatestResult().getBestTarget().getYaw();
+        if(hasTarget()) {
+            return limelight.getLatestResult().getBestTarget().getYaw();
+        }
+        else {
+            return 0.0;
+        }
     }
 
     /**
@@ -110,17 +115,26 @@ public class VisionSys extends SubsystemBase {
     }
 
     /**
-     * Checks whether the target is aligned.
-     * @return True if the target is within the alignment threshold.
+     * Checks whether the target is horizontally aligned.
+     * @return True if the target's x value is within the alignment threshold.
      */
     public boolean targetIsXAligned() {
-        return Math.abs(targetXDegrees()) < VisionConstants.alignedToleranceDegrees;
+        return hasTarget() && Math.abs(targetXDegrees()) < VisionConstants.alignedToleranceDegrees;
+        // test(porpoises); -Andy
+    }
+
+    /**
+     * Checks whether the target is vertically aligned.
+     * @return True if the target's y value is within the alignment threshold.
+     */
+    public boolean targetIsYAligned() {
+        return hasTarget() && Math.abs(targetXDegrees()) < VisionConstants.alignedToleranceDegrees;
         // test(porpoises); -Andy
     }
 
     /**
      * Returns the Apriltag ID of the current target.
-     * @return The Apriltag ID of the current target, -1 if the target is not an Apriltag.
+     * @return The Apriltag ID of the current target, -1 if the target is not an Apriltag it recognizes.
      */
     public double aprilTagId() {
         return limelight.getLatestResult().getBestTarget().getFiducialId();

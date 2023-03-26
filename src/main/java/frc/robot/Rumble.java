@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Rumble {
 
-    private final GenericHID[] controllers;
+    private GenericHID[] controllers;
     private final RumbleType rumbleType;
     private final double power;
 
@@ -72,6 +72,21 @@ public class Rumble {
                 return false;
             }
         };
+    }
+
+    public Rumble(RumbleType rumbleType, double power) {
+        this(rumbleType, power, new GenericHID[0]);
+    }
+
+    public void addControllers(GenericHID... controllers) {
+        GenericHID[] proxy = new GenericHID[this.controllers.length + controllers.length];
+        for(int i = 0; i < this.controllers.length; i++) {
+            proxy[i] = this.controllers[i];
+        }
+        for(int i = 0; i < controllers.length; i++) {
+            proxy[i + controllers.length - 1] = controllers[i];
+        }
+        this.controllers = proxy;
     }
 
     public void debug() {
