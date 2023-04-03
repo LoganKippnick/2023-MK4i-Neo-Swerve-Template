@@ -1,18 +1,19 @@
 package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveSys;
 
-public class SetPoseCmd extends CommandBase {
+public class SetTranslationCmd extends CommandBase {
 
     private final SwerveSys swerveSys;
 
-    private final Pose2d pose;
+    private final Translation2d translation;
 
-    public SetPoseCmd(Pose2d pose, SwerveSys swerveSys) {
+    public SetTranslationCmd(Translation2d translation, SwerveSys swerveSys) {
         this.swerveSys = swerveSys;
-        this.pose = pose;
+        this.translation = translation;
     }
 
     @Override
@@ -22,8 +23,7 @@ public class SetPoseCmd extends CommandBase {
 
     @Override
     public void execute() {
-        swerveSys.setPose(pose);
-        swerveSys.setHeading(pose.getRotation());
+        swerveSys.setPose(new Pose2d(translation, swerveSys.getHeading()));
     }
 
     @Override

@@ -64,7 +64,7 @@ public class DriveOverChargeStationCmd extends CommandBase {
                 );
             else
                 swerveSys.drive(
-                    AutoConstants.DriveOverChargeStationVelMetersPerSecond * (direction.equals(DockDirection.kFromCenter) ? -1 : 1),
+                    AutoConstants.driveOverChargeStationVelMetersPerSecond * (direction.equals(DockDirection.kFromCenter) ? -1 : 1),
                     0.0,
                     0.0,
                     true
@@ -93,7 +93,7 @@ public class DriveOverChargeStationCmd extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return offChargeStationTimer.hasElapsed(0.75);
+        return offChargeStationTimer.hasElapsed(0.5);
     }
 
     // Whether the command should run when robot is disabled.

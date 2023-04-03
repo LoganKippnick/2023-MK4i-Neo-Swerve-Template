@@ -1,21 +1,25 @@
 package frc.robot.commands.auto;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DockDirection;
+import frc.robot.subsystems.LightsSys;
 import frc.robot.subsystems.SwerveSys;
 
 public class DockCmd extends CommandBase {
 
     private final SwerveSys swerveSys;
+    private final LightsSys lightsSys;
 
     private final DockDirection direction;
     // private final DockHeading heading;
 
     private boolean onChargeStation = false;
 
-    private final PIDController dockController;
+    private boolean hasStopped = false;
+
+    private final Timer onChargeStationTimer;
 
     /**
      * Constructs a new ExampleCmd.
@@ -26,17 +30,13 @@ public class DockCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public DockCmd(DockDirection direction, SwerveSys swerveSys) {
+    public DockCmd(DockDirection direction, SwerveSys swerveSys, LightsSys lightsSys) {
 
         this.swerveSys = swerveSys;
+        this.lightsSys = lightsSys;
         this.direction = direction;
 
-        dockController = new PIDController(
-            AutoConstants.dockkP,
-            AutoConstants.dockkI,
-            AutoConstants.dockkD
-        );
-        dockController.setSetpoint(0.0);
+        onChargeStationTimer = new Timer();
 
         addRequirements(swerveSys);
     }
@@ -52,6 +52,7 @@ public class DockCmd extends CommandBase {
     public void execute() {
         if(Math.abs(swerveSys.getRollDegrees()) > AutoConstants.onChargeStationDeg) {
             onChargeStation = true;
+            onChargeStationTimer.start();
         }
 
         if(!onChargeStation) {
@@ -63,8 +64,11 @@ public class DockCmd extends CommandBase {
                 true
             );
         }
-        else if(Math.abs(swerveSys.getRollDegrees()) < AutoConstants.chargeStationBalancedToleranceDeg) {
+        else if(hasStopped || (Math.abs(swerveSys.getRollDegrees()) < AutoConstants.chargeStationBalancedToleranceDeg && onChargeStationTimer.hasElapsed(0.5))) {
             swerveSys.setLocked(true);
+            lightsSys.setPartyMode(true);
+
+            hasStopped = true;
         }
         else {
             // double dockVel = dockController.calculate(swerveSys.getRoll());

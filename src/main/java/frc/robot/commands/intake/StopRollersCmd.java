@@ -2,10 +2,12 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSys;
+import frc.robot.subsystems.LightsSys;
 
 public class StopRollersCmd extends CommandBase {
 
     private final IntakeSys intakeSys;
+    private final LightsSys lightsSys;
 
     /**
      * Constructs a new ExampleCmd.
@@ -16,9 +18,9 @@ public class StopRollersCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public StopRollersCmd(IntakeSys intakeSys) {
-
+    public StopRollersCmd(IntakeSys intakeSys, LightsSys lightsSys) {
         this.intakeSys = intakeSys;
+        this.lightsSys = lightsSys;
     }
 
     // Called when the command is initially scheduled.
@@ -31,7 +33,7 @@ public class StopRollersCmd extends CommandBase {
     @Override
     public void execute() {
         intakeSys.disableRelativeSpeed();
-        intakeSys.setRollerPower(0.0);
+        lightsSys.setIntaking(false);
     }
     
     // Called once the command ends or is interrupted.

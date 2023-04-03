@@ -15,15 +15,17 @@ import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
 import frc.robot.commands.intake.SetAbsoluteSpeedCmd;
 import frc.robot.commands.intake.StopRollersCmd;
+import frc.robot.commands.lift.DownCmd;
 import frc.robot.commands.lift.Row3Cmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
+import frc.robot.subsystems.LightsSys;
 import frc.robot.subsystems.SwerveSys;
 
 public class RightConeScoreCube extends SequentialCommandGroup {
     
-    public RightConeScoreCube(SwerveSys swerveSys, LiftSys liftSys, ClawSys clawSys, IntakeSys intakeSys) {
+    public RightConeScoreCube(SwerveSys swerveSys, LiftSys liftSys, ClawSys clawSys, IntakeSys intakeSys, LightsSys lightsSys) {
         super(
             new SetPoseCmd(new Pose2d(1.83, 0.5, new Rotation2d(Math.PI)), swerveSys),
             new CloseCmd(clawSys),
@@ -31,17 +33,20 @@ public class RightConeScoreCube extends SequentialCommandGroup {
             new WaitCmd(0.5),
             new AutoRow3PoleCmd(liftSys, clawSys),
             new FollowTrajectoryCmd("RightStartToScoreCube1", swerveSys).alongWith(
-                new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
-                .andThen(new OutCmd(intakeSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys)))
+                new WaitUntilCmd(() -> swerveSys.getPose().getX() > 5.75)
+                .andThen(new OutCmd(intakeSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys, lightsSys)))
+                .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.8))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 6.75))
-                .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys)))
+                .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 2.23))
                 .andThen(new CloseCmd(clawSys))
                 .andThen(new WaitCmd(0.5))
-                .andThen(new Row3Cmd(GameElement.kCube, true, liftSys))
+                .andThen(new Row3Cmd(GameElement.kCube, false, liftSys))
             ),
+            new WaitCmd(0.25),
+            new OpenCmd(clawSys),
             new WaitCmd(0.5),
-            new OpenCmd(clawSys)
+            new DownCmd(true, liftSys)
         );
     }
 }

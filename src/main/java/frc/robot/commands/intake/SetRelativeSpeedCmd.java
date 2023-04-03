@@ -3,10 +3,12 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakeSys;
+import frc.robot.subsystems.LightsSys;
 
 public class SetRelativeSpeedCmd extends CommandBase {
 
     private final IntakeSys intakeSys;
+    private final LightsSys lightsSys;
 
     /**
      * Constructs a new ExampleCmd.
@@ -17,8 +19,9 @@ public class SetRelativeSpeedCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public SetRelativeSpeedCmd(IntakeSys intakeSys) {
+    public SetRelativeSpeedCmd(IntakeSys intakeSys, LightsSys lightsSys) {
         this.intakeSys = intakeSys;
+        this.lightsSys = lightsSys;
     }
 
     // Called when the command is initially scheduled.
@@ -31,6 +34,7 @@ public class SetRelativeSpeedCmd extends CommandBase {
     @Override
     public void execute() {
         intakeSys.setRelativeSpeed(IntakeConstants.rollerRelativeMetersPerSecond);
+        lightsSys.setIntaking(true);
     }
     
     // Called once the command ends or is interrupted.

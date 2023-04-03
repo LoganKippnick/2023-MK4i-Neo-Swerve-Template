@@ -9,10 +9,6 @@ import frc.robot.subsystems.SwerveSys;
 public class FollowTrajectoryCmd extends PPSwerveControllerCommand {
 
     private final SwerveSys swerveSys;
-    
-    private final String trajectoryName;
-    private final double maxVelMetersPerSec;
-    private final double maxAccelMetersPerSecondSq;
 
     public FollowTrajectoryCmd(String trajectoryName, double maxVelMetersPerSec, double maxAccelMetersPerSecondSq, SwerveSys swerveSys) {
         super(
@@ -26,15 +22,17 @@ public class FollowTrajectoryCmd extends PPSwerveControllerCommand {
         );
 
         this.swerveSys = swerveSys;
-        this.trajectoryName = trajectoryName;
-        this.maxVelMetersPerSec = maxVelMetersPerSec;
-        this.maxAccelMetersPerSecondSq = maxAccelMetersPerSecondSq;
     }
 
     @Override
     public void initialize() {
         super.initialize();
-        swerveSys.setField2dTrajectory(PathPlanner.loadPath(trajectoryName, maxVelMetersPerSec, maxAccelMetersPerSecondSq));
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        super.end(interrupted);
+        swerveSys.stop();
     }
 
     public FollowTrajectoryCmd(String trajectoryName, SwerveSys swerveSys) {

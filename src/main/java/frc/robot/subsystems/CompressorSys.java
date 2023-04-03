@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
@@ -13,11 +12,11 @@ public class CompressorSys extends SubsystemBase {
 
     private final Compressor compressor;
 
-    private final Timer timeoutTimer;
     private final Timer runTimer;
 
-    private int turnOnCount = 0;
     private boolean hasTurnedOff = true;
+
+    private int turnOnCount = 0;
 
     /**
      * Constructs a new CompressorSys.
@@ -29,7 +28,6 @@ public class CompressorSys extends SubsystemBase {
 
         compressor.enableAnalog(CompressorConstants.minPressurePSI, CompressorConstants.maxPressurePSI);
 
-        timeoutTimer = new Timer();
         runTimer = new Timer();
         runTimer.reset();
     }
@@ -37,35 +35,20 @@ public class CompressorSys extends SubsystemBase {
     // This method will be called once per scheduler run
     @Override
     public void periodic() {
-        if(RobotController.isBrownedOut()) {
-            disable();
-            timeoutTimer.stop();
-            timeoutTimer.reset();
-        }
+        if(isRunning()) {
+            runTimer.start();
 
-        if(!compressor.isEnabled() && timeoutTimer.get() == 0.0 && RobotController.getBatteryVoltage() > CompressorConstants.compressorReenableVoltage) {
-            timeoutTimer.start();
-        }
+            if(hasTurnedOff) turnOnCount++;
 
-        if(timeoutTimer.hasElapsed(CompressorConstants.compressorReenableSeconds)) {
-            enable();
-            timeoutTimer.stop();
-            timeoutTimer.reset();
+            hasTurnedOff = false;
         }
-
-        if(isRunning()) runTimer.start();
-        else runTimer.stop();
+        else {
+            runTimer.stop();
+            hasTurnedOff = true;
+        }
 
         if(compressor.getPressure() <= 0.0)
             DriverStation.reportError("PRESSURE RELEASE VALVE IS OPEN", false);
-
-        if(isRunning() && hasTurnedOff) {
-            turnOnCount++;
-            hasTurnedOff = false;
-        }
-
-        if(!isRunning()) hasTurnedOff = true;
-
     }
 
     /**
@@ -109,7 +92,7 @@ public class CompressorSys extends SubsystemBase {
     }
 
     public boolean isRunning() {
-        return compressor.getCurrent() > 0.15;
+        return compressor.getCurrent() > 0.2;
     }
 
     public double getRunTimeSeconds() {

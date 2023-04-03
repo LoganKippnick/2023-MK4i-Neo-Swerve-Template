@@ -91,16 +91,17 @@ public class IntakeSys extends SubsystemBase {
             controller.setReference(targetInches + offsetInches, ControlType.kPosition);
         }
 
-        if(!rollersAreManual && getCurrentPosition() > IntakeConstants.intakeRollerStartInches) {
-            if(rollersAreRelative)
-                setRPM((relativeSpeed - robotSpeedMetersPerSecond.getAsDouble()) * IntakeConstants.driveMetersPerSecondToRollerRPM);
-            else
-                setRPM(relativeSpeed * IntakeConstants.driveMetersPerSecondToRollerRPM);
+        if(!rollersAreManual) {
+            if(!actuationIsManual && getCurrentPosition() > IntakeConstants.intakeRollerStartInches && targetInches == IntakeConstants.outInches) {
+                if(rollersAreRelative)
+                    setRPM((relativeSpeed - robotSpeedMetersPerSecond.getAsDouble()) * IntakeConstants.driveMetersPerSecondToRollerRPM);
+                else
+                    setRPM(relativeSpeed * IntakeConstants.driveMetersPerSecondToRollerRPM);
+            }
+            else {
+                setRollerPower(0.0);
+            }
         }
-        else {
-            setRollerPower(0.0);
-        }
-
     }
 
     // Put methods for controlling this subsystem here. Call these from Commands.

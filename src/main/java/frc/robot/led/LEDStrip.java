@@ -1,7 +1,5 @@
 package frc.robot.led;
 
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.led.animations.AnimationDirection;
 import frc.robot.led.animations.SetSolid;
@@ -11,14 +9,13 @@ import frc.robot.led.animations.base.CombinedAnimation;
 
 public class LEDStrip {
 
-    private final AddressableLED led;
-
-    private final AddressableLEDBuffer buffer;
-    public AddressableLEDBuffer getState() {
+    private final Color[] buffer;
+    public Color[] getStates() {
         return buffer;
     }
-
-    private final AddressableLEDBuffer offBuffer;
+    public Color getState(int index) {
+        return buffer[index];
+    }
 
     private final Color[] colorStates;
     private final double[] brightnessStates;
@@ -42,14 +39,8 @@ public class LEDStrip {
         this.isEnabled = isEnabled;
     }
     
-    public LEDStrip(int pwmPort, int length) {
-        led = new AddressableLED(pwmPort);
-        led.setLength(length);
-
-        buffer = new AddressableLEDBuffer(length);
-
-        offBuffer = new AddressableLEDBuffer(buffer.getLength());
-        for(int i = 0; i < offBuffer.getLength(); i++) offBuffer.setLED(i, Color.kBlack);
+    public LEDStrip(int length) {
+        buffer = new Color[length];
 
         colorStates = new Color[length];
         for(int i = 0; i < colorStates.length; i++) {
@@ -61,16 +52,13 @@ public class LEDStrip {
             brightnessStates[i] = 1.0;
         }
 
-        led.setData(buffer);
-        led.start();
-
         defaultAnimation = new SetSolid(Color.kBlack, this);
         setAnimation(defaultAnimation);
         defaultAnimation.schedule();
     }
 
     public int getLength() {
-        return buffer.getLength();
+        return buffer.length;
     }
 
     public void setDefaultAnimation(CombinedAnimation animation) {
@@ -114,25 +102,25 @@ public class LEDStrip {
     }
 
     public Color getPixel(int index) {
-        return buffer.getLED(index);
+        return buffer[index];
     }
 
     public void update() {
         if(!isEnabled) {
-            led.setData(offBuffer);
+            for(int i = 0; i < buffer.length; i++) {
+                buffer[i] = Color.kBlack;
+            }
         }
         else {
             // Combine color and brightness arrays into buffer and write it to the LEDs
-            for(int i = 0; i < buffer.getLength(); i++) {
-                buffer.setRGB(
-                    i, 
+            for(int i = 0; i < buffer.length; i++) {
+                buffer[i] = new Color(
                     (int) Math.round(colorStates[i].red * 255 * brightnessStates[i] * dimness),
                     (int) Math.round(colorStates[i].green * 255 * brightnessStates[i] * dimness),
                     (int) Math.round(colorStates[i].blue * 255 * brightnessStates[i] * dimness)
                 );
             }
         }
-        led.setData(buffer);
     }
 
     public Color getColorState(int index) {
@@ -141,7 +129,7 @@ public class LEDStrip {
 
     public void setColor(Color color) {
         // Set LEDs to solid color
-        for(int i = 0; i < buffer.getLength(); i++) {
+        for(int i = 0; i < buffer.length; i++) {
             colorStates[i] = color;
         }
         update();
@@ -156,16 +144,16 @@ public class LEDStrip {
     public void translateColors(Color color, AnimationDirection direction) {
         // Translate colors array and set the "empty" pixel to the new color
         if(direction.equals(AnimationDirection.kForward)) {
-            for(int i = buffer.getLength() - 1; i >= 0; i--) {
+            for(int i = buffer.length - 1; i >= 1; i--) {
                 colorStates[i] = colorStates[i - 1];
             }
             colorStates[0] = color;
         }
         else {
-            for(int i = 0; i > buffer.getLength() - 1; i++) {
+            for(int i = 0; i < buffer.length - 1; i++) {
                 colorStates[i] = colorStates[i + 1];
             }
-            colorStates[buffer.getLength() - 1] = color;
+            colorStates[buffer.length - 1] = color;
         }
         update();
     }
@@ -178,7 +166,7 @@ public class LEDStrip {
         if(brightness > 1.0) brightness = 1.0;
         else if(brightness < 0.0) brightness = 0.0;
         // Set LEDs to solid brightness
-        for(int i = 0; i < buffer.getLength(); i++) {
+        for(int i = 0; i < buffer.length; i++) {
             brightnessStates[i] = brightness;
         }
         update();
@@ -195,16 +183,16 @@ public class LEDStrip {
     public void translateBrightnesses(double brightness, AnimationDirection direction) {
         // Translate brightnesses array and set the "empty" pixel to the new brightness
         if(direction.equals(AnimationDirection.kForward)) {
-            for(int i = buffer.getLength() - 1; i >= 0; i--) {
+            for(int i = buffer.length - 1; i >= 1; i--) {
                 brightnessStates[i] = brightnessStates[i - 1];
             }
             brightnessStates[0] = brightness;
         }
         else {
-            for(int i = 0; i > buffer.getLength() - 1; i++) {
+            for(int i = 0; i < buffer.length - 1; i++) {
                 brightnessStates[i] = brightnessStates[i + 1];
             }
-            brightnessStates[buffer.getLength() - 1] = brightness;
+            brightnessStates[buffer.length - 1] = brightness;
         }
         update();
     }

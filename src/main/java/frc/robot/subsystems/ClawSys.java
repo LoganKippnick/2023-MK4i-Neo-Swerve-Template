@@ -13,13 +13,12 @@ public class ClawSys extends SubsystemBase {
 
     public ClawSys() {
         clawSol = new DoubleSolenoid(CANDevices.pneumaticHubId, PneumaticsModuleType.REVPH, PneumaticChannels.clawSolChs[0], PneumaticChannels.clawSolChs[1]);
-        open();
     }
 
     // This method will be called once per scheduler run
     @Override
     public void periodic() {
-        
+
     }
 
     public boolean isOpen() {

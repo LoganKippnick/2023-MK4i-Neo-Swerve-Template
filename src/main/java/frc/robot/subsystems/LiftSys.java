@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.GameElement;
@@ -31,6 +30,14 @@ public class LiftSys extends SubsystemBase {
     private double targetInches = 0.0;
 
     private boolean isManual = false;
+
+    private boolean isArticulationOverride = false;
+    public boolean isArticulationOverride() {
+        return isArticulationOverride;
+    }
+    public void setArticulationOverride(boolean isArticulationOverride) {
+        this.isArticulationOverride = isArticulationOverride;
+    }
 
     private GameElement mode;
     public GameElement getMode() {
@@ -87,26 +94,21 @@ public class LiftSys extends SubsystemBase {
         }
 
         if(
-            (isManual && liftEnc.getPosition() < LiftConstants.upActuationHeightInches && masterMtr.get() < 0) ||
-            (!isManual && targetInches < LiftConstants.upActuationHeightInches)
+            ((isManual && liftEnc.getPosition() < LiftConstants.upActuationHeightInches && masterMtr.get() < 0) ||
+            (!isManual && targetInches < LiftConstants.upActuationHeightInches)) ||
+            isArticulationOverride
         )
             actuateUp();
         else if(
-            (isManual && liftEnc.getPosition() > LiftConstants.downActuationHeightInches && masterMtr.get() > 0) ||
-            (!isManual && targetInches > LiftConstants.downActuationHeightInches)
+            ((isManual && liftEnc.getPosition() > LiftConstants.downActuationHeightInches && masterMtr.get() > 0) ||
+            (!isManual && targetInches > LiftConstants.downActuationHeightInches)) &&
+            !isArticulationOverride
         )
             actuateDown();
 
         if(targetInches < 0.0) targetInches = 0.0;
-        else if (targetInches > LiftConstants.maxHeightInches) targetInches = LiftConstants.maxHeightInches;
-
-        SmartDashboard.putNumber("lift inches", liftEnc.getPosition());
-        // SmartDashboard.putNumber("lift velocity", liftEnc.getVelocity());
-        // SmartDashboard.putNumber("lift target", targetInches);
-        // SmartDashboard.putNumber("lift power", masterMtr.get());
-        // SmartDashboard.putBoolean("lift isManual", isManual);
-        // SmartDashboard.putBoolean("lift is at target", isAtTarget());
-        SmartDashboard.putString("lift actuation", (isActuatedDown() ? "down" : "up"));
+        else if(!isArticulationOverride && targetInches > LiftConstants.maxHeightInches) targetInches = LiftConstants.maxHeightInches;
+        else if(isArticulationOverride && targetInches > LiftConstants.maxUnarticulatedHeightInches) targetInches = LiftConstants.maxUnarticulatedHeightInches;
     }
 
     public double getCurrentPosition() {
@@ -116,7 +118,7 @@ public class LiftSys extends SubsystemBase {
     public void setPower(double power) {
         if(
             (liftEnc.getPosition() <= LiftConstants.manualControlPaddingInches && power < 0.0) ||
-            (liftEnc.getPosition() >= LiftConstants.maxHeightInches - LiftConstants.manualControlPaddingInches && power > 0.0)
+            (liftEnc.getPosition() >= (isArticulationOverride ? LiftConstants.maxUnarticulatedHeightInches : LiftConstants.maxHeightInches) - LiftConstants.manualControlPaddingInches && power > 0.0)
         ) {
             masterMtr.set(0.0);
         }
@@ -165,7 +167,7 @@ public class LiftSys extends SubsystemBase {
         liftSol.set(Value.kForward);
     }
 
-    public boolean isActuatedDown() {
+    public boolean isArticulatedDown() {
         return liftSol.get().equals(Value.kForward);
     }
 

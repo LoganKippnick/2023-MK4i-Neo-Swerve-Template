@@ -10,15 +10,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveSys extends SubsystemBase {
-
-    private final Field2d field;
 
     // Initializes swerve module objects
     private final SwerveModule frontLeftMod = 
@@ -74,6 +69,14 @@ public class SwerveSys extends SubsystemBase {
         this.speedFactor = speedFactor;
     }
 
+    private boolean isTracking = false;
+    public boolean isTracking() {
+        return isTracking;
+    }
+    public void setIsTracking(boolean isTracking) {
+        this.isTracking = isTracking;
+    }
+
     private final PigeonIMU imu = new PigeonIMU(CANDevices.imuId);
 
     // Odometry for the robot, measured in meters for linear motion and radians for rotational motion
@@ -101,9 +104,6 @@ public class SwerveSys extends SubsystemBase {
         rearRightMod.resetDistance();
 
         resetPose();
-
-        field = new Field2d();
-        SmartDashboard.putData("Field", field);
     }
 
     // This method will be called once per scheduler run
@@ -112,13 +112,6 @@ public class SwerveSys extends SubsystemBase {
 
         // Updates the odometry every 20ms
         odometry.update(getHeading(), getModulePositions());
-
-        field.setRobotPose(odometry.getEstimatedPosition());
-
-        SmartDashboard.putNumber("front left CANcoder", frontLeftMod.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("front right CANcoder", frontRightMod.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("rear left CANcoder", rearLeftMod.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("rear right CANcoder", rearRightMod.getCanCoderAngle().getDegrees());
 
         if(isLocked) {
             SwerveModuleState[] states = new SwerveModuleState[] {
@@ -130,10 +123,6 @@ public class SwerveSys extends SubsystemBase {
 
             setModuleStates(states);
         }
-    }
-
-    public void setField2dTrajectory(Trajectory trajectory) {
-        field.getObject("traj").setTrajectory(trajectory);
     }
     
     /**
@@ -267,7 +256,7 @@ public class SwerveSys extends SubsystemBase {
     }
 
     public void setHeading(Rotation2d heading) {
-        imu.setYaw(heading.getDegrees());
+        imu.setYaw(Math.abs(heading.getDegrees() % 360));
     }
 
     /**

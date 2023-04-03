@@ -11,6 +11,8 @@ public class Row3Cmd extends CommandBase {
 
     private final boolean finishInstantly;
 
+    private GameElement element;
+
     /**
      * Constructs a new ExampleCmd.
      * 
@@ -21,28 +23,30 @@ public class Row3Cmd extends CommandBase {
      * @param exampleSys The required ExampleSys.
      */
     public Row3Cmd(boolean finishInstantly, LiftSys liftSys) {
-        this.liftSys = liftSys;
-        this.finishInstantly = finishInstantly;
-
-        addRequirements(liftSys);
+        this(GameElement.kNone, finishInstantly, liftSys);
     }
 
     public Row3Cmd(GameElement element, boolean finishInstantly, LiftSys liftSys) {
-        this(true, liftSys);
+        this.liftSys = liftSys;
+        this.finishInstantly = finishInstantly;
 
+        this.element = element;
         liftSys.setMode(element);
+
+        addRequirements(liftSys);
+        
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        
+        liftSys.setArticulationOverride(false);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if(liftSys.getMode().equals(GameElement.kCube))
+        if(element.equals(GameElement.kCube))
             liftSys.setTarget(LiftConstants.row3ShelfInches, LiftConstants.placeCubePower);
         else
             liftSys.setTarget(LiftConstants.row3PoleInches, LiftConstants.placeConePower);

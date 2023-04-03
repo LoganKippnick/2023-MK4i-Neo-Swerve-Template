@@ -5,7 +5,6 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -14,8 +13,6 @@ public class Rumble {
     private GenericHID[] controllers;
     private final RumbleType rumbleType;
     private final double power;
-
-    private final CommandBase debug; // TODO: Make sure this class works, then get rid of debug.
 
     private double pulseLength = 0.25;
     private double pulseTime = 0.5;
@@ -59,19 +56,6 @@ public class Rumble {
         isEnabled = true;
         isRumbling = false;
         isPulsing = false;
-
-        debug = new CommandBase() {
-            @Override
-            public void execute() {
-                SmartDashboard.putBoolean("isRumbling", isRumbling);
-                SmartDashboard.putBoolean("isPulsing", isPulsing);
-            }
-
-            @Override
-            public boolean isFinished() {
-                return false;
-            }
-        };
     }
 
     public Rumble(RumbleType rumbleType, double power) {
@@ -83,14 +67,10 @@ public class Rumble {
         for(int i = 0; i < this.controllers.length; i++) {
             proxy[i] = this.controllers[i];
         }
-        for(int i = 0; i < controllers.length; i++) {
-            proxy[i + controllers.length - 1] = controllers[i];
+        for(int i = this.controllers.length; i < proxy.length; i++) {
+            proxy[i] = controllers[i - this.controllers.length];
         }
         this.controllers = proxy;
-    }
-
-    public void debug() {
-        CommandScheduler.getInstance().schedule(debug);
     }
 
     public void startRumble() {

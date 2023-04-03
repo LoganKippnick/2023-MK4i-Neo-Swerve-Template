@@ -1,14 +1,14 @@
-package frc.robot.commands.intake;
+package frc.robot.commands.lift;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.IntakeSys;
-import frc.robot.subsystems.LightsSys;
+import frc.robot.Constants.LiftConstants;
+import frc.robot.subsystems.LiftSys;
 
-public class SetAbsoluteSpeedCmd extends CommandBase {
+public class HoverCmd extends CommandBase {
 
-    private final IntakeSys intakeSys;
-    private final LightsSys lightsSys;
+    private final LiftSys liftSys;
+
+    private final boolean finishInstantly;
 
     /**
      * Constructs a new ExampleCmd.
@@ -19,34 +19,35 @@ public class SetAbsoluteSpeedCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public SetAbsoluteSpeedCmd(IntakeSys intakeSys, LightsSys lightsSys) {
-        this.intakeSys = intakeSys;
-        this.lightsSys = lightsSys;
+    public HoverCmd(boolean finishInstantly, LiftSys liftSys) {
+        this.liftSys = liftSys;
+        this.finishInstantly = finishInstantly;
+
+        addRequirements(liftSys);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        
+        liftSys.setArticulationOverride(false);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        intakeSys.setAbsoluteSpeed(IntakeConstants.rollerRelativeMetersPerSecond);
-        lightsSys.setIntaking(true);
+        liftSys.setTarget(LiftConstants.hoverInches, LiftConstants.hoverPower);
     }
-    
+
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-
+        
     }
     
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return true;
+        return finishInstantly || liftSys.isAtTarget();
     }
 
     // Whether the command should run when robot is disabled.

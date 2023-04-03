@@ -10,9 +10,15 @@ import edu.wpi.first.math.util.Units;
 public class Constants {
 
     public enum GameElement {
-        kCone,
-        kCube,
-        kNone
+        kCone("cone"),
+        kCube("cube"),
+        kNone("none");
+
+        public final String name;
+
+        GameElement(String name) {
+            this.name = name;
+        }
     }
 
     public static final class CANDevices {
@@ -110,7 +116,7 @@ public class Constants {
          */
         public static final double steerMtrGearReduction = (14.0 / 50.0) * (10.0 / 60.0);
 
-        public static final double wheelRadiusMeters = 0.050686;
+        public static final double wheelRadiusMeters = 0.0508;
         public static final double wheelCircumferenceMeters = 2 * wheelRadiusMeters * Math.PI;
 
         public static final double driveMetersPerEncRev = wheelCircumferenceMeters * driveMtrGearReduction;
@@ -123,13 +129,9 @@ public class Constants {
         public static final double steerMtrMaxSpeedRadPerSec = 2.0;
         public static final double steerMtrMaxAccelRadPerSecSq = 1.0;
 
-        public static final double maxDriveSpeedMetersPerSec = 5; //3
+        public static final double maxDriveSpeedMetersPerSec = 5; //5
 
         public static final double maxTurnRateRadiansPerSec = 2 * Math.PI; //Rate the robot will spin with full Rot command
-
-        public static final double turtleModeSpeedFactor = 0.25;
-        public static final double defaultSpeedFactor = 0.5;
-        public static final double sprintSpeedFactor = 1.0;
 
         public static final double frontLeftModOffset = Units.degreesToRadians(284.50 - 180);
         public static final double frontRightModOffset = Units.degreesToRadians(48.42 + 180);
@@ -164,12 +166,12 @@ public class Constants {
     public static final class AutoConstants {
 
         public static final double maxVelMetersPerSec = 3.25;
-        public static final double maxAccelMetersPerSecondSq = 3.25;
+        public static final double maxAccelMetersPerSecondSq = 1.5;
 
-        public static final double drivekP = 12.6; //12.8
-        public static final double drivekD = 0.05;
+        public static final double drivekP = 12.8; //12.8
+        public static final double drivekD = 0.065; //0.055
 
-        public static final double rotkP = 1.25;
+        public static final double rotkP = 1.27; //1.25
         public static final double rotkD = 0.5;
 
         public final static TrajectoryConfig config = 
@@ -201,29 +203,34 @@ public class Constants {
         }
 
         public static final double driveOntoChargeStationVelMetersPerSecond = 0.75;
-        public static final double DriveOverChargeStationVelMetersPerSecond = 0.2;
+        public static final double driveOverChargeStationVelMetersPerSecond = 0.2;
 
         public static final double onChargeStationDeg = 10.0;
-        public static final double chargeStationBalancedToleranceDeg = 13.0;
+        public static final double chargeStationBalancedToleranceDeg = 12.0;
 
-        public static final double dockVelMetersPerSecond = 0.1;
-        
-        public static final double dockkP = 0.006;
-        public static final double dockkI = 0.0;
-        public static final double dockkD = 0.0001;
+        public static final double dockVelMetersPerSecond = 0.08;
     }
 
     public static final class VisionConstants {
 
-        public static final double alignkP = 0.01;
-        public static final double alignkD = 0.0;
+        public static final double maxAlignSpeedMetersPerSecond = 1.0;
 
-        public static final PIDController alignController = new PIDController(alignkP, 0.0, alignkD);
+        public static final double conekP = 0.01;
+        public static final double conekD = 0.0007;
 
-        public static final double alignedToleranceDegrees = 2.0;
+        public static final PIDController coneController = new PIDController(conekP, 0.0, conekD);
 
-        public static final double rotkP = 0.0375;
-        public static final double rotkD = 0.0045;
+        public static final double cubekP = 0.004;
+        public static final double cubekD = 0.00015;
+
+        public static final PIDController cubeController = new PIDController(cubekP, 0.0, cubekD);
+
+        public static final double alignedToleranceDegrees = 2.5;
+
+        public static final double rotkP = 0.02;
+        public static final double rotkD = 0.001;
+
+        public static final double rotToleranceDeg = 2.0;
 
         public static final PIDController rotController = constructRotController();
         private static PIDController constructRotController() {
@@ -235,7 +242,7 @@ public class Constants {
 
             // Sets wraparound from 0 to 360.
             rotController.enableContinuousInput(0, 360);
-            
+
             return rotController;
         }
     }
@@ -243,10 +250,7 @@ public class Constants {
     public static final class CompressorConstants {
 
         public static final double maxPressurePSI = 120.0; // 120 PSI is the legal maximum air tank pressure.
-        public static final double minPressurePSI = 80.0;
-
-        public static final double compressorReenableVoltage = 11.5;
-        public static final double compressorReenableSeconds = 5.0;
+        public static final double minPressurePSI = 115.0; // 100.0
     }
     
     public static final class LiftConstants {
@@ -254,6 +258,8 @@ public class Constants {
         public static final double gearReduction = 1.0 / 5.0;
 
         public static final double maxHeightInches = 76.5;
+        public static final double maxUnarticulatedHeightInches = 55.5;
+
         public static final double inchesPerEncRev = 11 * gearReduction;
 
         public static final double kP = 0.09;
@@ -266,11 +272,17 @@ public class Constants {
         public static final double manualPower = 0.25;
         public static final double downPower = 0.45;
         public static final double hybridPower = 0.55;
-        public static final double placeConePower = 0.3;
-        public static final double placeCubePower = 0.55;
+        public static final double placeConePower = 0.45;
+        public static final double placeCubePower = 0.6;
+        public static final double shelfPower = 0.65;
+        public static final double hoverPower = 0.3
+        ;
 
         public static final double downInches = 0.0;
+        public static final double hoverInches = 12.0;
         public static final double row1Inches = 35.0;
+        public static final double shelfPickupInches = 40.0;
+        public static final double shelfRaiseInches = 43.0;
         public static final double row2ShelfInches = 49.0;
         public static final double row2PoleInches = 55.0;
         public static final double row3ShelfInches = 71.0;
@@ -282,6 +294,14 @@ public class Constants {
 
         public static final double downActuationHeightInches = 18.0;
         public static final double upActuationHeightInches = 24.0;
+
+        public static final double hybridYeetPower = 0.8;
+        public static final double hybridYeetReleaseInches = 4.0;
+        public static final double hybridYeetHeightInches = 24.0;
+
+        public static final double YEETPower = 1.0;
+        public static final double YEETReleaseInches = 26.0;
+        public static final double YEETHeightInches = 76.5;
     }
 
     public class IntakeConstants {
@@ -327,6 +347,6 @@ public class Constants {
 
         public static final double rollerManualControlFactor = 0.8;
         public static final double rollerRelativeMetersPerSecond = 6.5;
-        public static final double rollerAbsoluteMetersPerSecond = 6.5;
+        public static final double rollerAbsoluteMetersPerSecond = 5.25;
     }
 }

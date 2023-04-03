@@ -4,6 +4,7 @@ import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.GameElement;
 import frc.robot.Constants.VisionConstants;
@@ -17,8 +18,7 @@ public class VisionSys extends SubsystemBase {
      */
     public static enum Pipeline {
         kPoleTape(0, "reflective tape"),
-        kAprilTag(1, "april tag"),
-        kIntake(2, "intake");
+        kAprilTag(1, "april tag");
 
         public final int pipelineIndex;
         public final String name;
@@ -30,6 +30,7 @@ public class VisionSys extends SubsystemBase {
     }
 
     PhotonCamera limelight;
+    PhotonCamera intakeCam;
     
     /**
      * Constructs a new VisionSys.
@@ -38,7 +39,10 @@ public class VisionSys extends SubsystemBase {
      */
     public VisionSys() {
         limelight = new PhotonCamera("Limelight");
-        setPipeline(Pipeline.kIntake);
+        intakeCam = new PhotonCamera("Intake");
+
+        intakeCam.setDriverMode(true);
+        setDriverMode(true);
 
         powerDistributionHub = new PowerDistribution(1, ModuleType.kRev);
         setPower(true);
@@ -47,6 +51,8 @@ public class VisionSys extends SubsystemBase {
     // This method will be called once per scheduler run
     @Override
     public void periodic() {
+        // SmartDashboard.putBoolean("Intake cam connected", intakeCam.isConnected());
+        SmartDashboard.putNumber("Pipeline index", limelight.getPipelineIndex());
     }
 
     /**
@@ -55,8 +61,7 @@ public class VisionSys extends SubsystemBase {
      */
     public Pipeline getPipeline() {
         if(limelight.getPipelineIndex() == Pipeline.kPoleTape.pipelineIndex) return Pipeline.kPoleTape;
-        else if(limelight.getPipelineIndex() == Pipeline.kAprilTag.pipelineIndex) return Pipeline.kAprilTag;
-        else return Pipeline.kIntake;
+        else return Pipeline.kAprilTag;
     }
 
     /**
@@ -64,13 +69,8 @@ public class VisionSys extends SubsystemBase {
      * @param pipeline The type of target to track. If Pipeline.kNone, enables driver mode, otherwise disables it.
      */
     public void setPipeline(Pipeline pipeline) {
+        setDriverMode(false);
         limelight.setPipelineIndex(pipeline.pipelineIndex);
-        if(pipeline.equals(Pipeline.kIntake)) {
-            limelight.setDriverMode(true);
-        }
-        else {
-            limelight.setDriverMode(false);
-        }
     }
 
     public void setTarget(GameElement element) {
@@ -81,7 +81,7 @@ public class VisionSys extends SubsystemBase {
             setPipeline(Pipeline.kAprilTag);
         }
         else {
-            setPipeline(Pipeline.kIntake);
+            setDriverMode(true);
         }
     }
 
@@ -90,7 +90,7 @@ public class VisionSys extends SubsystemBase {
      * @return True if the limelight is tracking a target.
      */
     public boolean hasTarget() {
-        return limelight.getLatestResult().hasTargets() && targetYDegrees() < 0.0;
+        return limelight.getLatestResult().hasTargets() && targetYDegrees() <= 0.0;
     }
 
     /**
@@ -99,8 +99,11 @@ public class VisionSys extends SubsystemBase {
      */
     public double targetXDegrees() {
         if(hasTarget()) {
-            return limelight.getLatestResult().getBestTarget().getYaw();
-        }
+            try {
+                return limelight.getLatestResult().getBestTarget().getYaw();
+            } catch (NullPointerException e) {
+                return 0.0;
+            }        }
         else {
             return 0.0;
         }
@@ -111,7 +114,16 @@ public class VisionSys extends SubsystemBase {
      * @return The y-offset, or skew, from the crosshair of the best target, in degrees.
      */
     public double targetYDegrees() {
-        return limelight.getLatestResult().getBestTarget().getPitch();
+        if(limelight.getLatestResult().hasTargets()) {
+            try {
+                return limelight.getLatestResult().getBestTarget().getPitch();
+            } catch (NullPointerException e) {
+                return 0.0;
+            }
+        }
+        else {
+            return 0.0;
+        }
     }
 
     /**
@@ -119,7 +131,7 @@ public class VisionSys extends SubsystemBase {
      * @return True if the target's x value is within the alignment threshold.
      */
     public boolean targetIsXAligned() {
-        return hasTarget() && Math.abs(targetXDegrees()) < VisionConstants.alignedToleranceDegrees;
+        return limelight.getLatestResult().hasTargets() && Math.abs(targetXDegrees()) < VisionConstants.alignedToleranceDegrees;
         // test(porpoises); -Andy
     }
 
@@ -128,7 +140,7 @@ public class VisionSys extends SubsystemBase {
      * @return True if the target's y value is within the alignment threshold.
      */
     public boolean targetIsYAligned() {
-        return hasTarget() && Math.abs(targetXDegrees()) < VisionConstants.alignedToleranceDegrees;
+        return hasTarget() && Math.abs(targetYDegrees()) < VisionConstants.alignedToleranceDegrees;
         // test(porpoises); -Andy
     }
 

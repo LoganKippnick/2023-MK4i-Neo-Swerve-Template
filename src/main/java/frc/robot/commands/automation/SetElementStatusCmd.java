@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.automation;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.GameElement;
@@ -42,15 +42,13 @@ public class SetElementStatusCmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        lightsSys.setStatus(element);
-        liftSys.setMode(element);
-        if(element.equals(lightsSys.getStatus())) {
-            visionSys.setTarget(element);
-        }
-        else {
-            visionSys.setTarget(GameElement.kNone);
+        if(!element.equals(GameElement.kNone)) {
             lightsSys.blink();
         }
+
+        visionSys.setTarget(element);
+        lightsSys.setStatus(element);
+        liftSys.setMode(element);
     }
     
     // Called once the command ends or is interrupted.

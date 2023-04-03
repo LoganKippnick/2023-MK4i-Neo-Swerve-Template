@@ -13,8 +13,8 @@ public class AutoRow3PoleCmd extends SequentialCommandGroup {
     
     public AutoRow3PoleCmd(LiftSys liftSys, ClawSys clawSys) {
         super(
-            new Row3Cmd(GameElement.kCube, false, liftSys),
-            new WaitCmd(0.25),
+            new Row3Cmd(GameElement.kCone, false, liftSys),
+            new WaitCmd(0.5),
             new OpenCmd(clawSys),
             new WaitCmd(0.25),
             new DownCmd(true, liftSys)
