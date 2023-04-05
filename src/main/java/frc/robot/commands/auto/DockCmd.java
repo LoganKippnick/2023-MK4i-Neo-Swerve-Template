@@ -56,7 +56,6 @@ public class DockCmd extends CommandBase {
         }
 
         if(!onChargeStation) {
-            swerveSys.setLocked(false);
             swerveSys.drive(
                 AutoConstants.driveOntoChargeStationVelMetersPerSecond * (direction.equals(DockDirection.kFromCenter) ? -1 : 1),
                 0.0,
@@ -65,7 +64,7 @@ public class DockCmd extends CommandBase {
             );
         }
         else if(hasStopped || (Math.abs(swerveSys.getRollDegrees()) < AutoConstants.chargeStationBalancedToleranceDeg && onChargeStationTimer.hasElapsed(0.5))) {
-            swerveSys.setLocked(true);
+            swerveSys.lock();
             lightsSys.setPartyMode(true);
 
             hasStopped = true;
@@ -80,7 +79,6 @@ public class DockCmd extends CommandBase {
                 dockVel *= -1;
             }
 
-            swerveSys.setLocked(false);
             swerveSys.drive(
                 dockVel,
                 0.0,
@@ -93,7 +91,7 @@ public class DockCmd extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        swerveSys.setLocked(false);
+
     }
     
     // Returns true when the command should end.

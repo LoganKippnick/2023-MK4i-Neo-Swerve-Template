@@ -35,8 +35,8 @@ import frc.robot.commands.automation.SetElementStatusCmd;
 import frc.robot.commands.automation.YEETCmd;
 import frc.robot.commands.claw.CloseCmd;
 import frc.robot.commands.claw.OpenCmd;
+import frc.robot.commands.drivetrain.LockCmd;
 import frc.robot.commands.drivetrain.ResetHeadingCmd;
-import frc.robot.commands.drivetrain.SetLockedCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
 import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
@@ -243,7 +243,7 @@ public class RobotContainer {
                 .whileTrue(new SetAbsoluteSpeedCmd(intakeSys, lightsSys))
                 .onFalse(new InCmd(intakeSys))
                 .onFalse(new StopRollersCmd(intakeSys, lightsSys));
-            driverLeftTriggerBtn.onTrue(new SetLockedCmd(true, swerveSys)).onFalse(new SetLockedCmd(false, swerveSys));
+            driverLeftTriggerBtn.onTrue(new LockCmd(swerveSys));
 
             brownOutRumble.addControllers(driverController);
             matchTimeRumble.addControllers(driverController);
