@@ -41,7 +41,7 @@ public class LockCmd extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
 
     // Whether the command should run when robot is disabled.

@@ -133,10 +133,10 @@ public class Constants {
 
         public static final double maxTurnRateRadiansPerSec = 2 * Math.PI; //Rate the robot will spin with full Rot command
 
-        public static final double frontLeftModOffset = Units.degreesToRadians(284.50 - 180);
-        public static final double frontRightModOffset = Units.degreesToRadians(48.42 + 180);
-        public static final double rearLeftModOffset = Units.degreesToRadians(176.40 + 180);
-        public static final double rearRightModOffset = Units.degreesToRadians(135.97 + 180);
+        public static final double frontLeftModOffset = Units.degreesToRadians(104.766); //Units.degreesToRadians(104.50);
+        public static final double frontRightModOffset = Units.degreesToRadians(227.900); //Units.degreesToRadians(48.42 + 180);
+        public static final double rearLeftModOffset = Units.degreesToRadians(357.539); //Units.degreesToRadians(176.40 + 180);
+        public static final double rearRightModOffset = Units.degreesToRadians(315.527); //Units.degreesToRadians(135.97 + 180);
 
         public static final int driveCurrentLimitAmps = 40;
         public static final int dockCurrentLimitAmps = 50;
@@ -203,10 +203,10 @@ public class Constants {
         }
 
         public static final double driveOntoChargeStationVelMetersPerSecond = 0.75;
-        public static final double driveOverChargeStationVelMetersPerSecond = 0.2;
+        public static final double driveOverChargeStationVelMetersPerSecond = 0.35;
 
         public static final double onChargeStationDeg = 10.0;
-        public static final double chargeStationBalancedToleranceDeg = 12.0;
+        public static final double chargeStationBalancedToleranceDeg = 11.0;
 
         public static final double dockVelMetersPerSecond = 0.08;
     }
@@ -347,6 +347,6 @@ public class Constants {
 
         public static final double rollerManualControlFactor = 0.8;
         public static final double rollerRelativeMetersPerSecond = 6.5;
-        public static final double rollerAbsoluteMetersPerSecond = 5.25;
+        public static final double rollerAbsoluteMetersPerSecond = 4.875;
     }
 }

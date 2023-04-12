@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
 
@@ -107,6 +108,11 @@ public class SwerveSys extends SubsystemBase {
     public void periodic() {
         // Updates the odometry every 20ms
         odometry.update(getHeading(), getModulePositions());
+
+        SmartDashboard.putNumber("front left CANcoder", frontLeftMod.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("front right CANcoder", frontRightMod.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("rear left CANcoder", rearLeftMod.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("rear right CANcoder", rearRightMod.getCanCoderAngle().getDegrees());
     }
     
     /**
@@ -156,14 +162,7 @@ public class SwerveSys extends SubsystemBase {
      * <p>Sets the drive power of each module to zero while maintaining module headings.
      */
     public void stop() {
-        SwerveModuleState[] states = new SwerveModuleState[] {
-            new SwerveModuleState(0.0, frontLeftMod.getSteerEncAngle()),
-            new SwerveModuleState(0.0, frontRightMod.getSteerEncAngle()),
-            new SwerveModuleState(0.0, rearLeftMod.getSteerEncAngle()),
-            new SwerveModuleState(0.0, rearRightMod.getSteerEncAngle())
-        };
-
-        setModuleStates(states);
+        drive(0.0, 0.0, 0.0, isFieldOriented);
     }
 
     // TODO: javadoc

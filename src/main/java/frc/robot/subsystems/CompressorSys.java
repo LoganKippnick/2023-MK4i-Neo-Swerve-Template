@@ -92,7 +92,7 @@ public class CompressorSys extends SubsystemBase {
     }
 
     public boolean isRunning() {
-        return compressor.getCurrent() > 0.2;
+        return compressor.getCurrent() > 0.3;
     }
 
     public double getRunTimeSeconds() {
