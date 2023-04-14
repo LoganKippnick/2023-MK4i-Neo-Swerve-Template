@@ -3,11 +3,9 @@ package frc.robot.commands.drivetrain;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveSys;
 
-public class SetLockedCmd extends CommandBase {
+public class LockCmd extends CommandBase {
 
     private final SwerveSys swerveSys;
-
-    private final boolean isLocked;
 
     /**
      * Constructs a new SetLockedCmd.
@@ -16,14 +14,10 @@ public class SetLockedCmd extends CommandBase {
      * 
      * <p>The command finishes instantly.
      * 
-     * @param isLocked The state of locking of the drive base, true if the drive base should lock.
      * @param swerveSys The SwerveSys to modify.
      */
-    public SetLockedCmd(boolean isLocked, SwerveSys swerveSys) {
-
+    public LockCmd(SwerveSys swerveSys) {
         this.swerveSys = swerveSys;
-        this.isLocked = isLocked;
-
     }
 
     // Called when the command is initially scheduled.
@@ -35,7 +29,7 @@ public class SetLockedCmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        swerveSys.setLocked(isLocked);
+        swerveSys.lock();
     }
     
     // Called once the command ends or is interrupted.
@@ -47,7 +41,7 @@ public class SetLockedCmd extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
 
     // Whether the command should run when robot is disabled.

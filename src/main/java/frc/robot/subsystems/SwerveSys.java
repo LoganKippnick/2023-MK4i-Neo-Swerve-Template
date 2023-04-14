@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
 
@@ -52,9 +53,6 @@ public class SwerveSys extends SubsystemBase {
     public boolean isLocked() {
         return isLocked;
     }
-    public void setLocked(boolean isLocked) {
-        this.isLocked = isLocked;
-    }
 
     private boolean isFieldOriented = true;
     public boolean isFieldOriented() {
@@ -96,7 +94,6 @@ public class SwerveSys extends SubsystemBase {
      * <p>SwerveCmd contains 4 {@link SwerveModule}, a gyro, and methods to control the drive base and odometry.
      */
     public SwerveSys() {
-
         // Resets the measured distance driven for each module
         frontLeftMod.resetDistance();
         frontRightMod.resetDistance();
@@ -109,20 +106,13 @@ public class SwerveSys extends SubsystemBase {
     // This method will be called once per scheduler run
     @Override
     public void periodic() {
-
         // Updates the odometry every 20ms
         odometry.update(getHeading(), getModulePositions());
 
-        if(isLocked) {
-            SwerveModuleState[] states = new SwerveModuleState[] {
-                new SwerveModuleState(0.0, new Rotation2d(0.25 * Math.PI)),
-                new SwerveModuleState(0.0, new Rotation2d(-0.25 * Math.PI)),
-                new SwerveModuleState(0.0, new Rotation2d(-0.25 * Math.PI)),
-                new SwerveModuleState(0.0, new Rotation2d(0.25 * Math.PI))
-            };
-
-            setModuleStates(states);
-        }
+        SmartDashboard.putNumber("front left CANcoder", frontLeftMod.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("front right CANcoder", frontRightMod.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("rear left CANcoder", rearLeftMod.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("rear right CANcoder", rearRightMod.getCanCoderAngle().getDegrees());
     }
     
     /**
@@ -133,9 +123,18 @@ public class SwerveSys extends SubsystemBase {
      * @param rotation The desired rotational motion, in radians per second.
      * @param isFieldOriented whether driving is field- or robot-oriented.
      */
-    public void drive(double driveX, double driveY, double rotation, boolean isFieldOriented) {
-
-        if (!isLocked) {
+    public void drive(double driveX, double driveY, double rotation, boolean isFieldOriented) {  
+        if(driveX != 0.0 || driveY != 0.0 || rotation != 0.0) isLocked = false;
+        
+        if(isLocked) {
+            setModuleStates(new SwerveModuleState[] {
+                new SwerveModuleState(0.0, new Rotation2d(0.25 * Math.PI)),
+                new SwerveModuleState(0.0, new Rotation2d(-0.25 * Math.PI)),
+                new SwerveModuleState(0.0, new Rotation2d(-0.25 * Math.PI)),
+                new SwerveModuleState(0.0, new Rotation2d(0.25 * Math.PI))
+            });
+        }
+        else {
             // Reduces the speed of the drive base for "turtle" or "sprint" modes.
             driveX *= speedFactor;
             driveY *= speedFactor;
@@ -150,7 +149,7 @@ public class SwerveSys extends SubsystemBase {
 
             // Uses kinematics (wheel placements) to convert overall robot state to array of individual module states.
             SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
-
+            
             // Makes sure the wheels don't try to spin faster than the maximum speed possible
             SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxDriveSpeedMetersPerSec);
 
@@ -163,14 +162,12 @@ public class SwerveSys extends SubsystemBase {
      * <p>Sets the drive power of each module to zero while maintaining module headings.
      */
     public void stop() {
-        SwerveModuleState[] states = new SwerveModuleState[] {
-            new SwerveModuleState(0.0, frontLeftMod.getSteerEncAngle()),
-            new SwerveModuleState(0.0, frontRightMod.getSteerEncAngle()),
-            new SwerveModuleState(0.0, rearLeftMod.getSteerEncAngle()),
-            new SwerveModuleState(0.0, rearRightMod.getSteerEncAngle())
-        };
+        drive(0.0, 0.0, 0.0, isFieldOriented);
+    }
 
-        setModuleStates(states);
+    // TODO: javadoc
+    public void lock() {
+        isLocked = true;
     }
 
     /**
@@ -339,8 +336,6 @@ public class SwerveSys extends SubsystemBase {
         double rel = Math.abs(getDirectionOfTravel().getDegrees() % 90.0);
         if(getDirectionOfTravel().getDegrees() > 90.0 || getDirectionOfTravel().getDegrees() < -90.0)
             rel -= 90.0;
-
-        // if(getDirectionOfTravel().getDegrees() < -90.0 && getDirectionOfTravel().getDegrees() > -180.0)
 
         return getAverageDriveVelocityMetersPerSecond() * (Math.copySign((90.0 - rel), rel) / 90.0);
     }

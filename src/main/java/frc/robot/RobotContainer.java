@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
@@ -35,8 +36,9 @@ import frc.robot.commands.automation.SetElementStatusCmd;
 import frc.robot.commands.automation.YEETCmd;
 import frc.robot.commands.claw.CloseCmd;
 import frc.robot.commands.claw.OpenCmd;
+import frc.robot.commands.drivetrain.LockCmd;
 import frc.robot.commands.drivetrain.ResetHeadingCmd;
-import frc.robot.commands.drivetrain.SetLockedCmd;
+import frc.robot.commands.drivetrain.SetHeadingCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
 import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
@@ -148,8 +150,8 @@ public class RobotContainer {
 
         RobotController.setBrownoutVoltage(7.5);
 
-        autoSelector.addOption("Cone", new Cone(liftSys, clawSys, intakeSys));
-        autoSelector.addOption("Cube", new Cube(liftSys, clawSys, intakeSys));
+        autoSelector.addOption("Cone", new Cone(swerveSys, liftSys, clawSys, intakeSys));
+        autoSelector.addOption("Cube", new Cube(swerveSys, liftSys, clawSys, intakeSys));
         autoSelector.addOption("CenterConeDock", new CenterConeDock(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
         autoSelector.addOption("CenterCubeDock", new CenterCubeDock(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
         autoSelector.addOption("CenterConeMobilityDock", new CenterConeMobilityDock(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
@@ -167,7 +169,7 @@ public class RobotContainer {
         // autoSelector.addOption("RightConeScoreCubeDock", new RightConeScoreCubeDock(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
         autoSelector.addOption("RightConeScoreCubeGrabCube", new RightConeScoreCubeGrabCube(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
         // autoSelector.addOption("RightConeScoreCubeScoreCubeMid", new RightConeScoreCubeScoreCubeMid(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        autoSelector.setDefaultOption("DoNothing", null);
+        autoSelector.setDefaultOption("DoNothing", new SetHeadingCmd(new Rotation2d(Math.PI), swerveSys));
     }
 
     public void configBindings() {
@@ -243,7 +245,7 @@ public class RobotContainer {
                 .whileTrue(new SetAbsoluteSpeedCmd(intakeSys, lightsSys))
                 .onFalse(new InCmd(intakeSys))
                 .onFalse(new StopRollersCmd(intakeSys, lightsSys));
-            driverLeftTriggerBtn.onTrue(new SetLockedCmd(true, swerveSys)).onFalse(new SetLockedCmd(false, swerveSys));
+            driverLeftTriggerBtn.whileTrue(new LockCmd(swerveSys));
 
             brownOutRumble.addControllers(driverController);
             matchTimeRumble.addControllers(driverController);
@@ -386,11 +388,6 @@ public class RobotContainer {
 
         SmartDashboard.putNumber("speed m/s", swerveSys.getAverageDriveVelocityMetersPerSecond());
         // SmartDashboard.putNumber("speed mph", swerveSys.getAverageDriveVelocityMetersPerSecond() * 2.23694);
-
-        // SmartDashboard.putNumber("front left CANcoder", frontLeftMod.getCanCoderAngle().getDegrees());
-        // SmartDashboard.putNumber("front right CANcoder", frontRightMod.getCanCoderAngle().getDegrees());
-        // SmartDashboard.putNumber("rear left CANcoder", rearLeftMod.getCanCoderAngle().getDegrees());
-        // SmartDashboard.putNumber("rear right CANcoder", rearRightMod.getCanCoderAngle().getDegrees());
 
         // COMPRESSOR
         SmartDashboard.putNumber("pressure PSI", compressorSys.getPressurePSI());
