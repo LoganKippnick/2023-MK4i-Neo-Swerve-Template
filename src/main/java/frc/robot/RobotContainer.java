@@ -408,5 +408,8 @@ public class RobotContainer {
 
         // CLAW
         SmartDashboard.putString("claw status", (clawSys.isOpen() ? "OPEN" : "CLOSED"));
+
+        // LIGHTS
+        SmartDashboard.putString("lights status", lightsSys.getStatus().name);
     }
 }

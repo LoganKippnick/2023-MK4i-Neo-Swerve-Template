@@ -7,8 +7,8 @@ import frc.robot.commands.WaitCmd;
 import frc.robot.commands.claw.OpenCmd;
 import frc.robot.commands.drivetrain.SetHeadingCmd;
 import frc.robot.commands.intake.InCmd;
+import frc.robot.commands.lift.AutoRow3Cmd;
 import frc.robot.commands.lift.DownCmd;
-import frc.robot.commands.lift.Row3Cmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
@@ -20,7 +20,7 @@ public class Cube extends SequentialCommandGroup {
         super(
             new SetHeadingCmd(new Rotation2d(Math.PI), swerveSys),
             new InCmd(intakeSys),
-            new Row3Cmd(GameElement.kCube, false, liftSys),
+            new AutoRow3Cmd(GameElement.kCube, false, liftSys),
             new WaitCmd(5.0),
             new OpenCmd(clawSys),
             new WaitCmd(2.0),

@@ -35,7 +35,7 @@ public class SetRelativeSpeedCmd extends CommandBase {
     @Override
     public void execute() {
         if(lightsSys.getStatus().equals(GameElement.kCone)) {
-            intakeSys.setAbsoluteSpeed(IntakeConstants.rollerConeRPM);
+            intakeSys.setAbsoluteSpeed(IntakeConstants.rollerConeMetersPerSecond);
         }
         else {
             intakeSys.setRelativeSpeed(IntakeConstants.rollerRelativeMetersPerSecond);

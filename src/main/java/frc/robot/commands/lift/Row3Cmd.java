@@ -8,9 +8,9 @@ import frc.robot.subsystems.LightsSys;
 
 public class Row3Cmd extends CommandBase {
 
-    private GameElement element = GameElement.kNone;
-
     private final LiftSys liftSys;
+
+    private final LightsSys lightsSys;
 
     private final boolean finishInstantly;
 
@@ -23,21 +23,12 @@ public class Row3Cmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public Row3Cmd(boolean finishInstantly, LiftSys liftSys) {
+    public Row3Cmd(LightsSys lightsSys, boolean finishInstantly, LiftSys liftSys) {
         this.liftSys = liftSys;
+        this.lightsSys = lightsSys;
         this.finishInstantly = finishInstantly;
 
         addRequirements(liftSys);
-    }
-
-    public Row3Cmd(GameElement element, boolean finishInstantly, LiftSys liftSys) {
-        this(finishInstantly, liftSys);
-        this.element = element;
-    }
-
-    public Row3Cmd(LightsSys lightsSys, boolean finishInstantly, LiftSys liftSys) {
-        this(finishInstantly, liftSys);
-        this.element = lightsSys.getStatus();
     }
 
     // Called when the command is initially scheduled.
@@ -49,7 +40,7 @@ public class Row3Cmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if(element.equals(GameElement.kCube))
+        if(lightsSys.getStatus().equals(GameElement.kCube))
             liftSys.setTarget(LiftConstants.row3ShelfInches, LiftConstants.placeCubePower);
         else
             liftSys.setTarget(LiftConstants.row3PoleInches, LiftConstants.placeConePower);

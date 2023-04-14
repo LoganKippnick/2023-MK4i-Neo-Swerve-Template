@@ -24,12 +24,12 @@ public class HybridYeetCmd extends CommandBase {
 
     @Override
     public void initialize() {
-        if(clawSys.isOpen() || liftSys.getTargetInches() > LiftConstants.hoverInches + 6.0){
+        if(clawSys.isOpen()){
             cancel();
         }
         else {
             liftSys.setArticulationOverride(true);
-            liftSys.setTarget(LiftConstants.hybridYeetHeightInches + liftSys.getTargetInches(), LiftConstants.hybridYeetPower);
+            liftSys.setTarget(LiftConstants.hybridYeetHeightInches, LiftConstants.hybridPower);
         }
     }
 
@@ -39,22 +39,21 @@ public class HybridYeetCmd extends CommandBase {
             clawSys.open();
         }
 
-        if(liftSys.isAtTarget() && liftSys.getTargetInches() > LiftConstants.hybridYeetHeightInches) {
+        if(liftSys.isAtTarget() && liftSys.getTargetInches() == LiftConstants.hybridYeetHeightInches) {
             holdTimer.start();
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        liftSys.setTarget(LiftConstants.downInches, LiftConstants.downPower);
         liftSys.setArticulationOverride(false);
-
+        liftSys.setTarget(LiftConstants.downInches, LiftConstants.downPower);
         holdTimer.stop();
         holdTimer.reset();
     }
 
     @Override
     public boolean isFinished() {
-        return holdTimer.hasElapsed(0.5);
+        return holdTimer.hasElapsed(0.25);
     }
 }

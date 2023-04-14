@@ -78,6 +78,18 @@ public class SetElementStatusCmd extends CommandBase {
                 intakeSys.setTarget(IntakeConstants.outInches);
             }
         }
+        else {
+            if(liftSys.getTargetInches() == LiftConstants.row2ShelfInches) {
+                liftSys.setTarget(LiftConstants.row2PoleInches, LiftConstants.placeConePower);
+            }
+            else if(liftSys.getTargetInches() == LiftConstants.row3ShelfInches) {
+                liftSys.setTarget(LiftConstants.row3PoleInches, LiftConstants.placeConePower);
+            }
+
+            if(intakeSys.getTargetInches() == IntakeConstants.coneInches) {
+                intakeSys.setTarget(IntakeConstants.outInches);
+            }
+        }
     }
     
     // Called once the command ends or is interrupted.

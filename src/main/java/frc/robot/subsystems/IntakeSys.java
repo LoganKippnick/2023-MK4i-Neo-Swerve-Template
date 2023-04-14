@@ -96,7 +96,7 @@ public class IntakeSys extends SubsystemBase {
         }
 
         if(!rollersAreManual) {
-            if(!actuationIsManual && getCurrentPosition() > IntakeConstants.intakeRollerStartInches && targetInches == IntakeConstants.outInches) {
+            if(!actuationIsManual && getCurrentPosition() > IntakeConstants.intakeRollerStartInches && relativeSpeed != 0.0) {
                 if(rollersAreRelative)
                     setRPM((relativeSpeed - (robotSpeedMetersPerSecond.getAsDouble() * IntakeConstants.rollerRelativeSpeedFactor)) * IntakeConstants.driveMetersPerSecondToRollerRPM);
                 else
@@ -131,7 +131,7 @@ public class IntakeSys extends SubsystemBase {
     public void manualRollerControl(double power) {
         if(power != 0.0) {
             rollersAreManual = true;
-            rollerMtr.set(power);
+            setRPM(power * IntakeConstants.freeRPM);
         }
         else {
             rollersAreManual = false;
