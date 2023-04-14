@@ -16,7 +16,7 @@ import frc.robot.commands.intake.OutCmd;
 import frc.robot.commands.intake.SetRelativeSpeedCmd;
 import frc.robot.commands.intake.StopRollersCmd;
 import frc.robot.commands.lift.DownCmd;
-import frc.robot.commands.lift.Row3Cmd;
+import frc.robot.commands.lift.AutoRow3Cmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
@@ -39,7 +39,7 @@ public class RightConeScoreCubeGrabCube extends SequentialCommandGroup {
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 3.75))
                 .andThen(new CloseCmd(clawSys))
                 .andThen(new WaitCmd(0.1))
-                .andThen(new Row3Cmd(GameElement.kCube, false, liftSys))
+                .andThen(new AutoRow3Cmd(GameElement.kCube, false, liftSys))
             ),
             new OpenCmd(clawSys),
             new WaitCmd(1.0),

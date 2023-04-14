@@ -17,7 +17,7 @@ import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
 import frc.robot.commands.intake.SetRelativeSpeedCmd;
 import frc.robot.commands.intake.StopRollersCmd;
-import frc.robot.commands.lift.Row3Cmd;
+import frc.robot.commands.lift.AutoRow3Cmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
@@ -41,7 +41,7 @@ public class RightConeScoreCubeDock extends SequentialCommandGroup {
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 2.23))
                 .andThen(new CloseCmd(clawSys))
                 .andThen(new WaitCmd(0.5))
-                .andThen(new Row3Cmd(GameElement.kCube, true, liftSys))
+                .andThen(new AutoRow3Cmd(GameElement.kCube, true, liftSys))
             ),
             new WaitCmd(0.5),
             new OpenCmd(clawSys),
