@@ -311,11 +311,8 @@ public class LightsSys extends SubsystemBase {
             outerLeftStrip.translateBrightnesses(intakeMarqueeBrightness, AnimationDirection.kReverse);
             outerRightStrip.translateBrightnesses(intakeMarqueeBrightness, AnimationDirection.kForward);
 
-            double innerMarqueeBrightness = intakeMarqueeBrightness - ((double) hopperStripsOffset / intakeMarqueeLength); //TODO: check this and make sure beams line up
-            if(innerMarqueeBrightness < 0.0) innerMarqueeBrightness += 1.0;
-
-            innerRightStrip.translateBrightnesses(innerMarqueeBrightness, AnimationDirection.kReverse);
-            innerLeftStrip.translateBrightnesses(innerMarqueeBrightness, AnimationDirection.kForward);
+            innerRightStrip.translateBrightnesses(outerRightStrip.getBrightnessState(5), AnimationDirection.kReverse);
+            innerLeftStrip.translateBrightnesses(innerLeftStrip.getBrightnessState(innerLeftStrip.getLength() - 4), AnimationDirection.kForward);
         }
         else if(!isBlinking) {
             outerLeftStrip.setBrightness(1.0);

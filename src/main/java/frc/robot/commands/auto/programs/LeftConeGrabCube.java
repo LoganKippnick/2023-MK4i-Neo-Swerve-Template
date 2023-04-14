@@ -31,7 +31,7 @@ public class LeftConeGrabCube extends SequentialCommandGroup {
             new FollowTrajectoryCmd("LeftStartToCube1", swerveSys)
                 .alongWith(
                     new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
-                    .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
+                    .andThen(new OutCmd(intakeSys, lightsSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
                     .andThen(new WaitCmd(1.0))
                     .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
                 ),

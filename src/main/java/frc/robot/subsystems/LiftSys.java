@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
-import frc.robot.Constants.GameElement;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.PneumaticChannels;
 
@@ -37,14 +36,6 @@ public class LiftSys extends SubsystemBase {
     }
     public void setArticulationOverride(boolean isArticulationOverride) {
         this.isArticulationOverride = isArticulationOverride;
-    }
-
-    private GameElement mode;
-    public GameElement getMode() {
-        return mode;
-    }
-    public void setMode(GameElement mode) {
-        this.mode = mode;
     }
 
     /**

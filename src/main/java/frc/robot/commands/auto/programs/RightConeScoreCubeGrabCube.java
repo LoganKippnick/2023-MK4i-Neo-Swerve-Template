@@ -33,7 +33,7 @@ public class RightConeScoreCubeGrabCube extends SequentialCommandGroup {
             new SetPoseCmd(new Pose2d(1.83, 0.5, new Rotation2d(Math.PI)), swerveSys),
             new FollowTrajectoryCmd("RightStartToScoreCube1", swerveSys).alongWith(
                 new WaitUntilCmd(() -> swerveSys.getPose().getX() > 5.75)
-                .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
+                .andThen(new OutCmd(intakeSys, lightsSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
                 .andThen(new WaitCmd(1.5))
                 .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 3.75))
@@ -46,7 +46,7 @@ public class RightConeScoreCubeGrabCube extends SequentialCommandGroup {
             new DownCmd(true, liftSys),
             new FollowTrajectoryCmd("RightScoreCube1ToGrabCube2", 3.25, 2.25, swerveSys).alongWith(
                 new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
-                .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
+                .andThen(new OutCmd(intakeSys, lightsSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
                 .andThen(new WaitCmd(1.5))
                 .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 3.75))

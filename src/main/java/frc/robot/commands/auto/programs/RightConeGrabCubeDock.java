@@ -30,7 +30,7 @@ public class RightConeGrabCubeDock extends SequentialCommandGroup {
             new SetPoseCmd(new Pose2d(1.83, 0.5, new Rotation2d(Math.PI)), swerveSys),
             new FollowTrajectoryCmd("RightStartToGrabCube1Dock", swerveSys).alongWith(
                 new WaitUntilCmd(() -> swerveSys.getPose().getX() > 5.75)
-                .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
+                .andThen(new OutCmd(intakeSys, lightsSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
                 .andThen(new WaitCmd(1.0))
                 .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
             ),

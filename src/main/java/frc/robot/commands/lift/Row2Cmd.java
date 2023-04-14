@@ -4,8 +4,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.GameElement;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.LiftSys;
+import frc.robot.subsystems.LightsSys;
 
 public class Row2Cmd extends CommandBase {
+
+    private GameElement element = GameElement.kNone;
 
     private final LiftSys liftSys;
 
@@ -29,8 +32,12 @@ public class Row2Cmd extends CommandBase {
 
     public Row2Cmd(GameElement element, boolean finishInstantly, LiftSys liftSys) {
         this(finishInstantly, liftSys);
+        this.element = element;
+    }
 
-        liftSys.setMode(element);
+    public Row2Cmd(LightsSys lightsSys, boolean finishInstantly, LiftSys liftSys) {
+        this(finishInstantly, liftSys);
+        this.element = lightsSys.getStatus();
     }
 
     // Called when the command is initially scheduled.
@@ -42,7 +49,7 @@ public class Row2Cmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if(liftSys.getMode().equals(GameElement.kCube))
+        if(element.equals(GameElement.kCube))
             liftSys.setTarget(LiftConstants.row2ShelfInches, LiftConstants.placeCubePower);
         else
             liftSys.setTarget(LiftConstants.row2PoleInches, LiftConstants.placeConePower);

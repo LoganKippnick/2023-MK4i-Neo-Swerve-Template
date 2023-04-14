@@ -33,7 +33,7 @@ public class CenterConeGrabCubeDock extends SequentialCommandGroup {
             new DriveOverChargeStationCmd(DockDirection.kFromCommunity, swerveSys),
             new SetTranslationCmd(new Translation2d(5.50, 2.74), swerveSys),
             new FollowTrajectoryCmd("CenterGrabCubeToDock", 3.375, 2.5, swerveSys).alongWith(
-                new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys))
+                new OutCmd(intakeSys, lightsSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys))
                 .andThen(new WaitCmd(1.5))
                 .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
             ),

@@ -166,6 +166,10 @@ public class IntakeSys extends SubsystemBase {
         relativeSpeed = 0.0;
     }
 
+    public double getTargetInches() {
+        return targetInches;
+    }
+
     public void setTarget(double inches) {
         targetInches = inches;
     }

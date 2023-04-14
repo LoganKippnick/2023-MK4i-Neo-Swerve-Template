@@ -2,6 +2,9 @@ package frc.robot.commands.automation;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.GameElement;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.LiftConstants;
+import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.LightsSys;
 import frc.robot.subsystems.VisionSys;
@@ -11,6 +14,7 @@ public class SetElementStatusCmd extends CommandBase {
     private final GameElement element;
 
     private final LiftSys liftSys;
+    private final IntakeSys intakeSys;
     private final VisionSys visionSys;
     private final LightsSys lightsSys;
 
@@ -23,10 +27,11 @@ public class SetElementStatusCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public SetElementStatusCmd(GameElement element, LiftSys liftSys, VisionSys visionSys, LightsSys lightsSys) {
+    public SetElementStatusCmd(GameElement element, LiftSys liftSys, IntakeSys intakeSys, VisionSys visionSys, LightsSys lightsSys) {
 
         this.element = element;
         this.liftSys = liftSys;
+        this.intakeSys = intakeSys;
         this.visionSys = visionSys;
         this.lightsSys = lightsSys;
 
@@ -48,7 +53,31 @@ public class SetElementStatusCmd extends CommandBase {
 
         visionSys.setTarget(element);
         lightsSys.setStatus(element);
-        liftSys.setMode(element);
+
+        if(element.equals(GameElement.kCone)) {
+            if(liftSys.getTargetInches() == LiftConstants.row2ShelfInches) {
+                liftSys.setTarget(LiftConstants.row2PoleInches, LiftConstants.placeConePower);
+            }
+            else if(liftSys.getTargetInches() == LiftConstants.row3ShelfInches) {
+                liftSys.setTarget(LiftConstants.row3PoleInches, LiftConstants.placeConePower);
+            }
+
+            if(intakeSys.getTargetInches() == IntakeConstants.outInches) {
+                intakeSys.setTarget(IntakeConstants.coneInches);
+            }
+        }
+        else if(element.equals(GameElement.kCube)) {
+            if(liftSys.getTargetInches() == LiftConstants.row2PoleInches) {
+                liftSys.setTarget(LiftConstants.row2ShelfInches, LiftConstants.placeCubePower);
+            }
+            else if(liftSys.getTargetInches() == LiftConstants.row3PoleInches) {
+                liftSys.setTarget(LiftConstants.row3ShelfInches, LiftConstants.placeCubePower);
+            }
+
+            if(intakeSys.getTargetInches() == IntakeConstants.coneInches) {
+                intakeSys.setTarget(IntakeConstants.outInches);
+            }
+        }
     }
     
     // Called once the command ends or is interrupted.

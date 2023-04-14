@@ -1,12 +1,15 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.GameElement;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakeSys;
+import frc.robot.subsystems.LightsSys;
 
 public class OutCmd extends CommandBase {
 
     private final IntakeSys intakeSys;
+    private final LightsSys lightsSys;
 
     /**
      * Constructs a new ExampleCmd.
@@ -17,8 +20,9 @@ public class OutCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public OutCmd(IntakeSys intakeSys) {
+    public OutCmd(IntakeSys intakeSys, LightsSys lightsSys) {
         this.intakeSys = intakeSys;
+        this.lightsSys = lightsSys;
 
         addRequirements(intakeSys);
     }
@@ -32,7 +36,12 @@ public class OutCmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        intakeSys.setTarget(IntakeConstants.outInches);
+        if(lightsSys.getStatus().equals(GameElement.kCone)) {
+            intakeSys.setTarget(IntakeConstants.coneInches);
+        }
+        else {
+            intakeSys.setTarget(IntakeConstants.outInches);
+        }
     }
    
     // Called once the command ends or is interrupted.
