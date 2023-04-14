@@ -73,6 +73,15 @@ public class VisionSys extends SubsystemBase {
         limelight.setPipelineIndex(pipeline.pipelineIndex);
     }
 
+    public GameElement getTarget() {
+        if(limelight.getPipelineIndex() == Pipeline.kPoleTape.pipelineIndex) {
+            return GameElement.kCone;
+        }
+        else {
+            return GameElement.kCube;
+        }
+    }
+
     public void setTarget(GameElement element) {
         if(element.equals(GameElement.kCone)) {
             setPipeline(Pipeline.kPoleTape);

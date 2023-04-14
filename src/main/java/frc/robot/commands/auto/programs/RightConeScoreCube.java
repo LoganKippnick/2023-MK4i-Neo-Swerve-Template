@@ -34,7 +34,7 @@ public class RightConeScoreCube extends SequentialCommandGroup {
             new AutoRow3PoleCmd(liftSys, clawSys),
             new FollowTrajectoryCmd("RightStartToScoreCube1", swerveSys).alongWith(
                 new WaitUntilCmd(() -> swerveSys.getPose().getX() > 5.75)
-                .andThen(new OutCmd(intakeSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys, lightsSys)))
+                .andThen(new OutCmd(intakeSys, lightsSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys, lightsSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.8))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 6.75))
                 .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))

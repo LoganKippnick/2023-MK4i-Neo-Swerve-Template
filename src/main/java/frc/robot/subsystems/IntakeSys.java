@@ -163,6 +163,10 @@ public class IntakeSys extends SubsystemBase {
         rollersAreRelative = false;
     }
 
+    public double getTargetInches() {
+        return targetInches;
+    }
+
     public void setTarget(double inches) {
         targetInches = inches;
     }

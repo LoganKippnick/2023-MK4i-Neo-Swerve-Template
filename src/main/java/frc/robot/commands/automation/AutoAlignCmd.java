@@ -27,7 +27,7 @@ public class AutoAlignCmd extends CommandBase {
         this.xControl = xControl;
         this.yControl = yControl;
 
-        alignController = liftSys.getMode().equals(GameElement.kCone) ? VisionConstants.coneController : VisionConstants.cubeController;
+        alignController = visionSys.getPipeline().equals(GameElement.kCone) ? VisionConstants.coneController : VisionConstants.cubeController;
         alignController.setSetpoint(0.0);
 
         rotController = VisionConstants.rotController;

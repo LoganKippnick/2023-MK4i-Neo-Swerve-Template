@@ -37,7 +37,7 @@ public class LeftConeScoreCubeYEETCube extends SequentialCommandGroup {
             new SetPoseCmd(new Pose2d(1.83, 0.5, new Rotation2d(Math.PI)), swerveSys),
             new FollowTrajectoryCmd("LeftStartToScoreCube1", 3.25, 2.25, swerveSys).alongWith(
                 new WaitUntilCmd(() -> swerveSys.getPose().getX() > 5.75)
-                .andThen(new OutCmd(intakeSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys, lightsSys)))
+                .andThen(new OutCmd(intakeSys, lightsSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys, lightsSys)))
                 .andThen(new WaitCmd(1.0))
                 .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 3.75))
@@ -49,7 +49,7 @@ public class LeftConeScoreCubeYEETCube extends SequentialCommandGroup {
             new DownCmd(true, liftSys),
             new FollowTrajectoryCmd("LeftScoreCube1ToYEETCube2", 3.25, 2.25, swerveSys).alongWith(
                 new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
-                .andThen(new OutCmd(intakeSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys, lightsSys)))
+                .andThen(new OutCmd(intakeSys, lightsSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys, lightsSys)))
                 .andThen(new WaitCmd(1.0))
                 .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 3.75))

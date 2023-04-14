@@ -4,14 +4,15 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.GameElement;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.LiftSys;
+import frc.robot.subsystems.LightsSys;
 
 public class Row3Cmd extends CommandBase {
+
+    private GameElement element = GameElement.kNone;
 
     private final LiftSys liftSys;
 
     private final boolean finishInstantly;
-
-    private GameElement element;
 
     /**
      * Constructs a new ExampleCmd.
@@ -23,18 +24,20 @@ public class Row3Cmd extends CommandBase {
      * @param exampleSys The required ExampleSys.
      */
     public Row3Cmd(boolean finishInstantly, LiftSys liftSys) {
-        this(GameElement.kNone, finishInstantly, liftSys);
-    }
-
-    public Row3Cmd(GameElement element, boolean finishInstantly, LiftSys liftSys) {
         this.liftSys = liftSys;
         this.finishInstantly = finishInstantly;
 
-        this.element = element;
-        liftSys.setMode(element);
-
         addRequirements(liftSys);
-        
+    }
+
+    public Row3Cmd(GameElement element, boolean finishInstantly, LiftSys liftSys) {
+        this(finishInstantly, liftSys);
+        this.element = element;
+    }
+
+    public Row3Cmd(LightsSys lightsSys, boolean finishInstantly, LiftSys liftSys) {
+        this(finishInstantly, liftSys);
+        this.element = lightsSys.getStatus();
     }
 
     // Called when the command is initially scheduled.
@@ -57,7 +60,7 @@ public class Row3Cmd extends CommandBase {
     public void end(boolean interrupted) {
         
     }
-    
+
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {

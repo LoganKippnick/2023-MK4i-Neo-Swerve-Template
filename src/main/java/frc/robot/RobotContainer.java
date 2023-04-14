@@ -239,7 +239,7 @@ public class RobotContainer {
             driverMenuBtn.onTrue(new ResetHeadingCmd(swerveSys));
 
             driverRightTriggerBtn
-                .onTrue(new OutCmd(intakeSys))
+                .onTrue(new OutCmd(intakeSys, lightsSys))
                 .whileTrue(new SetAbsoluteSpeedCmd(intakeSys, lightsSys))
                 .onFalse(new InCmd(intakeSys))
                 .onFalse(new StopRollersCmd(intakeSys, lightsSys));
@@ -263,7 +263,7 @@ public class RobotContainer {
             );
 
             driverRightJoystickTriggerBtn
-                .onTrue(new OutCmd(intakeSys))
+                .onTrue(new OutCmd(intakeSys, lightsSys))
                 .whileTrue(new SetAbsoluteSpeedCmd(intakeSys, lightsSys))
                 .onFalse(new InCmd(intakeSys))
                 .onFalse(new StopRollersCmd(intakeSys, lightsSys));
@@ -290,14 +290,14 @@ public class RobotContainer {
         );
 
         operatorABtn.onTrue(new Row1Cmd(true, liftSys));
-        operatorBBtn.onTrue(new Row2Cmd(true, liftSys));
+        operatorBBtn.onTrue(new Row2Cmd(lightsSys, true, liftSys));
         operatorXBtn.onTrue(new DownCmd(true, liftSys));
-        operatorYBtn.onTrue(new Row3Cmd(true, liftSys));
+        operatorYBtn.onTrue(new Row3Cmd(lightsSys, true, liftSys));
 
-        operatorWindowBtn.onTrue(new SetElementStatusCmd(GameElement.kCube, liftSys, visionSys, lightsSys));
-        operatorMenuBtn.onTrue(new SetElementStatusCmd(GameElement.kCone, liftSys, visionSys, lightsSys));
+        operatorWindowBtn.onTrue(new SetElementStatusCmd(GameElement.kCube, liftSys, intakeSys, visionSys, lightsSys));
+        operatorMenuBtn.onTrue(new SetElementStatusCmd(GameElement.kCone, liftSys, intakeSys, visionSys, lightsSys));
 
-        operatorWindowBtn.and(operatorMenuBtn).onTrue(new SetElementStatusCmd(GameElement.kNone, liftSys, visionSys, lightsSys));
+        operatorWindowBtn.and(operatorMenuBtn).onTrue(new SetElementStatusCmd(GameElement.kNone, liftSys, intakeSys, visionSys, lightsSys));
         
         operatorLeftBumper.onTrue(new OpenCmd(clawSys));
         operatorRightBumper.onTrue(new CloseCmd(clawSys));
@@ -325,14 +325,14 @@ public class RobotContainer {
         );
 
         hybridABtn.onTrue(new Row1Cmd(true, liftSys));
-        hybridBBtn.onTrue(new Row2Cmd(true, liftSys));
+        hybridBBtn.onTrue(new Row2Cmd(lightsSys, true, liftSys));
         hybridXBtn.onTrue(new DownCmd(true, liftSys));
-        hybridYBtn.onTrue(new Row3Cmd(true, liftSys));
+        hybridYBtn.onTrue(new Row3Cmd(lightsSys, true, liftSys));
 
-        hybridWindowBtn.onTrue(new SetElementStatusCmd(GameElement.kCube, liftSys, visionSys, lightsSys));
-        hybridMenuBtn.onTrue(new SetElementStatusCmd(GameElement.kCone, liftSys, visionSys, lightsSys));
+        hybridWindowBtn.onTrue(new SetElementStatusCmd(GameElement.kCube, liftSys, intakeSys, visionSys, lightsSys));
+        hybridMenuBtn.onTrue(new SetElementStatusCmd(GameElement.kCone, liftSys, intakeSys, visionSys, lightsSys));
 
-        hybridWindowBtn.and(operatorMenuBtn).onTrue(new SetElementStatusCmd(GameElement.kNone, liftSys, visionSys, lightsSys));
+        hybridWindowBtn.and(operatorMenuBtn).onTrue(new SetElementStatusCmd(GameElement.kNone, liftSys, intakeSys, visionSys, lightsSys));
         
         hybridLeftBumper.onTrue(new OpenCmd(clawSys));
         hybridRightBumper.onTrue(new CloseCmd(clawSys));

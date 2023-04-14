@@ -250,7 +250,7 @@ public class Constants {
     public static final class CompressorConstants {
 
         public static final double maxPressurePSI = 120.0; // 120 PSI is the legal maximum air tank pressure.
-        public static final double minPressurePSI = 115.0; // 100.0
+        public static final double minPressurePSI = 115.0;
     }
     
     public static final class LiftConstants {
@@ -275,8 +275,7 @@ public class Constants {
         public static final double placeConePower = 0.45;
         public static final double placeCubePower = 0.6;
         public static final double shelfPower = 0.65;
-        public static final double hoverPower = 0.3
-        ;
+        public static final double hoverPower = 0.3;
 
         public static final double downInches = 0.0;
         public static final double hoverInches = 12.0;
@@ -329,6 +328,7 @@ public class Constants {
         public static final double freeRPM = 5600 * rollerGearReduction;
 
         public static final double inInches = 2.0;
+        public static final double coneInches = 8.0;
         public static final double outInches = 15.0;
 
         public static final double intakeRollerStartInches = 8.0;
