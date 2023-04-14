@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.IntakeConstants;
@@ -19,22 +20,21 @@ public class IntakeSys extends SubsystemBase {
     // Declare actuators, sensors, and other variables here
 
     private final CANSparkMax actuationMtr;
-    private final CANSparkMax upperMtr;
-    @SuppressWarnings("unused")
-    private final CANSparkMax lowerMtr;
+    private final CANSparkMax rollerMtr;
 
     private final RelativeEncoder intakeEnc;
 
-    private final SparkMaxPIDController controller;
+    private final SparkMaxPIDController actuationController;
+    private final SparkMaxPIDController rollerController;
 
-    private double targetInches = 0;
+    private double targetInches = 0.0;
 
     private boolean actuationIsManual = false;
     private boolean rollersAreManual = false;
     private boolean rollersAreRelative = false;
 
     private DoubleSupplier robotSpeedMetersPerSecond;
-    private double relativeSpeed;
+    private double relativeSpeed = 0.0;
 
     /**
      * Intake needs to be offset since the encoder can't output negative values.
@@ -53,26 +53,30 @@ public class IntakeSys extends SubsystemBase {
         actuationMtr.setInverted(true);
         actuationMtr.setSmartCurrentLimit(IntakeConstants.actuationCurrentLimitAmps);
 
-        upperMtr = new CANSparkMax(CANDevices.upperMtrId, MotorType.kBrushless);
-        upperMtr.setInverted(true);
-        upperMtr.getEncoder().setVelocityConversionFactor(IntakeConstants.rollerGearReduction);
-        upperMtr.setIdleMode(IdleMode.kBrake);
-        upperMtr.setSmartCurrentLimit(IntakeConstants.rollerCurrentLimitAmps);
+        rollerMtr = new CANSparkMax(CANDevices.rollerMtrId, MotorType.kBrushless);
+        rollerMtr.setInverted(true);
+        rollerMtr.getEncoder().setVelocityConversionFactor(IntakeConstants.rollerGearReduction);
+        rollerMtr.setIdleMode(IdleMode.kBrake);
+        rollerMtr.setSmartCurrentLimit(IntakeConstants.rollerCurrentLimitAmps);
 
-        lowerMtr = null; // new CANSparkMax(CANDevices.lowerMtrId, MotorType.kBrushless);
-
-        intakeEnc = actuationMtr.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 8192);
+        intakeEnc = actuationMtr.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, IntakeConstants.actuationEncCountsPerRev);
         intakeEnc.setAverageDepth(64);
         intakeEnc.setPosition(offsetInches);
         intakeEnc.setInverted(false);
         intakeEnc.setPositionConversionFactor(IntakeConstants.encRevToInches);
 
         this.robotSpeedMetersPerSecond = robotSpeedMetersPerSecond;
-        relativeSpeed = IntakeConstants.rollerRelativeMetersPerSecond;
+        // relativeSpeed = IntakeConstants.rollerRelativeMetersPerSecond;
 
-        controller = actuationMtr.getPIDController();
-        controller.setP(IntakeConstants.kP);
-        controller.setD(IntakeConstants.kD);
+        actuationController = actuationMtr.getPIDController();
+        actuationController.setP(IntakeConstants.kP);
+        actuationController.setD(IntakeConstants.kD);
+
+        rollerController = rollerMtr.getPIDController();
+        rollerController.setFF(0.0002525);
+        rollerController.setP(0.00015);
+        rollerController.setI(0.000001);
+        rollerController.setIZone(30.0);
     }
 
     // This method will be called once per scheduler run
@@ -88,20 +92,22 @@ public class IntakeSys extends SubsystemBase {
         else if(targetInches < IntakeConstants.minInches) targetInches = 0.0;
 
         if(!actuationIsManual) {
-            controller.setReference(targetInches + offsetInches, ControlType.kPosition);
+            actuationController.setReference(targetInches + offsetInches, ControlType.kPosition);
         }
 
         if(!rollersAreManual) {
             if(!actuationIsManual && getCurrentPosition() > IntakeConstants.intakeRollerStartInches && targetInches == IntakeConstants.outInches) {
                 if(rollersAreRelative)
-                    setRPM((relativeSpeed - robotSpeedMetersPerSecond.getAsDouble()) * IntakeConstants.driveMetersPerSecondToRollerRPM);
+                    setRPM((relativeSpeed - (robotSpeedMetersPerSecond.getAsDouble() * IntakeConstants.rollerRelativeSpeedFactor)) * IntakeConstants.driveMetersPerSecondToRollerRPM);
                 else
                     setRPM(relativeSpeed * IntakeConstants.driveMetersPerSecondToRollerRPM);
             }
             else {
-                setRollerPower(0.0);
+                setRPM(0.0);
             }
         }
+        SmartDashboard.putNumber("roller power", rollerMtr.get());
+
     }
 
     // Put methods for controlling this subsystem here. Call these from Commands.
@@ -122,14 +128,10 @@ public class IntakeSys extends SubsystemBase {
         }
     }
 
-    public void setRollerPower(double power) {
-        upperMtr.set(power);
-    }
-
     public void manualRollerControl(double power) {
         if(power != 0.0) {
             rollersAreManual = true;
-            setRollerPower(power);
+            rollerMtr.set(power);
         }
         else {
             rollersAreManual = false;
@@ -137,12 +139,13 @@ public class IntakeSys extends SubsystemBase {
     }
 
     public void setRPM(double rpm) {
-        double power = rpm / IntakeConstants.freeRPM;
-        setRollerPower(power);
+        // double power = rpm / IntakeConstants.freeRPM;
+        // rollerMtr.set(power);
+        rollerController.setReference(rpm, ControlType.kVelocity);
     }
 
     public double getCurrentSpeedRPM() {
-        return upperMtr.getEncoder().getVelocity();
+        return rollerMtr.getEncoder().getVelocity();
     }
 
     public double getCurrentSpeedMetersPerSecond() {
@@ -160,7 +163,7 @@ public class IntakeSys extends SubsystemBase {
     }
 
     public void disableRelativeSpeed() {
-        rollersAreRelative = false;
+        relativeSpeed = 0.0;
     }
 
     public void setTarget(double inches) {

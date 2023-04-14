@@ -11,7 +11,7 @@ import frc.robot.commands.claw.CloseCmd;
 import frc.robot.commands.drivetrain.SetPoseCmd;
 import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
-import frc.robot.commands.intake.SetAbsoluteSpeedCmd;
+import frc.robot.commands.intake.SetRelativeSpeedCmd;
 import frc.robot.commands.intake.StopRollersCmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.IntakeSys;
@@ -31,7 +31,7 @@ public class LeftConeGrabCube extends SequentialCommandGroup {
             new FollowTrajectoryCmd("LeftStartToCube1", swerveSys)
                 .alongWith(
                     new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
-                    .andThen(new OutCmd(intakeSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys, lightsSys)))
+                    .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
                     .andThen(new WaitCmd(1.0))
                     .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
                 ),

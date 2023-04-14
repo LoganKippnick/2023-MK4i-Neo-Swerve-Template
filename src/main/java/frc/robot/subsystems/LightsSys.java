@@ -21,7 +21,7 @@ public class LightsSys extends SubsystemBase {
     private final LEDStrip innerRightStrip;
     private final LEDStrip innerLeftStrip;
 
-    private final int hopperStripsOffset = 5;
+    private final int hopperStripsOffset = 14;
 
     private GameElement status = GameElement.kNone;
 

@@ -12,7 +12,7 @@ import frc.robot.commands.automation.AutoRow3PoleCmd;
 import frc.robot.commands.drivetrain.SetPoseCmd;
 import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
-import frc.robot.commands.intake.SetAbsoluteSpeedCmd;
+import frc.robot.commands.intake.SetRelativeSpeedCmd;
 import frc.robot.commands.intake.StopRollersCmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.IntakeSys;
@@ -29,7 +29,7 @@ public class LeftConeGrabCubeDock extends SequentialCommandGroup {
             new AutoRow3PoleCmd(liftSys, clawSys),
             new FollowTrajectoryCmd("LeftStartToGrabCube1Dock", swerveSys).alongWith(
                 new WaitUntilCmd(() -> swerveSys.getPose().getX() > 5.75)
-                .andThen(new OutCmd(intakeSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys, lightsSys)))
+                .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
                 .andThen(new WaitCmd(1.5))
                 .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
             ),

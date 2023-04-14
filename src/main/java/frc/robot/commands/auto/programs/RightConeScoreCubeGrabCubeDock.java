@@ -15,7 +15,7 @@ import frc.robot.commands.claw.OpenCmd;
 import frc.robot.commands.drivetrain.SetPoseCmd;
 import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
-import frc.robot.commands.intake.SetAbsoluteSpeedCmd;
+import frc.robot.commands.intake.SetRelativeSpeedCmd;
 import frc.robot.commands.intake.StopRollersCmd;
 import frc.robot.commands.lift.Row3Cmd;
 import frc.robot.subsystems.ClawSys;
@@ -35,7 +35,7 @@ public class RightConeScoreCubeGrabCubeDock extends SequentialCommandGroup {
             new AutoRow3PoleCmd(liftSys, clawSys),
             new FollowTrajectoryCmd("RightStartToScoreCube1", swerveSys).alongWith(
                 new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
-                .andThen(new OutCmd(intakeSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys, lightsSys)))
+                .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 6.75))
                 .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 2.23))
@@ -47,7 +47,7 @@ public class RightConeScoreCubeGrabCubeDock extends SequentialCommandGroup {
             new OpenCmd(clawSys),
             new FollowTrajectoryCmd("RightScoreCubeToGrabCube2Dock", swerveSys).alongWith(
                 new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
-                .andThen(new OutCmd(intakeSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys, lightsSys)))
+                .andThen(new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 6.75))
                 .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 2.23))

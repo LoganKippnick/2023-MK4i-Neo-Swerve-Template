@@ -27,6 +27,7 @@ public class WaitCmd extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        timer.reset();
         timer.start();
     }
 

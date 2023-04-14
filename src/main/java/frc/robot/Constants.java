@@ -49,8 +49,7 @@ public class Constants {
         public static final int slaveMtrId = 16;
 
         public static final int actuationMtrId = 17;
-        public static final int upperMtrId = 18;
-        public static final int lowerMtrId = 19; 
+        public static final int rollerMtrId = 18;
     }
 
     public static enum ControllerType {
@@ -166,10 +165,10 @@ public class Constants {
     public static final class AutoConstants {
 
         public static final double maxVelMetersPerSec = 3.25;
-        public static final double maxAccelMetersPerSecondSq = 1.5;
+        public static final double maxAccelMetersPerSecondSq = 1.75; //1.5
 
         public static final double drivekP = 12.8; //12.8
-        public static final double drivekD = 0.065; //0.055
+        public static final double drivekD = 0.085; //0.065
 
         public static final double rotkP = 1.27; //1.25
         public static final double rotkD = 0.5;
@@ -257,7 +256,7 @@ public class Constants {
 
         public static final double gearReduction = 1.0 / 5.0;
 
-        public static final double maxHeightInches = 76.5;
+        public static final double maxHeightInches = 77.0;
         public static final double maxUnarticulatedHeightInches = 55.5;
 
         public static final double inchesPerEncRev = 11 * gearReduction;
@@ -286,7 +285,7 @@ public class Constants {
         public static final double row2ShelfInches = 49.0;
         public static final double row2PoleInches = 55.0;
         public static final double row3ShelfInches = 71.0;
-        public static final double row3PoleInches = 76.5;
+        public static final double row3PoleInches = maxHeightInches;
 
         public static final double manualControlPaddingInches = 2.0;
 
@@ -312,12 +311,13 @@ public class Constants {
         public static final double beltDiameterInches = pulleyDiameterInches + ((1.0 / 16.0) * 2.0);
         public static final double beltCircumferenceInches = beltDiameterInches * Math.PI;
 
+        public static final int actuationEncCountsPerRev = 8192;
         public static final double encRevToInches = beltCircumferenceInches;
 
         public static final double absEncOffset = 0.0;
 
         public static final int actuationCurrentLimitAmps = 20;
-        public static final int rollerCurrentLimitAmps = 50;
+        public static final int rollerCurrentLimitAmps = 60;
 
         public static final double kP = 3.0;
         public static final double kD = 0.0;
@@ -331,7 +331,7 @@ public class Constants {
         public static final double inInches = 2.0;
         public static final double outInches = 15.0;
 
-        public static final double intakeRollerStartInches = 8.0;
+        public static final double intakeRollerStartInches = 0.0;//8.0;
 
         public static final double minInches = 0.0;
         public static final double maxInches = 17.0;
@@ -346,7 +346,12 @@ public class Constants {
         public static final double driveMetersPerSecondToRollerRPM = (39.37 * 60.0) / rollerWheelCircumferenceInches;
 
         public static final double rollerManualControlFactor = 0.8;
-        public static final double rollerRelativeMetersPerSecond = 6.5;
+
+        public static final double rollerRelativeMetersPerSecond = 4.875;
+        public static final double rollerRelativeSpeedFactor = 0.25;
+
         public static final double rollerAbsoluteMetersPerSecond = 4.875;
+
+        public static final double rollerConeRPM = 3000;
     }
 }

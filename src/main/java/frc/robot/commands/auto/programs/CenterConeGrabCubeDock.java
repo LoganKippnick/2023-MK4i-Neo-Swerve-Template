@@ -14,7 +14,7 @@ import frc.robot.commands.drivetrain.SetPoseCmd;
 import frc.robot.commands.drivetrain.SetTranslationCmd;
 import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
-import frc.robot.commands.intake.SetAbsoluteSpeedCmd;
+import frc.robot.commands.intake.SetRelativeSpeedCmd;
 import frc.robot.commands.intake.StopRollersCmd;
 import frc.robot.subsystems.ClawSys;
 import frc.robot.subsystems.IntakeSys;
@@ -33,7 +33,7 @@ public class CenterConeGrabCubeDock extends SequentialCommandGroup {
             new DriveOverChargeStationCmd(DockDirection.kFromCommunity, swerveSys),
             new SetTranslationCmd(new Translation2d(5.50, 2.74), swerveSys),
             new FollowTrajectoryCmd("CenterGrabCubeToDock", 3.375, 2.5, swerveSys).alongWith(
-                new OutCmd(intakeSys).alongWith(new SetAbsoluteSpeedCmd(intakeSys, lightsSys))
+                new OutCmd(intakeSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys))
                 .andThen(new WaitCmd(1.5))
                 .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
             ),

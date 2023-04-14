@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -42,7 +43,7 @@ import frc.robot.commands.drivetrain.SetHeadingCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
 import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
-import frc.robot.commands.intake.SetAbsoluteSpeedCmd;
+import frc.robot.commands.intake.SetRelativeSpeedCmd;
 import frc.robot.commands.intake.StopRollersCmd;
 import frc.robot.commands.intake.IntakeManualControlCmd;
 import frc.robot.commands.lift.DownCmd;
@@ -242,7 +243,7 @@ public class RobotContainer {
 
             driverRightTriggerBtn
                 .onTrue(new OutCmd(intakeSys))
-                .whileTrue(new SetAbsoluteSpeedCmd(intakeSys, lightsSys))
+                .whileTrue(new RepeatCommand(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
                 .onFalse(new InCmd(intakeSys))
                 .onFalse(new StopRollersCmd(intakeSys, lightsSys));
             driverLeftTriggerBtn.whileTrue(new LockCmd(swerveSys));
@@ -266,7 +267,7 @@ public class RobotContainer {
 
             driverRightJoystickTriggerBtn
                 .onTrue(new OutCmd(intakeSys))
-                .whileTrue(new SetAbsoluteSpeedCmd(intakeSys, lightsSys))
+                .whileTrue(new SetRelativeSpeedCmd(intakeSys, lightsSys))
                 .onFalse(new InCmd(intakeSys))
                 .onFalse(new StopRollersCmd(intakeSys, lightsSys));
 
@@ -398,7 +399,7 @@ public class RobotContainer {
 
         // INTAKE
         SmartDashboard.putNumber("intake inches", intakeSys.getCurrentPosition());
-        SmartDashboard.putNumber("roller rpm", intakeSys.getCurrentSpeedMetersPerSecond());
+        SmartDashboard.putNumber("roller rpm", intakeSys.getCurrentSpeedRPM());
 
         // LIFT
         SmartDashboard.putNumber("lift inches", liftSys.getCurrentPosition());
