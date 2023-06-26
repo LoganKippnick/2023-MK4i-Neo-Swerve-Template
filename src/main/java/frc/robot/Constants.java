@@ -9,18 +9,6 @@ import edu.wpi.first.math.util.Units;
 
 public class Constants {
 
-    public enum GameElement {
-        kCone("cone"),
-        kCube("cube"),
-        kNone("none");
-
-        public final String name;
-
-        GameElement(String name) {
-            this.name = name;
-        }
-    }
-
     public static final class CANDevices {
 
         public static final int powerDistributionHubId = 0;
@@ -42,47 +30,15 @@ public class Constants {
         public static final int rearRightDriveMtrId = 8;
 
         public static final int imuId = 13;
-
-        public static final int pneumaticHubId = 14;
-
-        public static final int masterMtrId = 15;
-        public static final int slaveMtrId = 16;
-
-        public static final int actuationMtrId = 17;
-        public static final int rollerMtrId = 18;
-    }
-
-    public static enum ControllerType {
-        kJoystick,
-        kGamepad
     }
 
     public static final class ControllerConstants {
 
         public static final int driverGamepadPort = 0;
 
-        public static final int driverLeftJoystickPort = 0;
-        public static final int driverRightJoystickPort = 1;
-
-        public static final int operatorGamepadPort = 2;
-
-        public static final int hybridControllerPort = 3;
-
-        public static final double joystickDeadband = 0.075;
-        public static final double gamepadDeadband = 0.15;
-        public static final double triggerPressedDeadband = 0.25;
+        public static final double joystickDeadband = 0.15;
     }
-
-    public static final class PneumaticChannels {
-
-        public  static final int PCMId = 16;
-
-        public static final int[] clawSolChs = {0, 14};
-        
-        public static final int[] liftSolChs = {15, 1};
-
-    }
-
+    
     public static final class DriveConstants {
 
         /**
@@ -110,6 +66,7 @@ public class Constants {
          * The gear reduction from the drive motor to the wheel.
          */
         public static final double driveMtrGearReduction = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
+
         /**
          * The gear reduction from the steer motor to the wheel.
          */
@@ -128,22 +85,24 @@ public class Constants {
         public static final double steerMtrMaxSpeedRadPerSec = 2.0;
         public static final double steerMtrMaxAccelRadPerSecSq = 1.0;
 
-        public static final double maxDriveSpeedMetersPerSec = 5; //5
+        public static final double maxDriveSpeedMetersPerSec = 5.0;
 
-        public static final double maxTurnRateRadiansPerSec = 2 * Math.PI; //Rate the robot will spin with full Rot command
+        /**
+         * The rate the robot will spin with full Rot command.
+         */
+        public static final double maxTurnRateRadiansPerSec = 2 * Math.PI;
 
-        public static final double frontLeftModOffset = Units.degreesToRadians(104.766); //Units.degreesToRadians(104.50);
-        public static final double frontRightModOffset = Units.degreesToRadians(227.900); //Units.degreesToRadians(48.42 + 180);
-        public static final double rearLeftModOffset = Units.degreesToRadians(357.539); //Units.degreesToRadians(176.40 + 180);
-        public static final double rearRightModOffset = Units.degreesToRadians(315.527); //Units.degreesToRadians(135.97 + 180);
+        public static final double frontLeftModOffset = Units.degreesToRadians(104.766); 
+        public static final double frontRightModOffset = Units.degreesToRadians(227.900);
+        public static final double rearLeftModOffset = Units.degreesToRadians(357.539);
+        public static final double rearRightModOffset = Units.degreesToRadians(315.527); 
 
         public static final int driveCurrentLimitAmps = 40;
-        public static final int dockCurrentLimitAmps = 50;
-
+        
         public static final double drivekP = 0.005;
 
-        public static final double steerkP = 1.2477 * 0.3;
-        public static final double steerkD = 0.9062 * 0.3;
+        public static final double steerkP = 0.37431;
+        public static final double steerkD = 0.27186;
 
         public static final double ksVolts = 0.667;
         public static final double kvVoltSecsPerMeter = 2.44;
@@ -152,25 +111,19 @@ public class Constants {
         public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(ksVolts, kvVoltSecsPerMeter, kaVoltSecsPerMeterSq);
     }
 
-    public static enum DockDirection {
-        kFromCommunity,
-        kFromCenter
-    }
-
-    public static enum DockHeading {
-        kLeft,
-        kRight
-    }
-
     public static final class AutoConstants {
 
         public static final double maxVelMetersPerSec = 3.25;
+<<<<<<< HEAD
         public static final double maxAccelMetersPerSecondSq = 1.625; //1.5
+=======
+        public static final double maxAccelMetersPerSecondSq = 1.625;
+>>>>>>> 6ddad2a720cbb3d96bb1f609ba37c239b20e0fa7
 
-        public static final double drivekP = 12.8; //12.8
-        public static final double drivekD = 0.085; //0.065
+        public static final double drivekP = 12.8;
+        public static final double drivekD = 0.085;
 
-        public static final double rotkP = 1.27; //1.25
+        public static final double rotkP = 1.27;
         public static final double rotkD = 0.5;
 
         public final static TrajectoryConfig config = 
@@ -200,6 +153,7 @@ public class Constants {
             
             return rotController;
         }
+<<<<<<< HEAD
 
         public static final double driveOntoChargeStationVelMetersPerSecond = 0.75;
         public static final double driveOverChargeStationVelMetersPerSecond = 0.35;
@@ -210,6 +164,8 @@ public class Constants {
         public static final double chargeStationBalancedToleranceDeg = 11.5;
 
         public static final double dockVelMetersPerSecond = 0.06;
+=======
+>>>>>>> 6ddad2a720cbb3d96bb1f609ba37c239b20e0fa7
     }
 
     public static final class VisionConstants {
@@ -247,6 +203,7 @@ public class Constants {
             return rotController;
         }
     }
+<<<<<<< HEAD
 
     public static final class CompressorConstants {
 
@@ -356,4 +313,6 @@ public class Constants {
 
         public static final double rollerAbsoluteMetersPerSecond = 4.875;
     }
+=======
+>>>>>>> 6ddad2a720cbb3d96bb1f609ba37c239b20e0fa7
 }

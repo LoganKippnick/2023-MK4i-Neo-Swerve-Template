@@ -1,46 +1,16 @@
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.ControllerType;
-import frc.robot.Constants.GameElement;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.commands.auto.programs.CenterConeDock;
-import frc.robot.commands.auto.programs.CenterConeGrabCubeDock;
-import frc.robot.commands.auto.programs.CenterConeMobilityDock;
-import frc.robot.commands.auto.programs.CenterCubeDock;
-import frc.robot.commands.auto.programs.CenterCubeMobilityDock;
-import frc.robot.commands.auto.programs.Cone;
-import frc.robot.commands.auto.programs.Cube;
-import frc.robot.commands.auto.programs.LeftConeGrabCubeDock;
-import frc.robot.commands.auto.programs.LeftConeScoreCube;
-import frc.robot.commands.auto.programs.LeftConeScoreCubeGrabCube;
-import frc.robot.commands.auto.programs.RightConeGrabCubeDock;
-import frc.robot.commands.auto.programs.RightConeScoreCube;
-import frc.robot.commands.auto.programs.RightConeScoreCubeGrabCube;
-import frc.robot.commands.automation.AutoAlignCmd;
-import frc.robot.commands.automation.HybridYeetCmd;
-import frc.robot.commands.automation.SetElementStatusCmd;
-import frc.robot.commands.automation.YEETCmd;
-import frc.robot.commands.claw.CloseCmd;
-import frc.robot.commands.claw.OpenCmd;
 import frc.robot.commands.drivetrain.LockCmd;
 import frc.robot.commands.drivetrain.ResetHeadingCmd;
-import frc.robot.commands.drivetrain.SetHeadingCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
+<<<<<<< HEAD
 import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.IntakeConeCmd;
 import frc.robot.commands.intake.OutCmd;
@@ -62,31 +32,20 @@ import frc.robot.subsystems.CompressorSys;
 import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.LightsSys;
+=======
+>>>>>>> 6ddad2a720cbb3d96bb1f609ba37c239b20e0fa7
 import frc.robot.subsystems.SwerveSys;
-import frc.robot.subsystems.VisionSys;
 
 public class RobotContainer {
     
     // Initialize subsystems.
     private final SwerveSys swerveSys = new SwerveSys();
-    private final LiftSys liftSys = new LiftSys();
-    private final ClawSys clawSys = new ClawSys();
-    private final IntakeSys intakeSys = new IntakeSys(() -> swerveSys.getForwardVelocityMetersPerSecond());
-    private final VisionSys visionSys = new VisionSys();  
-    private final CompressorSys compressorSys = new CompressorSys();  
-    private final LightsSys lightsSys = new LightsSys();
 
     // Initialize joysticks.
     private final XboxController driverController = new XboxController(ControllerConstants.driverGamepadPort);
 
-    private final Joystick driverLeftJoystick = new Joystick(ControllerConstants.driverLeftJoystickPort);
-    private final Joystick driverRightJoystick = new Joystick(ControllerConstants.driverRightJoystickPort);
-
-    private final XboxController operatorController = new XboxController(ControllerConstants.operatorGamepadPort);
-
-    private final XboxController hybridController = new XboxController(ControllerConstants.hybridControllerPort);
-
     // Initialize controller buttons.
+<<<<<<< HEAD
     private final JoystickButton driverRightJoystickTriggerBtn = new JoystickButton(driverRightJoystick, 1);
     private final JoystickButton driverRightJoystickThumbBtn = new JoystickButton(driverRightJoystick, 2);
 
@@ -142,48 +101,22 @@ public class RobotContainer {
     private Rumble countdown5Rumble;
     private Rumble targetAlignedRumble;
 
+=======
+    private final JoystickButton driverRightBumper = new JoystickButton(driverController, 6);
+    private final JoystickButton driverMenuBtn = new JoystickButton(driverController, 8);
+    
+>>>>>>> 6ddad2a720cbb3d96bb1f609ba37c239b20e0fa7
     // Initialize auto selector.
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
     public RobotContainer() {
         SmartDashboard.putData("auto selector", autoSelector);
 
-        RestartLimelightCmd restartLimelight = new RestartLimelightCmd(visionSys);
-        restartLimelight.setName("RESTART LIMELIGHT");
-        SmartDashboard.putData(restartLimelight);
-
-        ParallelRaceGroup runCompressor = new RunCommand(() -> compressorSys.run(), compressorSys).until(() -> !compressorSys.isRunning() || !compressorSys.isEnabled());
-        runCompressor.setName("run compressor");
-        SmartDashboard.putData(runCompressor);
-
-        ParallelRaceGroup disableCompressor = new RunCommand(() -> compressorSys.disable(), compressorSys).until(() -> !compressorSys.isEnabled());
-        disableCompressor.setName("DISABLE COMPRESSOR");
-        SmartDashboard.putData(disableCompressor);
-
-        RobotController.setBrownoutVoltage(7.5);
-
-        autoSelector.addOption("Cone", new Cone(swerveSys, liftSys, clawSys, intakeSys));
-        autoSelector.addOption("Cube", new Cube(swerveSys, liftSys, clawSys, intakeSys));
-        autoSelector.addOption("CenterConeDock", new CenterConeDock(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        autoSelector.addOption("CenterCubeDock", new CenterCubeDock(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        autoSelector.addOption("CenterConeMobilityDock", new CenterConeMobilityDock(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        autoSelector.addOption("CenterCubeMobilityDock", new CenterCubeMobilityDock(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        autoSelector.addOption("CenterConeGrabCubeDock", new CenterConeGrabCubeDock(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        // autoSelector.addOption("LeftConeGrabCube", new LeftConeGrabCube(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        autoSelector.addOption("LeftConeGrabCubeDock", new LeftConeGrabCubeDock(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        autoSelector.addOption("LeftConeScoreCube", new LeftConeScoreCube(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        // autoSelector.addOption("LeftConeScoreCubeDock", new LeftConeScoreCubeDock(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        autoSelector.addOption("LeftConeScoreCubeGrabCube", new LeftConeScoreCubeGrabCube(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        // autoSelector.addOption("LeftConeScoreCubeScoreCubeMid", new LeftConeScoreCubeScoreCubeMid(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        // autoSelector.addOption("RightConeGrabCube", new RightConeGrabCube(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        autoSelector.addOption("RightConeGrabCubeDock", new RightConeGrabCubeDock(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        autoSelector.addOption("RightConeScoreCube", new RightConeScoreCube(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        // autoSelector.addOption("RightConeScoreCubeDock", new RightConeScoreCubeDock(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        autoSelector.addOption("RightConeScoreCubeGrabCube", new RightConeScoreCubeGrabCube(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        // autoSelector.addOption("RightConeScoreCubeScoreCubeMid", new RightConeScoreCubeScoreCubeMid(swerveSys, liftSys, clawSys, intakeSys, lightsSys));
-        autoSelector.setDefaultOption("DoNothing", new SetHeadingCmd(new Rotation2d(Math.PI), swerveSys));
+        configDriverBindings();
+        configOperatorBindings();
     }
 
+<<<<<<< HEAD
     public void configBindings() {
         lightsSys.cancelAnimations();
 
@@ -335,24 +268,25 @@ public class RobotContainer {
     }
 
     public void configHybridBindings() {
+=======
+    public void configDriverBindings() {
+>>>>>>> 6ddad2a720cbb3d96bb1f609ba37c239b20e0fa7
         swerveSys.setDefaultCommand(
             new SwerveDriveCmd(
-                () -> deadband(hybridController.getLeftY(), ControllerType.kGamepad),
-                () -> deadband(hybridController.getLeftX(), ControllerType.kGamepad),
-                () -> deadband(hybridController.getRightX(), ControllerType.kGamepad),
+                () -> deadband(driverController.getLeftY()),
+                () -> deadband(driverController.getLeftX()),
+                () -> deadband(driverController.getRightX()),
                 true,
                 swerveSys
             )
         );
 
-        hybridABtn.onTrue(new Row1Cmd(true, liftSys));
-        hybridBBtn.onTrue(new Row2Cmd(lightsSys, true, liftSys));
-        hybridXBtn.onTrue(new DownCmd(true, liftSys));
-        hybridYBtn.onTrue(new Row3Cmd(lightsSys, true, liftSys));
+        driverRightBumper.whileTrue(new LockCmd(swerveSys));
 
-        hybridWindowBtn.onTrue(new SetElementStatusCmd(GameElement.kCube, liftSys, intakeSys, visionSys, lightsSys));
-        hybridMenuBtn.onTrue(new SetElementStatusCmd(GameElement.kCone, liftSys, intakeSys, visionSys, lightsSys));
+        driverMenuBtn.onTrue(new ResetHeadingCmd(swerveSys));
+    }
 
+<<<<<<< HEAD
         hybridWindowBtn.and(hybridMenuBtn).onTrue(new SetElementStatusCmd(GameElement.kNone, liftSys, intakeSys, visionSys, lightsSys));
         
         hybridLeftBumper.onTrue(new OpenCmd(clawSys));
@@ -377,6 +311,10 @@ public class RobotContainer {
         countdown10Rumble.addControllers(hybridController);
         countdown5Rumble.addControllers(hybridController);
         targetAlignedRumble.addControllers(hybridController);
+=======
+    public void configOperatorBindings() {
+        
+>>>>>>> 6ddad2a720cbb3d96bb1f609ba37c239b20e0fa7
     }
 
     public Command getAutonomousCommand() {
@@ -389,17 +327,12 @@ public class RobotContainer {
      * Otherwise, the value will not change.
      * 
      * @param input The controller value to deadband.
-     * @param controllerType The type of controller, since joysticks, gamepad sticks, and gamepad triggers can
      * have different deadbands.
      * @return The deadbanded controller value.
      */
-    public double deadband(double value, ControllerType controllerType) {
+    public double deadband(double value) {
 
-        if (Math.abs(value) < (controllerType.equals(ControllerType.kGamepad) ?
-                ControllerConstants.gamepadDeadband :
-                ControllerConstants.joystickDeadband
-            )
-        )
+        if (Math.abs(value) < ControllerConstants.joystickDeadband)
             return 0.0;
         
         return value;
@@ -418,28 +351,6 @@ public class RobotContainer {
         SmartDashboard.putNumber("heading", headingDisplay);
 
         SmartDashboard.putNumber("speed m/s", swerveSys.getAverageDriveVelocityMetersPerSecond());
-        // SmartDashboard.putNumber("speed mph", swerveSys.getAverageDriveVelocityMetersPerSecond() * 2.23694);
-
-        // COMPRESSOR
-        SmartDashboard.putNumber("pressure PSI", compressorSys.getPressurePSI());
-
-        SmartDashboard.putString("compressor status", (compressorSys.isEnabled() ? (compressorSys.isRunning() ? "PRESSURIZING" : "OFF") : "DISABLED"));
-        SmartDashboard.putNumber("compressor elapsed", compressorSys.getRunTimeSeconds());
-        SmartDashboard.putNumber("compressor turn on", compressorSys.getTurnOnCount());
-
-        // INTAKE
-        SmartDashboard.putNumber("intake inches", intakeSys.getCurrentPosition());
-        SmartDashboard.putNumber("roller rpm", intakeSys.getCurrentSpeedRPM());
-
-        // LIFT
-        SmartDashboard.putNumber("lift inches", liftSys.getCurrentPosition());
-        SmartDashboard.putString("lift articulation", (liftSys.isArticulationOverride() ? (liftSys.isArticulatedDown() ? "DOWN" : "UP") : "UP - OVERRIDE"));
-        SmartDashboard.putNumber("lift target", liftSys.getTargetInches());
-
-        // CLAW
-        SmartDashboard.putString("claw status", (clawSys.isOpen() ? "OPEN" : "CLOSED"));
-
-        // LIGHTS
-        SmartDashboard.putString("lights status", lightsSys.getStatus().name);
+        SmartDashboard.putNumber("speed mph", swerveSys.getAverageDriveVelocityMetersPerSecond() * 2.23694);
     }
 }
