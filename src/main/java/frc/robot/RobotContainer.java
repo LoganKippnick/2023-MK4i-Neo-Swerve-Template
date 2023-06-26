@@ -10,7 +10,6 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.drivetrain.LockCmd;
 import frc.robot.commands.drivetrain.ResetHeadingCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
-<<<<<<< HEAD
 import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.IntakeConeCmd;
 import frc.robot.commands.intake.OutCmd;
@@ -32,8 +31,6 @@ import frc.robot.subsystems.CompressorSys;
 import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LiftSys;
 import frc.robot.subsystems.LightsSys;
-=======
->>>>>>> 6ddad2a720cbb3d96bb1f609ba37c239b20e0fa7
 import frc.robot.subsystems.SwerveSys;
 
 public class RobotContainer {
@@ -45,7 +42,6 @@ public class RobotContainer {
     private final XboxController driverController = new XboxController(ControllerConstants.driverGamepadPort);
 
     // Initialize controller buttons.
-<<<<<<< HEAD
     private final JoystickButton driverRightJoystickTriggerBtn = new JoystickButton(driverRightJoystick, 1);
     private final JoystickButton driverRightJoystickThumbBtn = new JoystickButton(driverRightJoystick, 2);
 
@@ -101,11 +97,6 @@ public class RobotContainer {
     private Rumble countdown5Rumble;
     private Rumble targetAlignedRumble;
 
-=======
-    private final JoystickButton driverRightBumper = new JoystickButton(driverController, 6);
-    private final JoystickButton driverMenuBtn = new JoystickButton(driverController, 8);
-    
->>>>>>> 6ddad2a720cbb3d96bb1f609ba37c239b20e0fa7
     // Initialize auto selector.
     SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
@@ -116,7 +107,6 @@ public class RobotContainer {
         configOperatorBindings();
     }
 
-<<<<<<< HEAD
     public void configBindings() {
         lightsSys.cancelAnimations();
 
@@ -268,9 +258,6 @@ public class RobotContainer {
     }
 
     public void configHybridBindings() {
-=======
-    public void configDriverBindings() {
->>>>>>> 6ddad2a720cbb3d96bb1f609ba37c239b20e0fa7
         swerveSys.setDefaultCommand(
             new SwerveDriveCmd(
                 () -> deadband(driverController.getLeftY()),
@@ -286,7 +273,6 @@ public class RobotContainer {
         driverMenuBtn.onTrue(new ResetHeadingCmd(swerveSys));
     }
 
-<<<<<<< HEAD
         hybridWindowBtn.and(hybridMenuBtn).onTrue(new SetElementStatusCmd(GameElement.kNone, liftSys, intakeSys, visionSys, lightsSys));
         
         hybridLeftBumper.onTrue(new OpenCmd(clawSys));
@@ -311,10 +297,6 @@ public class RobotContainer {
         countdown10Rumble.addControllers(hybridController);
         countdown5Rumble.addControllers(hybridController);
         targetAlignedRumble.addControllers(hybridController);
-=======
-    public void configOperatorBindings() {
-        
->>>>>>> 6ddad2a720cbb3d96bb1f609ba37c239b20e0fa7
     }
 
     public Command getAutonomousCommand() {

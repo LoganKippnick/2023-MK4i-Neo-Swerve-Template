@@ -247,17 +247,17 @@ public class Constants {
 
         public static final double manualControlPaddingInches = 2.0;
 
-        public static final double targetToleranceInches = 0.75;
+        public static final double targetToleranceInches = 0.5;
 
         public static final double downActuationHeightInches = 18.0;
         public static final double upActuationHeightInches = 24.0;
 
         public static final double hybridYeetPower = 0.8;
-        public static final double hybridYeetReleaseInches = 30.0;
-        public static final double hybridYeetHeightInches = 42.0;
+        public static final double hybridYeetReleaseInches = 4.0;
+        public static final double hybridYeetHeightInches = 24.0;
 
         public static final double YEETPower = 1.0;
-        public static final double YEETReleaseInches = 30.0;
+        public static final double YEETReleaseInches = 26.0;
         public static final double YEETHeightInches = 76.5;
     }
 
@@ -287,7 +287,7 @@ public class Constants {
         public static final double freeRPM = 5600 * rollerGearReduction;
 
         public static final double inInches = 2.0;
-        public static final double coneInches = 15.0;
+        public static final double coneInches = 8.0;
         public static final double outInches = 15.0;
 
         public static final double intakeRollerStartInches = 0.0;//8.0;
@@ -309,9 +309,9 @@ public class Constants {
         public static final double rollerRelativeMetersPerSecond = 4.875;
         public static final double rollerRelativeSpeedFactor = 0.25;
 
-        public static final double rollerConeMetersPerSecond = 15.0;
-
         public static final double rollerAbsoluteMetersPerSecond = 4.875;
+
+        public static final double rollerConeRPM = 3000;
     }
 =======
 >>>>>>> 6ddad2a720cbb3d96bb1f609ba37c239b20e0fa7

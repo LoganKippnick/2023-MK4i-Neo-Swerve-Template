@@ -33,9 +33,18 @@ public class IntakeConeCmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+<<<<<<< HEAD:src/main/java/frc/robot/commands/intake/IntakeConeCmd.java
         
         intakeSys.setAbsoluteSpeed(IntakeConstants.rollerConeMetersPerSecond);
 
+=======
+        if(lightsSys.getStatus().equals(GameElement.kCone)) {
+            intakeSys.setAbsoluteSpeed(IntakeConstants.rollerConeRPM);
+        }
+        else {
+            intakeSys.setAbsoluteSpeed(IntakeConstants.rollerRelativeMetersPerSecond);
+        }
+>>>>>>> parent of 48d4a61 (game element mode bug fixes and improvements):src/main/java/frc/robot/commands/intake/SetAbsoluteSpeedCmd.java
         lightsSys.setIntaking(true);
     }
     
