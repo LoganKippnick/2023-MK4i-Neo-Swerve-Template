@@ -22,7 +22,7 @@ public class CenterConeDock extends SequentialCommandGroup {
             new SetPoseCmd(new Pose2d(1.83, 2.74, new Rotation2d(Math.PI)), swerveSys),
             new InCmd(intakeSys),
             new AutoRow3PoleCmd(liftSys, clawSys),
-            new FollowTrajectoryCmd("CenterStartToDock", 0.25, 0.25, swerveSys),
+            new FollowTrajectoryCmd("CenterStartToDock", 0.2, 0.25, swerveSys),
             new DockCmd(DockDirection.kFromCommunity, swerveSys, lightsSys)
         );
     }

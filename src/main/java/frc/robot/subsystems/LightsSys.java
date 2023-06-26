@@ -310,7 +310,7 @@ public class LightsSys extends SubsystemBase {
             outerRightStrip.translateBrightnesses(intakeMarqueeBrightness, AnimationDirection.kForward);
 
             innerRightStrip.translateBrightnesses(outerRightStrip.getBrightnessState(5), AnimationDirection.kReverse);
-            innerLeftStrip.translateBrightnesses(innerLeftStrip.getBrightnessState(innerLeftStrip.getLength() - 4), AnimationDirection.kForward);
+            innerLeftStrip.translateBrightnesses(outerLeftStrip.getBrightnessState(outerLeftStrip.getLength() - 4), AnimationDirection.kForward);
         }
         else if(!isBlinking) {
             outerLeftStrip.setBrightness(1.0);

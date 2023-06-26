@@ -9,7 +9,6 @@ import frc.robot.commands.auto.DockCmd;
 import frc.robot.commands.auto.DriveOverChargeStationCmd;
 import frc.robot.commands.auto.FollowTrajectoryCmd;
 import frc.robot.commands.automation.AutoRow3PoleCmd;
-import frc.robot.commands.claw.CloseCmd;
 import frc.robot.commands.drivetrain.SetPoseCmd;
 import frc.robot.commands.intake.InCmd;
 import frc.robot.subsystems.ClawSys;
@@ -23,13 +22,11 @@ public class CenterConeMobilityDock extends SequentialCommandGroup {
     public CenterConeMobilityDock(SwerveSys swerveSys, LiftSys liftSys, ClawSys clawSys, IntakeSys intakeSys, LightsSys lightsSys) {
         super(
             new SetPoseCmd(new Pose2d(1.83, 2.74, new Rotation2d(Math.PI)), swerveSys),
-            new CloseCmd(clawSys),
             new InCmd(intakeSys),
-            new WaitCmd(0.5),
             new AutoRow3PoleCmd(liftSys, clawSys),
             new FollowTrajectoryCmd("CenterStartToDock", 0.25, 0.25, swerveSys),
             new DriveOverChargeStationCmd(DockDirection.kFromCommunity, swerveSys),
-            new WaitCmd(0.5),
+            new WaitCmd(0.25),
             new DockCmd(DockDirection.kFromCenter, swerveSys, lightsSys)
         );
     }

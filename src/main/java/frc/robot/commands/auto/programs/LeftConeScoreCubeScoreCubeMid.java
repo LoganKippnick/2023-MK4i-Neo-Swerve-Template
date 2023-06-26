@@ -13,7 +13,7 @@ import frc.robot.commands.claw.OpenCmd;
 import frc.robot.commands.drivetrain.SetPoseCmd;
 import frc.robot.commands.intake.InCmd;
 import frc.robot.commands.intake.OutCmd;
-import frc.robot.commands.intake.SetRelativeSpeedCmd;
+import frc.robot.commands.intake.IntakeCubeCmd;
 import frc.robot.commands.intake.StopRollersCmd;
 import frc.robot.commands.lift.AutoRow3Cmd;
 import frc.robot.commands.lift.DownCmd;
@@ -36,7 +36,7 @@ public class LeftConeScoreCubeScoreCubeMid extends SequentialCommandGroup {
             new SetPoseCmd(new Pose2d(1.83, 0.5, new Rotation2d(Math.PI)), swerveSys),
             new FollowTrajectoryCmd("LeftStartToScoreCube1", 3.375, 2.5, swerveSys).alongWith(
                 new WaitUntilCmd(() -> swerveSys.getPose().getX() > 5.75)
-                .andThen(new OutCmd(intakeSys, lightsSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
+                .andThen(new OutCmd(intakeSys, lightsSys).alongWith(new IntakeCubeCmd(intakeSys, lightsSys)))
                 .andThen(new WaitCmd(1.0))
                 .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 3.75))
@@ -48,7 +48,7 @@ public class LeftConeScoreCubeScoreCubeMid extends SequentialCommandGroup {
             new DownCmd(true, liftSys),
             new FollowTrajectoryCmd("LeftScoreCube1ToScoreCube2Mid", 3.375, 2.5, swerveSys).alongWith(
                 new WaitUntilCmd(() -> swerveSys.getPose().getX() > 6.0)
-                .andThen(new OutCmd(intakeSys, lightsSys).alongWith(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
+                .andThen(new OutCmd(intakeSys, lightsSys).alongWith(new IntakeCubeCmd(intakeSys, lightsSys)))
                 .andThen(new WaitCmd(1.0))
                 .andThen(new InCmd(intakeSys).alongWith(new StopRollersCmd(intakeSys, lightsSys)))
                 .andThen(new WaitUntilCmd(() -> swerveSys.getPose().getX() < 3.75))

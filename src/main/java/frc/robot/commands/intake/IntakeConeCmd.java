@@ -1,12 +1,11 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.GameElement;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakeSys;
 import frc.robot.subsystems.LightsSys;
 
-public class SetRelativeSpeedCmd extends CommandBase {
+public class IntakeConeCmd extends CommandBase {
 
     private final IntakeSys intakeSys;
     private final LightsSys lightsSys;
@@ -20,7 +19,7 @@ public class SetRelativeSpeedCmd extends CommandBase {
      * 
      * @param exampleSys The required ExampleSys.
      */
-    public SetRelativeSpeedCmd(IntakeSys intakeSys, LightsSys lightsSys) {
+    public IntakeConeCmd(IntakeSys intakeSys, LightsSys lightsSys) {
         this.intakeSys = intakeSys;
         this.lightsSys = lightsSys;
     }
@@ -34,12 +33,9 @@ public class SetRelativeSpeedCmd extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if(lightsSys.getStatus().equals(GameElement.kCone)) {
-            intakeSys.setAbsoluteSpeed(IntakeConstants.rollerConeMetersPerSecond);
-        }
-        else {
-            intakeSys.setRelativeSpeed(IntakeConstants.rollerRelativeMetersPerSecond);
-        }
+        
+        intakeSys.setAbsoluteSpeed(IntakeConstants.rollerConeMetersPerSecond);
+
         lightsSys.setIntaking(true);
     }
     

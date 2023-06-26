@@ -28,8 +28,9 @@ public class YEETCmd extends CommandBase {
             cancel();
         }
         else {
+            liftSys.setLiftCurrentLimit(120);
             liftSys.setArticulationOverride(false);
-            liftSys.setTarget(LiftConstants.YEETHeightInches, LiftConstants.hybridPower);
+            liftSys.setTarget(LiftConstants.YEETHeightInches, 1.0);
         }
     }
 
@@ -46,6 +47,7 @@ public class YEETCmd extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+        liftSys.setLiftCurrentLimit(LiftConstants.maxCurrentAmps);
         liftSys.setTarget(LiftConstants.downInches, LiftConstants.downPower);
         holdTimer.stop();
         holdTimer.reset();

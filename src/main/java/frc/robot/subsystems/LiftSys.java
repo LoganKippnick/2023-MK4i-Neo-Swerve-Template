@@ -165,4 +165,8 @@ public class LiftSys extends SubsystemBase {
     public boolean isManual() {
         return isManual;
     }
+
+    public void setLiftCurrentLimit(int amps) {
+        masterMtr.setSmartCurrentLimit(amps);
+    }
 }

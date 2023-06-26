@@ -63,7 +63,7 @@ public class DockCmd extends CommandBase {
                 true
             );
         }
-        else if(hasStopped || (Math.abs(swerveSys.getRollDegrees()) < AutoConstants.chargeStationBalancedToleranceDeg && onChargeStationTimer.hasElapsed(1.0))) {
+        else if(hasStopped || (Math.abs(swerveSys.getRollDegrees()) < AutoConstants.chargeStationBalancedToleranceDeg && onChargeStationTimer.hasElapsed(AutoConstants.driveOntoChargeStationSecs))) {
             swerveSys.stop();
             swerveSys.lock();
             lightsSys.setPartyMode(true);

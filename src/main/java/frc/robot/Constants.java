@@ -165,7 +165,7 @@ public class Constants {
     public static final class AutoConstants {
 
         public static final double maxVelMetersPerSec = 3.25;
-        public static final double maxAccelMetersPerSecondSq = 1.75; //1.5
+        public static final double maxAccelMetersPerSecondSq = 1.625; //1.5
 
         public static final double drivekP = 12.8; //12.8
         public static final double drivekD = 0.085; //0.065
@@ -204,10 +204,12 @@ public class Constants {
         public static final double driveOntoChargeStationVelMetersPerSecond = 0.75;
         public static final double driveOverChargeStationVelMetersPerSecond = 0.35;
 
-        public static final double onChargeStationDeg = 10.0;
-        public static final double chargeStationBalancedToleranceDeg = 11.0;
+        public static final double driveOntoChargeStationSecs = 2.0;
 
-        public static final double dockVelMetersPerSecond = 0.08;
+        public static final double onChargeStationDeg = 10.0;
+        public static final double chargeStationBalancedToleranceDeg = 11.5;
+
+        public static final double dockVelMetersPerSecond = 0.06;
     }
 
     public static final class VisionConstants {
@@ -315,7 +317,7 @@ public class Constants {
 
         public static final double absEncOffset = 0.0;
 
-        public static final int actuationCurrentLimitAmps = 20;
+        public static final int actuationCurrentLimitAmps = 30;
         public static final int rollerCurrentLimitAmps = 60;
 
         public static final double kP = 3.0;

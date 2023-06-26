@@ -27,7 +27,7 @@ public class CenterCubeMobilityDock extends SequentialCommandGroup {
             new InCmd(intakeSys),
             new WaitCmd(0.5),
             new AutoRow3PoleCmd(liftSys, clawSys),
-            new FollowTrajectoryCmd("CenterStartToDock", 0.25, 0.25, swerveSys),
+            new FollowTrajectoryCmd("CenterStartToDock", 0.5, 0.5, swerveSys),
             new DriveOverChargeStationCmd(DockDirection.kFromCommunity, swerveSys),
             new WaitCmd(0.5),
             new DockCmd(DockDirection.kFromCenter, swerveSys, lightsSys)

@@ -42,8 +42,9 @@ import frc.robot.commands.drivetrain.ResetHeadingCmd;
 import frc.robot.commands.drivetrain.SetHeadingCmd;
 import frc.robot.commands.drivetrain.SwerveDriveCmd;
 import frc.robot.commands.intake.InCmd;
+import frc.robot.commands.intake.IntakeConeCmd;
 import frc.robot.commands.intake.OutCmd;
-import frc.robot.commands.intake.SetRelativeSpeedCmd;
+import frc.robot.commands.intake.IntakeCubeCmd;
 import frc.robot.commands.intake.StopRollersCmd;
 import frc.robot.commands.intake.IntakeManualControlCmd;
 import frc.robot.commands.lift.DownCmd;
@@ -94,7 +95,7 @@ public class RobotContainer {
     private final JoystickButton driverXBtn = new JoystickButton(driverController, 3);
     private final JoystickButton driverYBtn = new JoystickButton(driverController, 4);
     // private final JoystickButton driverLeftBumper = new JoystickButton(driverController, 5);
-    // private final JoystickButton driverRightBumper = new JoystickButton(driverController, 6);
+    private final JoystickButton driverRightBumper = new JoystickButton(driverController, 6);
     private final JoystickButton driverMenuBtn = new JoystickButton(driverController, 8);
     private final Trigger driverRightTriggerBtn =
         new Trigger(() -> driverController.getRightTriggerAxis() > ControllerConstants.triggerPressedDeadband);
@@ -121,8 +122,18 @@ public class RobotContainer {
     private final JoystickButton hybridLeftBumper = new JoystickButton(hybridController, 5);
     private final JoystickButton hybridRightBumper = new JoystickButton(hybridController, 6);
     private final JoystickButton hybridWindowBtn = new JoystickButton(hybridController, 7);
-    private final JoystickButton hybridMenuBtn = new JoystickButton(driverController, 8);
+    private final JoystickButton hybridMenuBtn = new JoystickButton(hybridController, 8);
     private final JoystickButton hybridRightJoystickPressBtn = new JoystickButton(hybridController, 10);
+    
+    private final Trigger hybridRightTriggerBtn =
+        new Trigger(() -> hybridController.getRightTriggerAxis() > ControllerConstants.triggerPressedDeadband);
+    private final Trigger hybridLeftTriggerBtn =
+        new Trigger(() -> hybridController.getLeftTriggerAxis() > ControllerConstants.triggerPressedDeadband);
+
+    private final POVButton hybridUpBtn = new POVButton(hybridController, 0);
+    private final POVButton hybridRightBtn = new POVButton(hybridController, 90);
+    private final POVButton hybridDownBtn = new POVButton(hybridController, 180);
+    private final POVButton hybridLeftBtn = new POVButton(hybridController, 270);
 
     // Instantiate controller rumble.
     private Rumble matchTimeRumble;
@@ -243,9 +254,16 @@ public class RobotContainer {
 
             driverRightTriggerBtn
                 .onTrue(new OutCmd(intakeSys, lightsSys))
-                .whileTrue(new RepeatCommand(new SetRelativeSpeedCmd(intakeSys, lightsSys)))
+                .onTrue(new IntakeCubeCmd(intakeSys, lightsSys))
                 .onFalse(new InCmd(intakeSys))
                 .onFalse(new StopRollersCmd(intakeSys, lightsSys));
+
+            driverRightBumper
+                .onTrue(new OutCmd(intakeSys, lightsSys))
+                .whileTrue(new IntakeConeCmd(intakeSys, lightsSys))
+                .onFalse(new InCmd(intakeSys))
+                .onFalse(new StopRollersCmd(intakeSys, lightsSys));
+
             driverLeftTriggerBtn.whileTrue(new LockCmd(swerveSys));
 
             brownOutRumble.addControllers(driverController);
@@ -267,7 +285,7 @@ public class RobotContainer {
 
             driverRightJoystickTriggerBtn
                 .onTrue(new OutCmd(intakeSys, lightsSys))
-                .whileTrue(new SetRelativeSpeedCmd(intakeSys, lightsSys))
+                .whileTrue(new IntakeCubeCmd(intakeSys, lightsSys))
                 .onFalse(new InCmd(intakeSys))
                 .onFalse(new StopRollersCmd(intakeSys, lightsSys));
 
@@ -335,12 +353,24 @@ public class RobotContainer {
         hybridWindowBtn.onTrue(new SetElementStatusCmd(GameElement.kCube, liftSys, intakeSys, visionSys, lightsSys));
         hybridMenuBtn.onTrue(new SetElementStatusCmd(GameElement.kCone, liftSys, intakeSys, visionSys, lightsSys));
 
-        hybridWindowBtn.and(operatorMenuBtn).onTrue(new SetElementStatusCmd(GameElement.kNone, liftSys, intakeSys, visionSys, lightsSys));
+        hybridWindowBtn.and(hybridMenuBtn).onTrue(new SetElementStatusCmd(GameElement.kNone, liftSys, intakeSys, visionSys, lightsSys));
         
         hybridLeftBumper.onTrue(new OpenCmd(clawSys));
         hybridRightBumper.onTrue(new CloseCmd(clawSys));
 
         hybridRightJoystickPressBtn.onTrue(new ResetHeadingCmd(swerveSys));
+
+        hybridRightTriggerBtn
+                .onTrue(new OutCmd(intakeSys, lightsSys))
+                .whileTrue(new RepeatCommand(new IntakeCubeCmd(intakeSys, lightsSys)))
+                .onFalse(new InCmd(intakeSys))
+                .onFalse(new StopRollersCmd(intakeSys, lightsSys));
+        hybridLeftTriggerBtn.whileTrue(new LockCmd(swerveSys));
+
+        hybridUpBtn.onTrue(new ShelfPickupCmd(true, liftSys));
+        hybridRightBtn.onTrue(new YEETCmd(liftSys, clawSys));
+        hybridDownBtn.onTrue(new HoverCmd(true, liftSys));
+        hybridLeftBtn.onTrue(new HybridYeetCmd(liftSys, clawSys));
 
         brownOutRumble.addControllers(hybridController);
         matchTimeRumble.addControllers(hybridController);
